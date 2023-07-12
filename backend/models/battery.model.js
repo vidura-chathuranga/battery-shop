@@ -33,5 +33,19 @@ const batterySchema = mongoose.Schema({
     batteryDescription :{
         type : String,
         required : true
+    },
+    isDeleted : {
+        count : {
+            type : Number,
+            default : 0
+        },
+        description : {
+            type : String,
+            default : ''
+        }
     }
-})
+});
+
+const Battery = mongoose.model("batteries",batterySchema);
+
+export default Battery;

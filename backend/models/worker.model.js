@@ -26,6 +26,10 @@ const WorkerSchema = new mongoose.Schema({
     gender :{
         type: String,
         required : true
+    },
+    role : {
+        type : String,
+        required : true,
     }
 },{timeStamps : true});
 

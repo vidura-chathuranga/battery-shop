@@ -3,11 +3,8 @@ import {
   createStyles,
   TextInput,
   PasswordInput,
-  Checkbox,
   Button,
   Title,
-  Text,
-  Anchor,
   rem,
 } from "@mantine/core";
 
@@ -41,30 +38,33 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-// Checking login data
-// const login = async (values : {email : string, password : string}) =>{
-//     AdminAPI.login(values).then((response : any)=>{
-//         console.log(response);
-//     }).catch((error) =>{
-//         console.log(error)
-//     });
-// }
-
 // login component
 const WorkerLoginPage = () => {
   const { classes } = useStyles();
+
+  // Checking login data
+  const login = async (values: { nic: string; password: string }) => {
+    AdminAPI.login(values)
+      .then((response: any) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const loginForm = useForm({
     validateInputOnChange: true,
 
     initialValues: {
-      email: "",
+      nic: "",
       password: "",
     },
 
     // validate data realtime
     validate: {
-      email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
+      nic: (value) =>
+        /^([0-9]{9}[v|V]|[0-9]{12})$/.test(value) ? null : "Invalid NIC",
     },
   });
 
@@ -78,17 +78,17 @@ const WorkerLoginPage = () => {
         {/* form */}
         <form
           onSubmit={loginForm.onSubmit(
-            (values: { email: string; password: string }) => {
-              // login(values)
+            (values: { nic: string; password: string }) => {
+              login(values);
             }
           )}
         >
           {/* email */}
           <TextInput
-            label="Email address"
-            placeholder="hello@gmail.com"
+            label="NIC"
+            placeholder="871301450V"
             size="md"
-            {...loginForm.getInputProps("email")}
+            {...loginForm.getInputProps("nic")}
           />
           {/* password */}
           <PasswordInput

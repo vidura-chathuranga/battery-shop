@@ -6,6 +6,11 @@ const ownerSchema = new mongoose.Schema({
         type:String,
         required : true
     },
+    nic : {
+        type : String,
+        unique : true,
+        required : true,
+    },
     phone : {
         type : String,
         required : true

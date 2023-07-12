@@ -34,4 +34,8 @@ const batterySchema = mongoose.Schema({
         type : String,
         required : true
     }
-})
+},{timeStamp : true});
+
+const Battery = mongoose.model("Batteries",batterySchema);
+
+export default Battery;

@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
-const WorkerSchema = new mongoose.Schema({
-    w_id:{
+const userSchema = new mongoose.Schema({
+    id:{
         type : String,
         unique : true,
         required : true,
@@ -26,10 +26,18 @@ const WorkerSchema = new mongoose.Schema({
     gender :{
         type: String,
         required : true
+    },
+    role : {
+        type : String,
+        required : true,
+    },
+    password : {
+        type : String,
+        required:true,
     }
 },{timeStamps : true});
 
 
-const Worker = mongoose.model("workers",WorkerSchema);
+const User = mongoose.model("users",userSchema);
 
-export default Worker;
+export default User;

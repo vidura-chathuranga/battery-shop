@@ -2,6 +2,9 @@ import express from 'express';
 import "dotenv/config";
 import cors from 'cors';
 import AdminRoutes from './routes/admin.routes.js';
+import dbConnect from './configs/dbConfig.js';
+
+
 //initialized express
 const app = express();
 
@@ -31,4 +34,5 @@ app.use('/admin',AdminRoutes);
 
 app.listen(PORT,()=>{
     console.log(`🚀 Server is started on port ${PORT}!`);
+    dbConnect();
 });

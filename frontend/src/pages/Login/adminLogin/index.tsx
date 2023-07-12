@@ -50,14 +50,22 @@ const AdminLoginPage = () =>{
         validateInputOnChange: true,
     
         initialValues: {
-          email: "",
+          emailOrNic: "",
           password: "",
         },
     
-        // validate data realtime
-        validate: {
-          email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
-        },
+       // Validate data in real-time
+    validate: {
+      emailOrNic: (value) => {
+        if (!value) {
+          return 'This field is required';
+        }
+        if (!/^\S+@\S+$/.test(value) && !/^([0-9]{9}[v|V]|[0-9]{12})$/.test(value)) {
+          return 'Invalid email or NIC';
+        }
+        return null;
+      },
+    },
       });
 
     return(
@@ -71,7 +79,7 @@ const AdminLoginPage = () =>{
       {/* form */}
       <form
           onSubmit={loginForm.onSubmit(
-            (values: { email: string; password: string }) => {
+            (values: { emailOrNic: string; password: string }) => {
               // login(values)
             }
           )}
@@ -81,7 +89,7 @@ const AdminLoginPage = () =>{
         label="Email address or NIC number"
         placeholder="hello@gmail.com"
         size="md"  
-        {...loginForm.getInputProps("email")}/>
+        {...loginForm.getInputProps("emailOrNic")}/>
 
       <PasswordInput 
         label="Password" 

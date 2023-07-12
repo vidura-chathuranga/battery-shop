@@ -1,46 +1,37 @@
 import mongoose from "mongoose";
 
-const BatterySchema = mongoose.Schema({
-
-    stockID : {
+const batterySchema = mongoose.Schema({
+    stock_id : {
         type : String,
-        unique : true,
-        required : true,
+        required : true
     },
     quantity : {
         type : Number,
-        required : true,
+        default : 0,
+        required : true
     },
-    addingDate : {
-        type : Number,
-        required : true,
+    added_date : {
+        type : Date,
+        required : true
     },
-    warrantyPeriod : {
-        type : Number,
-        required : true,
+    warranty : {
+        type : String,
+        required : true
     },
     sellingPrice : {
-        type : String,
+        type : Number,
         required : true,
-
     },
     actualPrice : {
-        type : String,
-        required : true,
-
+        type : Number,
+        required : true
     },
-    BatteryBrand : {
+    batteryBrand : {
         type : String,
-        required : true,
+        required : true
     },
-    BatteryDescription : {
+    batteryDescription :{
         type : String,
-        required : true,
+        required : true
     }
-
-},{timeStamps : true});
-
-
-const Battery = mongoose.model("Battery",BatterySchema);
-
-export default Battery;
+})

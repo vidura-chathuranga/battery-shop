@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
-const WorkerSchema = mongoose.Schema({
-    id:{
+const WorkerSchema = new mongoose.Schema({
+    w_id:{
         type : String,
         unique : true,
         required : true,
@@ -18,6 +18,14 @@ const WorkerSchema = mongoose.Schema({
         type : String,
         unique : true,
         required : true,
+    },
+    address :{
+        type : String,
+        required : true,
+    },
+    gender :{
+        type: String,
+        required : true
     }
 },{timeStamps : true});
 

@@ -4,6 +4,9 @@ import AdminLoginPage from '../pages/Login/adminLogin';
 import WorkerLoginPage from '../pages/Login/workerLogin';
 import Workerregister from '../pages/WorkerRegister';
 import ADashboard from '../pages/AdminDashboard';
+import WorkerOwnerPrivateRoute from './workerOwnerPrivateRoute';
+import WorkerDashboard from '../pages/WorkerDashboard';
+import Logout from '../components/logout/logout';
 
 
 const AllRoutes = () =>{
@@ -16,6 +19,12 @@ const AllRoutes = () =>{
                 <Route path='/login/register' element={<Workerregister/>}/>
                 <Route path='/login/adminDashboard' element={<ADashboard/>}/>
 
+                
+                <Route path='/worker' element={<WorkerOwnerPrivateRoute/>}>
+                    <Route path='/worker/managestock' element={<WorkerDashboard/>}/>
+                    <Route path='/worker/logout' element={<Logout/>}/>
+                </Route>
+                
             </Routes>
         </Router>        
     );

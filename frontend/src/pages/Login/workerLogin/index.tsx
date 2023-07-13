@@ -3,16 +3,15 @@ import {
   createStyles,
   TextInput,
   PasswordInput,
-  Checkbox,
   Button,
   Title,
-  Text,
-  Anchor,
   rem,
 } from "@mantine/core";
 
 import { useForm } from "@mantine/form";
-import AdminAPI from "../../../API/adminAPI/admin.api";
+import { showNotification } from "@mantine/notifications";
+import { IconX } from "@tabler/icons-react";
+import WorkerAPI from "../../../API/workerAPI/worker.api";
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -41,30 +40,44 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-// Checking login data
-// const login = async (values : {email : string, password : string}) =>{
-//     AdminAPI.login(values).then((response : any)=>{
-//         console.log(response);
-//     }).catch((error) =>{
-//         console.log(error)
-//     });
-// }
-
 // login component
 const WorkerLoginPage = () => {
   const { classes } = useStyles();
+
+  // Checking login data
+  const login = async (values: { nic: string; password: string }) => {
+    WorkerAPI.login(values)
+      .then((response: any) => {
+
+        // save user details in the local storage
+        localStorage.setItem("user-worker-session",JSON.stringify(response.data));
+
+        // navigate to the worker dashboard
+        window.location.href = '/worker/managestock';
+      })
+      .catch((error) => {
+        showNotification({
+          title : 'User credentials are wrong',
+          message :"check your user credentials again",
+          color : "red",
+          autoClose:1500,
+          icon : <IconX size={16}/>
+        })
+      });
+  };
 
   const loginForm = useForm({
     validateInputOnChange: true,
 
     initialValues: {
-      email: "",
+      nic: "",
       password: "",
     },
 
     // validate data realtime
     validate: {
-      email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
+      nic: (value) =>
+        /^([0-9]{9}[v|V]|[0-9]{12})$/.test(value) ? null : "Invalid NIC",
     },
   });
 
@@ -78,17 +91,17 @@ const WorkerLoginPage = () => {
         {/* form */}
         <form
           onSubmit={loginForm.onSubmit(
-            (values: { email: string; password: string }) => {
-              // login(values)
+            (values: { nic: string; password: string }) => {
+              login(values);
             }
           )}
         >
           {/* email */}
           <TextInput
-            label="Email address"
-            placeholder="hello@gmail.com"
+            label="NIC"
+            placeholder="871301450V"
             size="md"
-            {...loginForm.getInputProps("email")}
+            {...loginForm.getInputProps("nic")}
           />
           {/* password */}
           <PasswordInput

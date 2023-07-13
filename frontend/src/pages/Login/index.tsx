@@ -1,4 +1,4 @@
-import { Card, Group } from "@mantine/core";
+import {Group } from "@mantine/core";
 import WorkerLogin from "../../components/workerLogin";
 import AdminLogin from "../../components/adminLogin";
 

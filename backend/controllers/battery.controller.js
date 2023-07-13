@@ -13,20 +13,25 @@ export const getAllItems = async (req, res) => {
 
 //add items to the db
 const addBatteries = async (req, res) => {
-    const { batteryBrand, actualPrice, sellingPrice, batteryDescription, quantity,warranty,added_date } = req.body;
+
+
+   // const { batteryBrand, actualPrice, sellingPrice, batteryDescription, quantity,warranty,added_date } = req.body;
     
     try {
       const newBattery = new Battery({
-        batteryBrand,
-        actualPrice,
-        sellingPrice,
-        batteryDescription,
-        quantity,
-        warranty,
-        added_date,
+        stock_id : req.body.stock_id,
+        batteryBrand: req.body.batteryBrand,
+        actualPrice: req.body.actualPrice,
+        sellingPrice: req.body.sellerPrice,
+        batteryDescription: req.body.batteryDescription,
+        quantity: req.body.quantity,
+        warranty: req.body.warranty,
+        added_date: req.body.added_date,
       });
   
-      const savedBattery = await newBattery.save(); // Save the new battery document to the database
+      console.log("battery controller")
+
+      const savedBattery = await Battery.create(newBattery); // Save the new battery document to the database
   
       res.status(201).json(savedBattery); // Send the saved battery as the response
     } catch (error) {

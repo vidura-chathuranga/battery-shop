@@ -13,21 +13,24 @@ class BatteryAPI {
     //add battery
     static addBattery = (values: {
 
+        stock_id: string;
         quantity: string;
-        added_date: Date;
-        warranty: string;
-        sellingPrice: Number;
-        actualPrice: Number;
-        batteryBrand: string;
-        batteryDescription: string;
+        added_data: string;
+        warnty_priod: String;
+        sellingPrice: string;
+        actualPrice: string;
+        batry_brand: string;
+        Battery_description: string;
+
     }) => {
-        return axios.post(`${BASE_URL}/batteries`, values, /*requestConfig*/);
+        console.log("API addBattery");
+        return axios.post(`${BASE_URL}/batteries`, values, {withCredentials:true});
 
     };
 
     //delete battery
     static declareBattery = (stock_id: string) => {
-        return axios.delete(`${BASE_URL}/batteries/delete/${stock_id}`,/*requestConfig*/);
+        return axios.delete(`${BASE_URL}/batteries/delete/${stock_id}`,{withCredentials:true});
     };
 
     //update battery details
@@ -45,7 +48,7 @@ class BatteryAPI {
 
         return axios.put(`${BASE_URL}/batteries/update/${values._id}`,
             values,
-           // requestConfig
+            {withCredentials:true}
         );
     };
 }

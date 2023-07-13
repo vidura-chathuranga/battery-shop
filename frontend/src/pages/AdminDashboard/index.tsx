@@ -17,8 +17,11 @@ import {
   IconReceipt2,
   IconSwitchHorizontal,
   IconLogout,
+  IconNotification,
+  IconAdjustmentsHeart,
 } from "@tabler/icons-react";
 import { MantineLogo } from "@mantine/ds";
+import AdminDBoard from "../../components/AdminDashboard/index";
 
 const adminDashboard = createStyles((theme) => ({
   header: {
@@ -90,16 +93,15 @@ const adminDashboard = createStyles((theme) => ({
 }));
 
 const data = [
-  { link: "/admin/stock", label: "Notifications", icon: IconBellRinging },
-  { link: "", label: "Billing", icon: IconReceipt2 },
-  { link: "", label: "Security", icon: IconFingerprint },
-  { link: "", label: "SSH Keys", icon: IconKey },
-  { link: "", label: "Databases", icon: IconDatabaseImport },
-  { link: "", label: "Authentication", icon: Icon2fa },
-  { link: "", label: "Other Settings", icon: IconSettings },
+
+  { link: "", label: "Manage Worker", icon: IconAdjustmentsHeart },
+  { link: "", label: "Profit", icon: IconReceipt2 },
+  { link: "", label: "Stocks", icon: IconDatabaseImport },
+  { link: "", label: "Notifications", icon: IconNotification },
+
 ];
 
- function ADashboard() {
+function ADashboard() {
   const { classes, cx } = adminDashboard();
   const [active, setActive] = useState("Billing");
 
@@ -120,35 +122,32 @@ const data = [
     </a>
   ));
   return (
-    <Navbar height={700} width={{ sm: 300 }} p="md">
-      <Navbar.Section grow>
-        <Group className={classes.header} position="apart">
-          <MantineLogo size={28} />
-          <Code sx={{ fontWeight: 700 }}>v3.1.2</Code>
-        </Group>
-        {links}
-      </Navbar.Section>
+    <div style={{ display: "grid", gridTemplateColumns: "300px 1fr" }}>
+      <div>
+        <Navbar height={700} width={{ sm: 300 }} p="md">
+          <Navbar.Section grow>
+            <Group className={classes.header} position="apart">
+              <MantineLogo size={28} />
+            </Group>
+            {links}
+          </Navbar.Section>
 
-      <Navbar.Section className={classes.footer}>
-        <a
-          href="#"
-          className={classes.link}
-          onClick={(event) => event.preventDefault()}
-        >
-          <IconSwitchHorizontal className={classes.linkIcon} stroke={1.5} />
-          <span>Change account</span>
-        </a>
-
-        <a
-          href="#"
-          className={classes.link}
-          onClick={(event) => event.preventDefault()}
-        >
-          <IconLogout className={classes.linkIcon} stroke={1.5} />
-          <span>Logout</span>
-        </a>
-      </Navbar.Section>
-    </Navbar>
+          <Navbar.Section className={classes.footer}>
+            <a
+              href="#"
+              className={classes.link}
+              onClick={(event) => event.preventDefault()}
+            >
+              <IconLogout className={classes.linkIcon} stroke={1.5} />
+              <span>Logout</span>
+            </a>
+          </Navbar.Section>
+        </Navbar>
+      </div>
+      <div>
+        <AdminDBoard />
+      </div>
+    </div>
   );
 }
 

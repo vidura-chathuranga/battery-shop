@@ -9,7 +9,9 @@ import {
 } from "@mantine/core";
 
 import { useForm } from "@mantine/form";
-import AdminAPI from "../../../API/adminAPI/admin.api";
+import { showNotification } from "@mantine/notifications";
+import { IconX } from "@tabler/icons-react";
+import WorkerAPI from "../../../API/workerAPI/worker.api";
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -44,12 +46,23 @@ const WorkerLoginPage = () => {
 
   // Checking login data
   const login = async (values: { nic: string; password: string }) => {
-    AdminAPI.login(values)
+    WorkerAPI.login(values)
       .then((response: any) => {
-        console.log(response);
+
+        // save user details in the local storage
+        localStorage.setItem("user-worker-session",JSON.stringify(response.data));
+
+        // navigate to the worker dashboard
+        window.location.href = '/worker/managestock';
       })
       .catch((error) => {
-        console.log(error);
+        showNotification({
+          title : 'User credentials are wrong',
+          message :"check your user credentials again",
+          color : "red",
+          autoClose:1500,
+          icon : <IconX size={16}/>
+        })
       });
   };
 

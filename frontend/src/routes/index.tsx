@@ -10,7 +10,7 @@ import WorkerDashboard from "../pages/WorkerDashboard";
 import Logout from "../components/logout/logout";
 import WorkerDashboardHeader from "../components/workerDashboardHeader";
 import WorkerNotifications from "../pages/WorkerNotifications";
-
+import StockTable from "../components/stock";
 
 const AllRoutes = () => {
   return (
@@ -21,6 +21,10 @@ const AllRoutes = () => {
         <Route path="/login/worker" element={<WorkerLoginPage />} />
         <Route path="/login/register" element={<Workerregister />} />
         <Route path="/login/adminDashboard" element={<ADashboard />} />
+
+        <Route path = "/admin/stock" element ={<StockTable/>} />
+
+        // {/* <Route path = '/admin/stock' element={<StockTable data ={[ {name : "asdasdasd",email : "adadada" , company : "adasdasdad"}]}/>}/> */}
 
         <Route path="/worker" element={<WorkerOwnerPrivateRoute />}>
           <Route path="/worker/managestock" element={<WorkerDashboard />} />

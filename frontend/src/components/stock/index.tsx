@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
   createStyles,
   Table,
@@ -9,22 +8,38 @@ import {
   Center,
   TextInput,
   rem,
-} from '@mantine/core';
-import { keys } from '@mantine/utils';
-import { IconSelector, IconChevronDown, IconChevronUp, IconSearch } from '@tabler/icons-react';
-import AdminAPI from '../../API/workerAPI/admin.api';
+  ActionIcon,
+  Tooltip,
+  Button,
+  Container,
+  Grid,
+} from "@mantine/core";
+import { keys } from "@mantine/utils";
+import {
+  IconSelector,
+  IconChevronDown,
+  IconChevronUp,
+  IconSearch,
+  IconPlus,
+  IconEdit,
+  IconTrash,
+} from "@tabler/icons-react";
+import { useState } from "react";
 
 const useStyles = createStyles((theme) => ({
   th: {
-    padding: '0 !important',
+    padding: "0 !important",
   },
 
   control: {
-    width: '100%',
+    width: "100%",
     padding: `${theme.spacing.xs} ${theme.spacing.md}`,
 
-    '&:hover': {
-      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
+    "&:hover": {
+      backgroundColor:
+        theme.colorScheme === "dark"
+          ? theme.colors.dark[6]
+          : theme.colors.gray[0],
     },
   },
 
@@ -33,153 +48,342 @@ const useStyles = createStyles((theme) => ({
     height: rem(21),
     borderRadius: rem(21),
   },
+  header: {
+    position: "sticky",
+    zIndex: 100,
+    top: 0,
+    backgroundColor:
+      theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
+    transition: "box-shadow 150ms ease",
+
+    "&::after": {
+      content: '""',
+      position: "absolute",
+      left: 0,
+      right: 0,
+      bottom: 0,
+      borderBottom: `${rem(1)} solid ${
+        theme.colorScheme === "dark"
+          ? theme.colors.dark[3]
+          : theme.colors.gray[2]
+      }`,
+    },
+  },
+
+  scrolled: {
+    boxShadow: theme.shadows.sm,
+  },
 }));
 
-interface RowData {
-  name: string;
-  email: string;
-  company: string;
+interface Data {
+  _id: string;
+  stock_id: string;
+  quantity: string;
+  added_data: string;
+  warnty_priod: String;
+  sellingPrice: string;
+  actualPrice: string;
+  batry_brand: string;
+  Battery_description: string;
 }
 
-interface TableSortProps {
-  data: RowData[];
-}
-
-interface ThProps {
-  children: React.ReactNode;
-  reversed: boolean;
-  sorted: boolean;
-  onSort(): void;
-}
-
-function Th({ children, reversed, sorted, onSort }: ThProps) {
-  const { classes } = useStyles();
-  const Icon = sorted ? (reversed ? IconChevronUp : IconChevronDown) : IconSelector;
-  return (
-    <th className={classes.th}>
-      <UnstyledButton onClick={onSort} className={classes.control}>
-        <Group position="apart">
-          <Text fw={500} fz="sm">
-            {children}
-          </Text>
-          <Center className={classes.icon}>
-            <Icon size="0.9rem" stroke={1.5} />
-          </Center>
-        </Group>
-      </UnstyledButton>
-    </th>
-  );
-}
-
-function filterData(data: RowData[], search: string) {
+function filterData(data: Data[], search: string) {
   const query = search.toLowerCase().trim();
   return data.filter((item) =>
     keys(data[0]).some((key) => item[key].toLowerCase().includes(query))
   );
 }
 
-function sortData(
-  data: RowData[],
-  payload: { sortBy: keyof RowData | null; reversed: boolean; search: string }
-) {
-  const { sortBy } = payload;
+const StockTable = () => {
+  const [search, setSearch] = useState("");
+  const { classes, cx } = useStyles();
+  const [scrolled, setScrolled] = useState(false);
+  // const [data, setData] = useState<Data[]>([]);
 
-  if (!sortBy) {
-    return filterData(data, payload.search);
-  }
+  // const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //     const { value } = event.currentTarget;
+  //     setSearch(value);
+  //     filterData(data,search);
+  //   };
 
-  return filterData(
-    [...data].sort((a, b) => {
-      if (payload.reversed) {
-        return b[sortBy].localeCompare(a[sortBy]);
-      }
+  const data = [
+    {
+      _id: "asdadada",
+      stock_id: "asdadada",
+      quantity: "asdadada",
+      added_data: "asdadada",
+      warnty_priod: "asdadada",
+      sellingPrice: "asdadada",
+      actualPrice: "asdadada",
+      batry_brand: "asdadada",
+      Battery_description: "asdadada",
+    },
+    {
+      _id: "asdadada",
+      stock_id: "asdadada",
+      quantity: "asdadada",
+      added_data: "asdadada",
+      warnty_priod: "asdadada",
+      sellingPrice: "asdadada",
+      actualPrice: "asdadada",
+      batry_brand: "asdadada",
+      Battery_description: "adasdasda",
+    },
+    {
+      _id: "asdadada",
+      stock_id: "asdadada",
+      quantity: "asdadada",
+      added_data: "asdadada",
+      warnty_priod: "asdadada",
+      sellingPrice: "asdadada",
+      actualPrice: "asdadada",
+      batry_brand: "asdadada",
+      Battery_description: "adasdasda",
+    },
+    {
+      _id: "asdadada",
+      stock_id: "asdadada",
+      quantity: "asdadada",
+      added_data: "asdadada",
+      warnty_priod: "asdadada",
+      sellingPrice: "asdadada",
+      actualPrice: "asdadada",
+      batry_brand: "asdadada",
+      Battery_description: "adasdasda",
+    },
+    {
+      _id: "asdadada",
+      stock_id: "asdadada",
+      quantity: "asdadada",
+      added_data: "asdadada",
+      warnty_priod: "asdadada",
+      sellingPrice: "asdadada",
+      actualPrice: "asdadada",
+      batry_brand: "asdadada",
+      Battery_description: "adasdasda",
+    },
+    {
+      _id: "asdadada",
+      stock_id: "asdadada",
+      quantity: "asdadada",
+      added_data: "asdadada",
+      warnty_priod: "asdadada",
+      sellingPrice: "asdadada",
+      actualPrice: "asdadada",
+      batry_brand: "asdadada",
+      Battery_description: "adasdasda",
+    },
+    {
+      _id: "asdadada",
+      stock_id: "asdadada",
+      quantity: "asdadada",
+      added_data: "asdadada",
+      warnty_priod: "asdadada",
+      sellingPrice: "asdadada",
+      actualPrice: "asdadada",
+      batry_brand: "asdadada",
+      Battery_description: "adasdasda",
+    },
+    {
+      _id: "asdadada",
+      stock_id: "asdadada",
+      quantity: "asdadada",
+      added_data: "asdadada",
+      warnty_priod: "asdadada",
+      sellingPrice: "asdadada",
+      actualPrice: "asdadada",
+      batry_brand: "asdadada",
+      Battery_description: "adasdasda",
+    },
+    {
+      _id: "asdadada",
+      stock_id: "asdadada",
+      quantity: "asdadada",
+      added_data: "asdadada",
+      warnty_priod: "asdadada",
+      sellingPrice: "asdadada",
+      actualPrice: "asdadada",
+      batry_brand: "asdadada",
+      Battery_description: "adasdasda",
+    },
+    {
+      _id: "asdadada",
+      stock_id: "asdadada",
+      quantity: "asdadada",
+      added_data: "asdadada",
+      warnty_priod: "asdadada",
+      sellingPrice: "asdadada",
+      actualPrice: "asdadada",
+      batry_brand: "asdadada",
+      Battery_description: "adasdasda",
+    },
+    {
+      _id: "asdadada",
+      stock_id: "asdadada",
+      quantity: "asdadada",
+      added_data: "asdadada",
+      warnty_priod: "asdadada",
+      sellingPrice: "asdadada",
+      actualPrice: "asdadada",
+      batry_brand: "asdadada",
+      Battery_description: "adasdasda",
+    },
+    {
+      _id: "asdadada",
+      stock_id: "asdadada",
+      quantity: "asdadada",
+      added_data: "asdadada",
+      warnty_priod: "asdadada",
+      sellingPrice: "asdadada",
+      actualPrice: "asdadada",
+      batry_brand: "asdadada",
+      Battery_description: "adasdasda",
+    },
+    {
+      _id: "asdadada",
+      stock_id: "asdadada",
+      quantity: "asdadada",
+      added_data: "asdadada",
+      warnty_priod: "asdadada",
+      sellingPrice: "asdadada",
+      actualPrice: "asdadada",
+      batry_brand: "asdadada",
+      Battery_description: "adasdasda",
+    },
+    {
+      _id: "asdadada",
+      stock_id: "asdadada",
+      quantity: "asdadada",
+      added_data: "asdadada",
+      warnty_priod: "asdadada",
+      sellingPrice: "asdadada",
+      actualPrice: "asdadada",
+      batry_brand: "asdadada",
+      Battery_description: "adasdasda",
+    },
+    {
+      _id: "asdadada",
+      stock_id: "asdadada",
+      quantity: "asdadada",
+      added_data: "asdadada",
+      warnty_priod: "asdadada",
+      sellingPrice: "asdadada",
+      actualPrice: "asdadada",
+      batry_brand: "asdadada",
+      Battery_description: "adasdasda",
+    },
+  ];
+  // rows map
+  const rows = data?.map((row) => (
+    <tr key={row._id}>
+      <td>
+        <Text size={15}>{row.stock_id}</Text>
+      </td>
+      <td>
+        <Text size={15}>{row.batry_brand}</Text>
+      </td>
+      <td>
+        <Text size={15}>{row.Battery_description}</Text>
+      </td>
+      <td>
+        <Text size={15}>{row.quantity}</Text>
+      </td>
+      <td>
+        <Text size={15}>{row.sellingPrice}</Text>
+      </td>
+      <td>
+        <Text size={15}>{row.added_data}</Text>
+      </td>
+      <td>
+        <Text size={15}>{row.warnty_priod}</Text>
+      </td>
+      <td>
+        {
+          <>
+            <Group spacing={"sm"}>
+              {/* edit button */}
+              <Tooltip label="Edit stock">
+                <ActionIcon color="teal">
+                  <IconEdit size={30} />
+                </ActionIcon>
+              </Tooltip>
 
-      return a[sortBy].localeCompare(b[sortBy]);
-    }),
-    payload.search
-  );
-}
+              {/* delete button */}
+              <Tooltip label="Delete stock">
+                <ActionIcon color="red">
+                  <IconTrash size={30} />
+                </ActionIcon>
+              </Tooltip>
+            </Group>
+          </>
+        }
+      </td>
+    </tr>
+  ));
 
-const StockTable = ({ data }: TableSortProps) => {
+  // table
+  return (
+    <div>
 
-    const [search, setSearch] = useState('');
-    const [sortedData, setSortedData] = useState(data);
-    const [sortBy, setSortBy] = useState<keyof RowData | null>(null);
-    const [reverseSortDirection, setReverseSortDirection] = useState(false);
+        <Button leftIcon={<IconPlus size={20}/>} style={{position:"fixed",left:1400}}>
+          Add new Stock
+        </Button>
 
-    const setSorting = (field: keyof RowData) => {
-        const reversed = field === sortBy ? !reverseSortDirection : false;
-        setReverseSortDirection(reversed);
-        setSortBy(field);
-        setSortedData(sortData(data, { sortBy: field, reversed, search }));
-    };
-
-    const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const { value } = event.currentTarget;
-        setSearch(value);
-        setSortedData(sortData(data, { sortBy, reversed: reverseSortDirection, search: value }));
-    };
-
-    const rows = sortedData.map((row) => (
-        <tr key={row.name}>
-            <td>{row.name}</td>
-            <td>{row.email}</td>
-            <td>{row.company}</td>
-        </tr>
-    ));
-
-
-return(
-<ScrollArea>
+      {/* search bar */}
       <TextInput
         placeholder="Search by any field"
-        mb="md"
+        mt={-50}
+        mb={50}
         icon={<IconSearch size="0.9rem" stroke={1.5} />}
-        value={search}
-        onChange={handleSearchChange}
+        // value={search}
+        // onChange={handleSearchChange}
+        w={800}
+        style={{ position: "relative", left: "50%", translate: "-50%" }}
       />
-      <Table horizontalSpacing="md" verticalSpacing="xs" miw={700} sx={{ tableLayout: 'fixed' }}>
-        <thead>
-          <tr>
-            <Th
-              sorted={sortBy === 'name'}
-              reversed={reverseSortDirection}
-              onSort={() => setSorting('name')}
-            >
-              Name
-            </Th>
-            <Th
-              sorted={sortBy === 'email'}
-              reversed={reverseSortDirection}
-              onSort={() => setSorting('email')}
-            >
-              Email
-            </Th>
-            <Th
-              sorted={sortBy === 'company'}
-              reversed={reverseSortDirection}
-              onSort={() => setSorting('company')}
-            >
-              Company
-            </Th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.length > 0 ? (
-            rows
-          ) : (
+
+      <ScrollArea
+        w={"100mw"}
+        h={600}
+        onScrollPositionChange={({ y }) => setScrolled(y !== 0)}
+      >
+        <Table
+          highlightOnHover
+          horizontalSpacing={70}
+          verticalSpacing="lg"
+          miw={700}
+          sx={{ tableLayout: "fixed" }}
+        >
+          <thead
+            className={cx(classes.header, { [classes.scrolled]: scrolled })}
+          >
             <tr>
-              <td colSpan={Object.keys(data[0]).length}>
-                <Text weight={500} align="center">
-                  Nothing found
-                </Text>
-              </td>
+              <th>Stock_id</th>
+              <th>Brand</th>
+              <th>Description</th>
+              <th>Quantity</th>
+              <th>Price</th>
+              <th>Added_Date</th>
+              <th>Warranty</th>
+              <th>Actions</th>
             </tr>
-          )}
-        </tbody>
-      </Table>
-    </ScrollArea>
+          </thead>
+          <tbody>
+            {rows.length > 0 ? (
+              rows
+            ) : (
+              <tr>
+                <td colSpan={Object.keys(data[0]).length}>
+                  <Text weight={500} align="center">
+                    Nothing found
+                  </Text>
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </Table>
+      </ScrollArea>
+    </div>
   );
-}
+};
 
 export default StockTable;

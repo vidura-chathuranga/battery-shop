@@ -99,15 +99,15 @@ const links = [
   { label: "Generate Invoice", link: "/worker/invoice" },
 ];
 
-const WorkerDashboardHeader = () => {
-  const [opened, { toggle }] = useDisclosure(false);
-  const [active, setActive] = useState(links[0].link);
+const WorkerDashboardHeader = ({link_id} : any) => {
+
+  const [active, setActive] = useState(links[link_id].link);
   const [userMenuOpened, setUserMenuOpened] = useState(false);
   const { classes, cx } = useStyles();
 
   const user = JSON.parse(localStorage.getItem('user-worker-session')!!);
 
-  const items = links.map((link) => (
+  const items = links.map((link,index) => (
     <a
       key={link.label}
       href={link.link}

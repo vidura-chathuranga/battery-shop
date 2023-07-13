@@ -9,12 +9,19 @@ import {
   ActionIcon,
   Tooltip,
   Button,
-  Textarea
+  Textarea,
+  Box,
+  Modal,
 } from "@mantine/core";
 import { keys } from "@mantine/utils";
 import { IconSearch, IconPlus, IconEdit, IconTrash } from "@tabler/icons-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { modals } from "@mantine/modals";
+import { useForm } from "@mantine/form";
+import { showNotification, updateNotification } from "@mantine/notifications";
+//import {IconCheck, IconAlertTriangle} from '@tabler/icons';
+
+import BatteryAPI from "../../API/batteryAPI/battery.api";
 
 // styles
 const useStyles = createStyles((theme) => ({
@@ -89,17 +96,101 @@ const ManageStocks = () => {
   const [search, setSearch] = useState("");
   const { classes, cx } = useStyles();
   const [scrolled, setScrolled] = useState(false);
-  // const [data, setData] = useState<Data[]>([]);
 
+  const [opened, setOpened] = useState(false);
+  const [adata, setData] = useState<Data[]>([]);
+
+  const [deletionReason, setDeletionReason] = useState("");
+  const[dError,setDError] = useState(false);
   // const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
   //     const { value } = event.currentTarget;
   //     setSearch(value);
   //     filterData(data,search);
   //   };
 
+  //Get all Items records from the database
+  const getAllItems = async () => {
+    const response = await BatteryAPI.getAllItems();
+    const data = await response.data;
+    return data;
+  };
+
+  //declare add form
+  const addForm = useForm({
+    validateInputOnChange: true,
+    initialValues: {
+      stock_id: "",
+      quantity: "",
+      added_data: "",
+      warnty_priod: "",
+      sellingPrice: "",
+      actualPrice: "",
+      batry_brand: "",
+      Battery_description: "",
+    },
+  });
+
+  //add Items
+  const addItems = async (values: {
+    stock_id: string;
+    quantity: string;
+    added_data: string;
+    warnty_priod: String;
+    sellingPrice: string;
+    actualPrice: string;
+    batry_brand: string;
+    Battery_description: string;
+  }) => {
+    showNotification({
+      id: "add-items",
+      loading: true,
+      title: "Adding Items record",
+      message: "Please wait while we add Items record..",
+      autoClose: false,
+    });
+    BatteryAPI.addBattery(values)
+      .then((response) => {
+        updateNotification({
+          id: "add-items",
+          color: "teal",
+          title: "Items added successfully",
+          message: "Items data added successfully.",
+          //icon: <IconCheck />,
+          autoClose: 5000,
+        });
+        addForm.reset();
+        setOpened(false);
+        const newData = [
+          ...data,
+          {
+            _id: response.data._id,
+            stock_id: response.data.stock_id,
+            batry_brand: values.batry_brand,
+            actualPrice: values.actualPrice,
+            sellingPrice: values.sellingPrice,
+            Battery_description: values.Battery_description,
+            quantity: values.quantity,
+            warnty_priod: values.warnty_priod,
+            added_data: values.added_data,
+          },
+        ];
+        setData(newData);
+      })
+      .catch((error) => {
+        updateNotification({
+          id: "add-items",
+          color: "red",
+          title: "Items Adding failed",
+          message: "We were unable to add the Items",
+          // icon: <IconAlertTriangle />,
+          autoClose: 5000,
+        });
+      });
+  };
+
   const data = [
     {
-      _id: "asdadghjghjgada",
+      _id: "1",
       stock_id: "asdadada",
       quantity: "asdadada",
       added_data: "asdadada",
@@ -110,7 +201,7 @@ const ManageStocks = () => {
       Battery_description: "asdadada",
     },
     {
-      _id: "dfgdf",
+      _id: "2",
       stock_id: "asdadada",
       quantity: "asdadada",
       added_data: "asdadada",
@@ -121,7 +212,7 @@ const ManageStocks = () => {
       Battery_description: "adasdasda",
     },
     {
-      _id: "asdadsdfsfada",
+      _id: "3",
       stock_id: "asdadada",
       quantity: "asdadada",
       added_data: "asdadada",
@@ -132,7 +223,7 @@ const ManageStocks = () => {
       Battery_description: "adasdasda",
     },
     {
-      _id: "asdadbnbnbada",
+      _id: "4",
       stock_id: "asdadada",
       quantity: "asdadada",
       added_data: "asdadada",
@@ -143,7 +234,7 @@ const ManageStocks = () => {
       Battery_description: "adasdasda",
     },
     {
-      _id: "asdadnbmbmada",
+      _id: "5",
       stock_id: "asdadada",
       quantity: "asdadada",
       added_data: "asdadada",
@@ -154,7 +245,7 @@ const ManageStocks = () => {
       Battery_description: "adasdasda",
     },
     {
-      _id: "asdadghgada",
+      _id: "6",
       stock_id: "asdadada",
       quantity: "asdadada",
       added_data: "asdadada",
@@ -165,7 +256,7 @@ const ManageStocks = () => {
       Battery_description: "adasdasda",
     },
     {
-      _id: "asdadatyutyuda",
+      _id: "7",
       stock_id: "asdadada",
       quantity: "asdadada",
       added_data: "asdadada",
@@ -176,7 +267,7 @@ const ManageStocks = () => {
       Battery_description: "adasdasda",
     },
     {
-      _id: "asdadbnmbnmada",
+      _id: "8",
       stock_id: "asdadada",
       quantity: "asdadada",
       added_data: "asdadada",
@@ -187,7 +278,7 @@ const ManageStocks = () => {
       Battery_description: "adasdasda",
     },
     {
-      _id: "asdadahjgjda",
+      _id: "9",
       stock_id: "asdadada",
       quantity: "asdadada",
       added_data: "asdadada",
@@ -198,7 +289,7 @@ const ManageStocks = () => {
       Battery_description: "adasdasda",
     },
     {
-      _id: "qw",
+      _id: "0",
       stock_id: "asdadada",
       quantity: "asdadada",
       added_data: "asdadada",
@@ -209,7 +300,7 @@ const ManageStocks = () => {
       Battery_description: "adasdasda",
     },
     {
-      _id: "erw",
+      _id: "11",
       stock_id: "asdadada",
       quantity: "asdadada",
       added_data: "asdadada",
@@ -220,7 +311,7 @@ const ManageStocks = () => {
       Battery_description: "adasdasda",
     },
     {
-      _id: "qweq",
+      _id: "12",
       stock_id: "asdadada",
       quantity: "asdadada",
       added_data: "asdadada",
@@ -231,7 +322,7 @@ const ManageStocks = () => {
       Battery_description: "adasdasda",
     },
     {
-      _id: "sfsasd",
+      _id: "13",
       stock_id: "asdadada",
       quantity: "asdadada",
       added_data: "asdadada",
@@ -242,7 +333,7 @@ const ManageStocks = () => {
       Battery_description: "adasdasda",
     },
     {
-      _id: "dgbfhf",
+      _id: "14",
       stock_id: "asdadada",
       quantity: "asdadada",
       added_data: "asdadada",
@@ -253,7 +344,7 @@ const ManageStocks = () => {
       Battery_description: "adasdasda",
     },
     {
-      _id: "asdasd",
+      _id: "15",
       stock_id: "asdadada",
       quantity: "asdadada",
       added_data: "asdadada",
@@ -265,9 +356,26 @@ const ManageStocks = () => {
     },
   ];
 
+  // form for deletion
+  // const deleteForm = useForm({
+  //   validateInputOnChange: true,
 
-    // delete Modal
-    const openDeleteModal = (brandName: string) =>
+  //   initialValues: {
+  //     reason: "",
+  //     _id: "",
+  //   },
+  //   validate: {
+  //     // reason: (values) => (values.length > 0 ? null : "Please enter reason"),
+  //   },
+  // });
+
+  // delete Stock function
+  const deleteSpecificStock = (stockId: string, reason: string) => {
+    console.log(stockId, reason);
+  };
+
+  // delete Modal
+  const openDeleteModal = (brandName: string, battery_id: string) =>
     modals.open({
       title: `Delete ${brandName} stock`,
       centered: true,
@@ -278,19 +386,47 @@ const ManageStocks = () => {
             be undone!
           </Text>
 
-          <Textarea size="md" data-autofocus label="reason: "  autosize minRows={2} placeholder="this stock was added mistakenly" required/>
+          <Textarea
+            size="md"
+            data-autofocus
+            label="reason:"
+            error={
+              deletionReason.length === 0
+                ? "Please enter reason for delete"
+                : null
+            }
+            onChange={(e) => setDeletionReason(e.target.value)}
+            autosize
+            minRows={2}
+            placeholder="this stock was added mistakenly"
+            required
+          />
 
           <Group spacing={"sm"} position="right" mt={20}>
-              <Button variant="outline" color={"gray"}>No don't delete it</Button>
-              <Button color="red" variant="filled" >Delete stock</Button>
+            <Button
+              variant="outline"
+              color={"gray"}
+              onClick={() => {
+                modals.closeAll();
+                setDeletionReason("");
+              }}
+            >
+              No don't delete it
+            </Button>
+            <Button
+              color="red"
+              variant="filled"
+              type="submit"
+              // onClick={() => { deletionReason.length === 0 ? null : deleteSpecificStock(battery_id,deletionReason); }}
+            >
+              Delete stock
+            </Button>
           </Group>
         </>
       ),
-      closeOnEscape : false,
-      closeOnClickOutside : false,
+      closeOnEscape: false,
+      closeOnClickOutside: false,
     });
-
-
 
   // rows map
   const rows = data?.map((row) => (
@@ -331,7 +467,7 @@ const ManageStocks = () => {
               <Tooltip label="Delete stock">
                 <ActionIcon
                   color="red"
-                  onClick={() => openDeleteModal(row.batry_brand)}
+                  onClick={() => openDeleteModal(row.batry_brand, row._id)}
                 >
                   <IconTrash size={30} />
                 </ActionIcon>
@@ -343,72 +479,140 @@ const ManageStocks = () => {
     </tr>
   ));
 
-
-
   // table
   return (
-    <div>
-      <Button
-        leftIcon={<IconPlus size={20} />}
-        style={{ position: "fixed", left: 1400 }}
+    <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+      <Modal
+        opened={opened}
+        onClose={() => {
+          addForm.reset();
+          setOpened(false);
+        }}
+        title="Add Items Record"
       >
-        Add new Stock
-      </Button>
-
-      {/* search bar */}
-      <TextInput
-        placeholder="Search by any field"
-        mt={-50}
-        mb={50}
-        icon={<IconSearch size="0.9rem" stroke={1.5} />}
-        // value={search}
-        // onChange={handleSearchChange}
-        w={800}
-        style={{ position: "relative", left: "50%", translate: "-50%" }}
-      />
-
-      <ScrollArea
-        w={"100mw"}
-        h={600}
-        onScrollPositionChange={({ y }) => setScrolled(y !== 0)}
-      >
-        <Table
-          highlightOnHover
-          horizontalSpacing={70}
-          verticalSpacing="lg"
-          miw={700}
-          sx={{ tableLayout: "fixed" }}
-        >
-          <thead
-            className={cx(classes.header, { [classes.scrolled]: scrolled })}
+        <form onSubmit={addForm.onSubmit((values) => addItems(values))}>
+          <TextInput
+            label="Enter ID"
+            placeholder="Enter ID"
+            {...addForm.getInputProps("stock_id")}
+            required
+          />
+          <TextInput
+            label="batry_brand"
+            placeholder="Enter Brand name"
+            {...addForm.getInputProps("batry_brand")}
+            required
+          />
+          <TextInput
+            label="Battery_description"
+            placeholder="Enter Battery Description"
+            {...addForm.getInputProps("Battery_description")}
+            required
+          />
+          <TextInput
+            label="quantity"
+            placeholder="Enter Battery quantity"
+            {...addForm.getInputProps("quantity")}
+            required
+          />
+          <TextInput
+            label="actualPrice"
+            placeholder="Enter actualPrice of a Battery"
+            {...addForm.getInputProps("actualPrice")}
+            required
+          />
+          <TextInput
+            label="sellingPrice"
+            placeholder="Enter sellingPrice of a battery"
+            {...addForm.getInputProps("sellingPrice")}
+            required
+          />
+          <TextInput
+            label="added_data"
+            placeholder="Enter added date"
+            {...addForm.getInputProps("added_data")}
+            required
+          />
+          <TextInput
+            label="warnty_priod"
+            placeholder="Enter warnty priod"
+            {...addForm.getInputProps("warnty_priod")}
+            required
+          />
+          <Button
+            color="blue"
+            sx={{ marginTop: "10px", width: "100%" }}
+            type="submit"
           >
-            <tr>
-              <th>Stock_id</th>
-              <th>Brand</th>
-              <th>Description</th>
-              <th>Quantity</th>
-              <th>Price</th>
-              <th>Added_Date</th>
-              <th>Warranty</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.length > 0 ? (
-              rows
-            ) : (
+            Add
+          </Button>
+        </form>
+      </Modal>
+
+      <div>
+        <Button
+          leftIcon={<IconPlus size={20} />}
+          style={{ position: "fixed", left: 1400, top: "130px" }}
+          onClick={() => setOpened(true)}
+        >
+          Add new Stock
+        </Button>
+
+        {/* search bar */}
+        <TextInput
+          placeholder="Search by any field"
+          mt={-50}
+          mb={50}
+          icon={<IconSearch size="0.9rem" stroke={1.5} />}
+          // value={search}
+          // onChange={handleSearchChange}
+          w={800}
+          style={{ position: "relative", left: "50%", translate: "-50%" }}
+        />
+
+        <ScrollArea
+          w={"100mw"}
+          h={600}
+          onScrollPositionChange={({ y }) => setScrolled(y !== 0)}
+        >
+          <Table
+            highlightOnHover
+            horizontalSpacing={70}
+            verticalSpacing="lg"
+            miw={700}
+            sx={{ tableLayout: "fixed" }}
+          >
+            <thead
+              className={cx(classes.header, { [classes.scrolled]: scrolled })}
+            >
               <tr>
-                <td colSpan={Object.keys(data[0]).length}>
-                  <Text weight={500} align="center">
-                    Nothing found
-                  </Text>
-                </td>
+                <th>Stock_id</th>
+                <th>Brand</th>
+                <th>Description</th>
+                <th>Quantity</th>
+                <th>Selling Price</th>
+                <th>Added_Date</th>
+                <th>Warranty</th>
+                <th>Actions</th>
               </tr>
-            )}
-          </tbody>
-        </Table>
-      </ScrollArea>
-    </div>
+            </thead>
+            <tbody>
+              {rows.length > 0 ? (
+                rows
+              ) : (
+                <tr>
+                  <td colSpan={Object.keys(data[0]).length}>
+                    <Text weight={500} align="center">
+                      Nothing found
+                    </Text>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </Table>
+        </ScrollArea>
+      </div>
+    </Box>
   );
 };
 

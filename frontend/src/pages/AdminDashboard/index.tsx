@@ -90,7 +90,7 @@ const adminDashboard = createStyles((theme) => ({
 }));
 
 const data = [
-  { link: "", label: "Notifications", icon: IconBellRinging },
+  { link: "/admin/stock", label: "Notifications", icon: IconBellRinging },
   { link: "", label: "Billing", icon: IconReceipt2 },
   { link: "", label: "Security", icon: IconFingerprint },
   { link: "", label: "SSH Keys", icon: IconKey },

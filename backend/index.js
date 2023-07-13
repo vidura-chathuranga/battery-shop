@@ -4,6 +4,7 @@ import cors from 'cors';
 import AdminRoutes from './routes/admin.routes.js';
 import dbConnect from './configs/dbConfig.js';
 import cookieParser from "cookie-parser";
+import WorkerRoutes from './routes/worker.routes.js';
 
 //initialized express
 const app = express();
@@ -34,7 +35,11 @@ app.get("/",(req,res)=>{
     res.send("Welcome to Battery Shop!"); 
 });
 
+// redirect to admin routes
 app.use('/admin',AdminRoutes);
+
+// redirects to worker routes
+app.use('/worker',WorkerRoutes);
 
 app.listen(PORT,()=>{
     console.log(`🚀 Server is started on port ${PORT}!`);

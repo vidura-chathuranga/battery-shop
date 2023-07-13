@@ -56,3 +56,8 @@ export const workerLogin = async (req, res) => {
       res.status(404).json({error: error.message});
     });
 };
+
+export const logout = (req,res) =>{
+  res.cookie('accessToken','',{maxAge : 1});
+  res.status(200).json({});
+}

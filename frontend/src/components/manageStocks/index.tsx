@@ -2,30 +2,21 @@ import {
   createStyles,
   Table,
   ScrollArea,
-  UnstyledButton,
   Group,
   Text,
-  Center,
   TextInput,
   rem,
   ActionIcon,
   Tooltip,
   Button,
-  Container,
-  Grid,
+  Textarea
 } from "@mantine/core";
 import { keys } from "@mantine/utils";
-import {
-  IconSelector,
-  IconChevronDown,
-  IconChevronUp,
-  IconSearch,
-  IconPlus,
-  IconEdit,
-  IconTrash,
-} from "@tabler/icons-react";
+import { IconSearch, IconPlus, IconEdit, IconTrash } from "@tabler/icons-react";
 import { useState } from "react";
+import { modals } from "@mantine/modals";
 
+// styles
 const useStyles = createStyles((theme) => ({
   th: {
     padding: "0 !important",
@@ -108,7 +99,7 @@ const ManageStocks = () => {
 
   const data = [
     {
-      _id: "asdadada",
+      _id: "asdadghjghjgada",
       stock_id: "asdadada",
       quantity: "asdadada",
       added_data: "asdadada",
@@ -119,7 +110,7 @@ const ManageStocks = () => {
       Battery_description: "asdadada",
     },
     {
-      _id: "asdadada",
+      _id: "dfgdf",
       stock_id: "asdadada",
       quantity: "asdadada",
       added_data: "asdadada",
@@ -130,7 +121,7 @@ const ManageStocks = () => {
       Battery_description: "adasdasda",
     },
     {
-      _id: "asdadada",
+      _id: "asdadsdfsfada",
       stock_id: "asdadada",
       quantity: "asdadada",
       added_data: "asdadada",
@@ -141,7 +132,7 @@ const ManageStocks = () => {
       Battery_description: "adasdasda",
     },
     {
-      _id: "asdadada",
+      _id: "asdadbnbnbada",
       stock_id: "asdadada",
       quantity: "asdadada",
       added_data: "asdadada",
@@ -152,7 +143,7 @@ const ManageStocks = () => {
       Battery_description: "adasdasda",
     },
     {
-      _id: "asdadada",
+      _id: "asdadnbmbmada",
       stock_id: "asdadada",
       quantity: "asdadada",
       added_data: "asdadada",
@@ -163,7 +154,7 @@ const ManageStocks = () => {
       Battery_description: "adasdasda",
     },
     {
-      _id: "asdadada",
+      _id: "asdadghgada",
       stock_id: "asdadada",
       quantity: "asdadada",
       added_data: "asdadada",
@@ -174,7 +165,7 @@ const ManageStocks = () => {
       Battery_description: "adasdasda",
     },
     {
-      _id: "asdadada",
+      _id: "asdadatyutyuda",
       stock_id: "asdadada",
       quantity: "asdadada",
       added_data: "asdadada",
@@ -185,7 +176,7 @@ const ManageStocks = () => {
       Battery_description: "adasdasda",
     },
     {
-      _id: "asdadada",
+      _id: "asdadbnmbnmada",
       stock_id: "asdadada",
       quantity: "asdadada",
       added_data: "asdadada",
@@ -196,7 +187,7 @@ const ManageStocks = () => {
       Battery_description: "adasdasda",
     },
     {
-      _id: "asdadada",
+      _id: "asdadahjgjda",
       stock_id: "asdadada",
       quantity: "asdadada",
       added_data: "asdadada",
@@ -207,7 +198,7 @@ const ManageStocks = () => {
       Battery_description: "adasdasda",
     },
     {
-      _id: "asdadada",
+      _id: "qw",
       stock_id: "asdadada",
       quantity: "asdadada",
       added_data: "asdadada",
@@ -218,7 +209,7 @@ const ManageStocks = () => {
       Battery_description: "adasdasda",
     },
     {
-      _id: "asdadada",
+      _id: "erw",
       stock_id: "asdadada",
       quantity: "asdadada",
       added_data: "asdadada",
@@ -229,7 +220,7 @@ const ManageStocks = () => {
       Battery_description: "adasdasda",
     },
     {
-      _id: "asdadada",
+      _id: "qweq",
       stock_id: "asdadada",
       quantity: "asdadada",
       added_data: "asdadada",
@@ -240,7 +231,7 @@ const ManageStocks = () => {
       Battery_description: "adasdasda",
     },
     {
-      _id: "asdadada",
+      _id: "sfsasd",
       stock_id: "asdadada",
       quantity: "asdadada",
       added_data: "asdadada",
@@ -251,7 +242,7 @@ const ManageStocks = () => {
       Battery_description: "adasdasda",
     },
     {
-      _id: "asdadada",
+      _id: "dgbfhf",
       stock_id: "asdadada",
       quantity: "asdadada",
       added_data: "asdadada",
@@ -262,7 +253,7 @@ const ManageStocks = () => {
       Battery_description: "adasdasda",
     },
     {
-      _id: "asdadada",
+      _id: "asdasd",
       stock_id: "asdadada",
       quantity: "asdadada",
       added_data: "asdadada",
@@ -273,6 +264,34 @@ const ManageStocks = () => {
       Battery_description: "adasdasda",
     },
   ];
+
+
+    // delete Modal
+    const openDeleteModal = (brandName: string) =>
+    modals.open({
+      title: `Delete ${brandName} stock`,
+      centered: true,
+      children: (
+        <>
+          <Text size={"sm"} mb={10}>
+            Are you sure want to delete this battery stock? This action cannot
+            be undone!
+          </Text>
+
+          <Textarea size="md" data-autofocus label="reason: "  autosize minRows={2} placeholder="this stock was added mistakenly" required/>
+
+          <Group spacing={"sm"} position="right" mt={20}>
+              <Button variant="outline" color={"gray"}>No don't delete it</Button>
+              <Button color="red" variant="filled" >Delete stock</Button>
+          </Group>
+        </>
+      ),
+      closeOnEscape : false,
+      closeOnClickOutside : false,
+    });
+
+
+
   // rows map
   const rows = data?.map((row) => (
     <tr key={row._id}>
@@ -310,7 +329,10 @@ const ManageStocks = () => {
 
               {/* delete button */}
               <Tooltip label="Delete stock">
-                <ActionIcon color="red">
+                <ActionIcon
+                  color="red"
+                  onClick={() => openDeleteModal(row.batry_brand)}
+                >
                   <IconTrash size={30} />
                 </ActionIcon>
               </Tooltip>
@@ -321,13 +343,17 @@ const ManageStocks = () => {
     </tr>
   ));
 
+
+
   // table
   return (
     <div>
-
-        <Button leftIcon={<IconPlus size={20}/>} style={{position:"fixed",left:1400}}>
-          Add new Stock
-        </Button>
+      <Button
+        leftIcon={<IconPlus size={20} />}
+        style={{ position: "fixed", left: 1400 }}
+      >
+        Add new Stock
+      </Button>
 
       {/* search bar */}
       <TextInput

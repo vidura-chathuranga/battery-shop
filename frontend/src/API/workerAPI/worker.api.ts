@@ -10,6 +10,10 @@ class WorkerAPI {
     static logout(){
         return axios.get(`${BASE_URL}/worker/logout`,{withCredentials:true});
     }
+
+    static deleteBattery (batteryId : string){
+        return axios.delete(`${BASE_URL}/stock/delete/${batteryId}`,{withCredentials : true});
+    }
     
 };
 

@@ -11,6 +11,7 @@ import Logout from "../components/logout/logout";
 import WorkerDashboardHeader from "../components/workerDashboardHeader";
 import WorkerNotifications from "../pages/WorkerNotifications";
 import StockTable from "../components/stock";
+import AdminDashboardHeader from "../components/adminDashboardHeader";
 
 const AllRoutes = () => {
   return (
@@ -20,7 +21,7 @@ const AllRoutes = () => {
         <Route path="/login/admin" element={<AdminLoginPage />} />
         <Route path="/login/worker" element={<WorkerLoginPage />} />
         <Route path="/login/register" element={<Workerregister />} />
-        <Route path="/login/adminDashboard" element={<ADashboard />} />
+        <Route path="/login/adminDashboard" element={<AdminDashboardHeader />} />
 
         <Route path = "/admin/stock" element ={<StockTable/>} />
 

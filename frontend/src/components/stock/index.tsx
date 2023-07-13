@@ -108,170 +108,31 @@ const StockTable = () => {
 
   const data = [
     {
-      _id: "asdadada",
-      stock_id: "asdadada",
-      quantity: "asdadada",
-      added_data: "asdadada",
-      warnty_priod: "asdadada",
-      sellingPrice: "asdadada",
-      actualPrice: "asdadada",
-      batry_brand: "asdadada",
-      Battery_description: "asdadada",
+      _id: "001",
+      stock_id: "ST001",
+      quantity: "4",
+      added_data: "test",
+      warnty_priod: "test",
+      sellingPrice: "test",
+      actualPrice: "test",
+      batry_brand: "test",
+      Battery_description: "test",
     },
     {
-      _id: "asdadada",
-      stock_id: "asdadada",
-      quantity: "asdadada",
-      added_data: "asdadada",
-      warnty_priod: "asdadada",
-      sellingPrice: "asdadada",
-      actualPrice: "asdadada",
-      batry_brand: "asdadada",
-      Battery_description: "adasdasda",
+      _id: "002",
+      stock_id: "ST002",
+      quantity: "1",
+      added_data: "test",
+      warnty_priod: "test",
+      sellingPrice: "test",
+      actualPrice: "test",
+      batry_brand: "test",
+      Battery_description: "test",
     },
-    {
-      _id: "asdadada",
-      stock_id: "asdadada",
-      quantity: "asdadada",
-      added_data: "asdadada",
-      warnty_priod: "asdadada",
-      sellingPrice: "asdadada",
-      actualPrice: "asdadada",
-      batry_brand: "asdadada",
-      Battery_description: "adasdasda",
-    },
-    {
-      _id: "asdadada",
-      stock_id: "asdadada",
-      quantity: "asdadada",
-      added_data: "asdadada",
-      warnty_priod: "asdadada",
-      sellingPrice: "asdadada",
-      actualPrice: "asdadada",
-      batry_brand: "asdadada",
-      Battery_description: "adasdasda",
-    },
-    {
-      _id: "asdadada",
-      stock_id: "asdadada",
-      quantity: "asdadada",
-      added_data: "asdadada",
-      warnty_priod: "asdadada",
-      sellingPrice: "asdadada",
-      actualPrice: "asdadada",
-      batry_brand: "asdadada",
-      Battery_description: "adasdasda",
-    },
-    {
-      _id: "asdadada",
-      stock_id: "asdadada",
-      quantity: "asdadada",
-      added_data: "asdadada",
-      warnty_priod: "asdadada",
-      sellingPrice: "asdadada",
-      actualPrice: "asdadada",
-      batry_brand: "asdadada",
-      Battery_description: "adasdasda",
-    },
-    {
-      _id: "asdadada",
-      stock_id: "asdadada",
-      quantity: "asdadada",
-      added_data: "asdadada",
-      warnty_priod: "asdadada",
-      sellingPrice: "asdadada",
-      actualPrice: "asdadada",
-      batry_brand: "asdadada",
-      Battery_description: "adasdasda",
-    },
-    {
-      _id: "asdadada",
-      stock_id: "asdadada",
-      quantity: "asdadada",
-      added_data: "asdadada",
-      warnty_priod: "asdadada",
-      sellingPrice: "asdadada",
-      actualPrice: "asdadada",
-      batry_brand: "asdadada",
-      Battery_description: "adasdasda",
-    },
-    {
-      _id: "asdadada",
-      stock_id: "asdadada",
-      quantity: "asdadada",
-      added_data: "asdadada",
-      warnty_priod: "asdadada",
-      sellingPrice: "asdadada",
-      actualPrice: "asdadada",
-      batry_brand: "asdadada",
-      Battery_description: "adasdasda",
-    },
-    {
-      _id: "asdadada",
-      stock_id: "asdadada",
-      quantity: "asdadada",
-      added_data: "asdadada",
-      warnty_priod: "asdadada",
-      sellingPrice: "asdadada",
-      actualPrice: "asdadada",
-      batry_brand: "asdadada",
-      Battery_description: "adasdasda",
-    },
-    {
-      _id: "asdadada",
-      stock_id: "asdadada",
-      quantity: "asdadada",
-      added_data: "asdadada",
-      warnty_priod: "asdadada",
-      sellingPrice: "asdadada",
-      actualPrice: "asdadada",
-      batry_brand: "asdadada",
-      Battery_description: "adasdasda",
-    },
-    {
-      _id: "asdadada",
-      stock_id: "asdadada",
-      quantity: "asdadada",
-      added_data: "asdadada",
-      warnty_priod: "asdadada",
-      sellingPrice: "asdadada",
-      actualPrice: "asdadada",
-      batry_brand: "asdadada",
-      Battery_description: "adasdasda",
-    },
-    {
-      _id: "asdadada",
-      stock_id: "asdadada",
-      quantity: "asdadada",
-      added_data: "asdadada",
-      warnty_priod: "asdadada",
-      sellingPrice: "asdadada",
-      actualPrice: "asdadada",
-      batry_brand: "asdadada",
-      Battery_description: "adasdasda",
-    },
-    {
-      _id: "asdadada",
-      stock_id: "asdadada",
-      quantity: "asdadada",
-      added_data: "asdadada",
-      warnty_priod: "asdadada",
-      sellingPrice: "asdadada",
-      actualPrice: "asdadada",
-      batry_brand: "asdadada",
-      Battery_description: "adasdasda",
-    },
-    {
-      _id: "asdadada",
-      stock_id: "asdadada",
-      quantity: "asdadada",
-      added_data: "asdadada",
-      warnty_priod: "asdadada",
-      sellingPrice: "asdadada",
-      actualPrice: "asdadada",
-      batry_brand: "asdadada",
-      Battery_description: "adasdasda",
-    },
+  
+  
+
+    
   ];
   // rows map
   const rows = data?.map((row) => (
@@ -297,27 +158,7 @@ const StockTable = () => {
       <td>
         <Text size={15}>{row.warnty_priod}</Text>
       </td>
-      <td>
-        {
-          <>
-            <Group spacing={"sm"}>
-              {/* edit button */}
-              <Tooltip label="Edit stock">
-                <ActionIcon color="teal">
-                  <IconEdit size={30} />
-                </ActionIcon>
-              </Tooltip>
-
-              {/* delete button */}
-              <Tooltip label="Delete stock">
-                <ActionIcon color="red">
-                  <IconTrash size={30} />
-                </ActionIcon>
-              </Tooltip>
-            </Group>
-          </>
-        }
-      </td>
+   
     </tr>
   ));
 
@@ -364,7 +205,7 @@ const StockTable = () => {
               <th>Price</th>
               <th>Added_Date</th>
               <th>Warranty</th>
-              <th>Actions</th>
+              {/* <th>Actions</th> */}
             </tr>
           </thead>
           <tbody>

@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 
 export const adminLogin = async (req, res) => {
   // get details from the request body
-  const NIC = req.body.nic;
+  const NIC = req.body.emailOrNic;
   const password = req.body.password;
 
   console.log(NIC, password);

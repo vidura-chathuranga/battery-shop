@@ -158,6 +158,25 @@ const StockTable = () => {
       <td>
         <Text size={15}>{row.warnty_priod}</Text>
       </td>
+      <td>
+        {
+          <>
+            <Group spacing={"sm"}>
+              {/* Accept button */}
+              <Button type="submit"   style={{ width: "90px" }} >
+                   Accept
+                </Button>
+
+              {/* Reject Button */}
+               <Button type="submit" color="red" style={{ width: "90px" }}>
+               
+                   Reject
+               
+                </Button>
+            </Group>
+          </>
+        }
+      </td>
    
     </tr>
   ));
@@ -205,7 +224,7 @@ const StockTable = () => {
               <th>Price</th>
               <th>Added_Date</th>
               <th>Warranty</th>
-              {/* <th>Actions</th> */}
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>

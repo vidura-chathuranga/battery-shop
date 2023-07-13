@@ -10,6 +10,7 @@ import LoginPage from "../Login";
 
 const useStyles = createStyles((theme) => ({
   root: {
+    height : "100vh",
     backgroundColor: "#11284b",
     backgroundSize: "cover",
     backgroundPosition: "center",

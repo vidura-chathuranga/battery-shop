@@ -7,6 +7,8 @@ import ADashboard from '../pages/AdminDashboard';
 import WorkerOwnerPrivateRoute from './workerOwnerPrivateRoute';
 import WorkerDashboard from '../pages/WorkerDashboard';
 import Logout from '../components/logout/logout';
+import StockTable from '../components/stock/index';
+
 
 
 const AllRoutes = () =>{
@@ -19,11 +21,17 @@ const AllRoutes = () =>{
                 <Route path='/login/register' element={<Workerregister/>}/>
                 <Route path='/login/adminDashboard' element={<ADashboard/>}/>
 
+                <Route path = '/admin/stock' element={<StockTable data ={[ {name : "asdasdasd",email : "adadada" , company : "adasdasdad"}]}/>}/>
+
+               
+
                 
                 <Route path='/worker' element={<WorkerOwnerPrivateRoute/>}>
                     <Route path='/worker/managestock' element={<WorkerDashboard/>}/>
                     <Route path='/worker/logout' element={<Logout/>}/>
                 </Route>
+
+
                 
             </Routes>
         </Router>        

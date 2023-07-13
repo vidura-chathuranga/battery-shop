@@ -4,7 +4,7 @@ import AdminLogin from "../../components/adminLogin";
 
 const LoginPage = () => {
   return (
-    <div>
+    <div style={{width = {}, heigh={"100vh"}}}>
       <Group position="center" m={30} spacing={"lg"}>
         <AdminLogin />
         <WorkerLogin />

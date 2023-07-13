@@ -5,6 +5,7 @@ import WorkerLoginPage from '../pages/Login/workerLogin';
 import WorkerOwnerPrivateRoute from './workerOwnerPrivateRoute';
 import WorkerDashboard from '../pages/WorkerDashboard';
 import Logout from '../components/logout/logout';
+import WorkerNotifications from '../pages/WorkerNotifications';
 
 
 const AllRoutes = () =>{
@@ -17,6 +18,7 @@ const AllRoutes = () =>{
                 
                 <Route path='/worker' element={<WorkerOwnerPrivateRoute/>}>
                     <Route path='/worker/managestock' element={<WorkerDashboard/>}/>
+                    <Route path='/worker/notifications' element={<WorkerNotifications/>}/>
                     <Route path='/worker/logout' element={<Logout/>}/>
                 </Route>
                 

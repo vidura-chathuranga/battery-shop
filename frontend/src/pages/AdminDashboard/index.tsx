@@ -93,10 +93,12 @@ const adminDashboard = createStyles((theme) => ({
 }));
 
 const data = [
+
   { link: "", label: "Manage Worker", icon: IconAdjustmentsHeart },
   { link: "", label: "Profit", icon: IconReceipt2 },
   { link: "", label: "Stocks", icon: IconDatabaseImport },
   { link: "", label: "Notifications", icon: IconNotification },
+
 ];
 
 function ADashboard() {

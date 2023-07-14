@@ -19,7 +19,7 @@ const AdminLogin = () => {
       </Card.Section>
       <Card.Section>
         <Group position="center" grow m={10}>
-          <Button color="blue" p={10} component="a" href="/login/register">
+          <Button color="blue" p={10} component="a" href="/login/adminDashboard">
             Admin Login
           </Button>
         </Group>

@@ -15,7 +15,7 @@ class BatteryAPI {
 
         stock_id: string;
         quantity: string;
-        added_data: string;
+        added_date: string;
         warnty_priod: String;
         sellingPrice: string;
         actualPrice: string;
@@ -23,8 +23,7 @@ class BatteryAPI {
         Battery_description: string;
 
     }) => {
-        console.log("API addBattery");
-        return axios.post(`${BASE_URL}/batteries`, values, {withCredentials:true});
+        return axios.post(`${BASE_URL}/batteries/add`, values, {withCredentials:true});
 
     };
 

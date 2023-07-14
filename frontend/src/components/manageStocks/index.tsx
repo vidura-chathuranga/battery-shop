@@ -2,38 +2,30 @@ import {
   createStyles,
   Table,
   ScrollArea,
-  UnstyledButton,
   Group,
   Text,
-  Center,
   TextInput,
   rem,
   ActionIcon,
   Tooltip,
   Button,
-  Container,
-  Grid,
-  Modal,
+  Textarea,
   Box,
+  Modal,
+  Container,
 } from "@mantine/core";
 import { keys } from "@mantine/utils";
-import {
-  IconSelector,
-  IconChevronDown,
-  IconChevronUp,
-  IconSearch,
-  IconPlus,
-  IconEdit,
-  IconTrash,
-} from "@tabler/icons-react";
-import { useState } from "react";
+import { IconSearch, IconPlus, IconEdit, IconTrash } from "@tabler/icons-react";
+import { useRef, useState } from "react";
+import { modals } from "@mantine/modals";
 import { useForm } from "@mantine/form";
 import { showNotification, updateNotification } from "@mantine/notifications";
 //import {IconCheck, IconAlertTriangle} from '@tabler/icons';
 
-import BatteryAPI from "../../API/batteryAPI/battery.api"
+import BatteryAPI from "../../API/batteryAPI/battery.api";
+import { getHotkeyHandler, useDisclosure } from "@mantine/hooks";
 
-
+// styles
 const useStyles = createStyles((theme) => ({
   th: {
     padding: "0 !important",
@@ -70,10 +62,11 @@ const useStyles = createStyles((theme) => ({
       left: 0,
       right: 0,
       bottom: 0,
-      borderBottom: `${rem(1)} solid ${theme.colorScheme === "dark"
-        ? theme.colors.dark[3]
-        : theme.colors.gray[2]
-        }`,
+      borderBottom: `${rem(1)} solid ${
+        theme.colorScheme === "dark"
+          ? theme.colors.dark[3]
+          : theme.colors.gray[2]
+      }`,
     },
   },
 
@@ -86,8 +79,8 @@ interface Data {
   _id: string;
   stock_id: string;
   quantity: string;
-  added_data: string;
-  warnty_priod: String;
+  added_date: string;
+  warnty_period: string;
   sellingPrice: string;
   actualPrice: string;
   batry_brand: string;
@@ -109,6 +102,8 @@ const ManageStocks = () => {
   const [opened, setOpened] = useState(false);
   const [adata, setData] = useState<Data[]>([]);
 
+  const [deleteOpen, setDeleteOpen] = useState(false);
+
   // const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
   //     const { value } = event.currentTarget;
   //     setSearch(value);
@@ -128,27 +123,25 @@ const ManageStocks = () => {
     initialValues: {
       stock_id: "",
       quantity: "",
-      added_data: "",
+      added_date: "",
       warnty_priod: "",
       sellingPrice: "",
       actualPrice: "",
       batry_brand: "",
       Battery_description: "",
     },
-
   });
 
   //add Items
   const addItems = async (values: {
     stock_id: string;
     quantity: string;
-    added_data: string;
+    added_date: string;
     warnty_priod: String;
     sellingPrice: string;
     actualPrice: string;
     batry_brand: string;
     Battery_description: string;
-
   }) => {
     showNotification({
       id: "add-items",
@@ -180,11 +173,10 @@ const ManageStocks = () => {
             Battery_description: values.Battery_description,
             quantity: values.quantity,
             warnty_priod: values.warnty_priod,
-            added_data: values.added_data,
+            added_data: values.added_date,
           },
         ];
-        setData(newData);
-
+        // setData(newData)
       })
       .catch((error) => {
         updateNotification({
@@ -195,14 +187,13 @@ const ManageStocks = () => {
           // icon: <IconAlertTriangle />,
           autoClose: 5000,
         });
-
-      })
-  }
+      });
+  };
 
   const data = [
     {
       _id: "1",
-      stock_id: "asdadada",
+      stock_id: "STK-001",
       quantity: "asdadada",
       added_data: "asdadada",
       warnty_priod: "asdadada",
@@ -366,6 +357,27 @@ const ManageStocks = () => {
       Battery_description: "adasdasda",
     },
   ];
+
+  // delete Stock function
+  const deleteSpecificStock = (stockId: string, reason: string) => {
+    console.log(stockId, reason);
+  };
+
+  // form for deletion
+  const deleteForm = useForm({
+    validateInputOnChange: true,
+
+    initialValues: {
+      reason: "",
+      stock_id: "",
+      _id: "",
+    },
+
+    validate: {
+      reason: (values) => (values.length > 5 ? null : "Please enter reason"),
+    },
+  });
+
   // rows map
   const rows = data?.map((row) => (
     <tr key={row._id}>
@@ -380,9 +392,6 @@ const ManageStocks = () => {
       </td>
       <td>
         <Text size={15}>{row.quantity}</Text>
-      </td>
-      <td>
-        <Text size={15}>{row.actualPrice}</Text>
       </td>
       <td>
         <Text size={15}>{row.sellingPrice}</Text>
@@ -406,7 +415,16 @@ const ManageStocks = () => {
 
               {/* delete button */}
               <Tooltip label="Delete stock">
-                <ActionIcon color="red">
+                <ActionIcon
+                  color="red"
+                  onClick={() => {
+                    deleteForm.setValues({
+                      _id: row._id,
+                      stock_id: row.stock_id,
+                    });
+                    setDeleteOpen(true);
+                  }}
+                >
                   <IconTrash size={30} />
                 </ActionIcon>
               </Tooltip>
@@ -420,6 +438,65 @@ const ManageStocks = () => {
   // table
   return (
     <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+
+      {/* // delete modal */}
+      <Modal
+        opened={deleteOpen}
+        centered
+        onClose={() => {
+          addForm.reset();
+          setDeleteOpen(false);
+        }}
+        title="Delete Stock"
+      >
+        <Box>
+          <Text size={"sm"} mb={10}>
+            Are you sure you want to delete this stock? This action cannot be
+            undone!
+          </Text>
+          <form
+            onSubmit={deleteForm.onSubmit((values) => {
+              console.log(values);
+            })}
+          >
+            <TextInput
+              withAsterisk
+              label="Stock ID"
+              required
+              disabled
+              {...deleteForm.getInputProps("stock_id")}
+              mb={10}
+            />
+            <Textarea
+              placeholder="This was added mistakenly"
+              label="Reason"
+              withAsterisk
+              required
+              autosize
+              minRows={3}
+              {...deleteForm.getInputProps("reason")}
+            />
+
+            <Group position="right" spacing={"md"} mt={20}>
+              <Button
+                color="gray"
+                variant="outline"
+                onClick={() => {
+                  deleteForm.reset();
+                  setDeleteOpen(false);
+                }}
+              >
+                No I don't delete it
+              </Button>
+              <Button color="red" type="submit" leftIcon={<IconTrash size={16}/>}>
+                Delete it
+              </Button>
+            </Group>
+          </form>
+        </Box>
+      </Modal>
+
+      {/* stock add Modal */}
       <Modal
         opened={opened}
         onClose={() => {
@@ -466,9 +543,9 @@ const ManageStocks = () => {
             required
           />
           <TextInput
-            label="added_data"
+            label="added_date"
             placeholder="Enter added date"
-            {...addForm.getInputProps("added_data")}
+            {...addForm.getInputProps("added_date")}
             required
           />
           <TextInput
@@ -486,10 +563,12 @@ const ManageStocks = () => {
           </Button>
         </form>
       </Modal>
-
-
       <div>
-        <Button leftIcon={<IconPlus size={20} />} style={{ position: "fixed", left: 1400 }} onClick={() => setOpened(true)}>
+        <Button
+          leftIcon={<IconPlus size={20} />}
+          style={{ position: "fixed", left: 1400, top: "130px" }}
+          onClick={() => setOpened(true)}
+        >
           Add new Stock
         </Button>
 
@@ -525,7 +604,6 @@ const ManageStocks = () => {
                 <th>Brand</th>
                 <th>Description</th>
                 <th>Quantity</th>
-                <th>Actual Price</th>
                 <th>Selling Price</th>
                 <th>Added_Date</th>
                 <th>Warranty</th>

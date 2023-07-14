@@ -479,25 +479,25 @@ const ManageStocks = () => {
           />
           <TextInput
             label="Actual Price"
-            placeholder="Enter actualPrice of a Battery"
+            placeholder="Enter Actual Price of a Battery"
             {...addForm.getInputProps("actualPrice")}
             required
           />
           <TextInput
             label="Selling Price"
-            placeholder="Enter sellingPrice of a battery"
+            placeholder="Enter Selling Price of a battery"
             {...addForm.getInputProps("sellingPrice")}
             required
           />
           <DateInput
-            placeholder="Current date"
-            label="Current date"
+            placeholder="Adding date"
+            label="Adding date"
             valueFormat="YYYY MMM DD"
             withAsterisk
             {...addForm.getInputProps("added_date")}
           />
           <TextInput
-            label="warnty priod"
+            label="Warnty priod(In years)"
             placeholder="Enter warnty priod"
             {...addForm.getInputProps("warnty_priod")}
             required
@@ -550,19 +550,19 @@ const ManageStocks = () => {
           />
           <TextInput
             label="Actual Price"
-            placeholder="Enter actualPrice of a Battery"
+            placeholder="Enter actual Price of a Battery"
             {...editForm.getInputProps("actualPrice")}
             required
           />
           <TextInput
             label="Selling Price"
-            placeholder="Enter sellingPrice of a battery"
+            placeholder="Enter selling Price of a battery"
             {...editForm.getInputProps("sellingPrice")}
             required
           />
            <DateInput
-            placeholder="Current date"
-            label="Current date"
+            placeholder="Added date"
+            label="Added date"
             valueFormat="YYYY MMM DD"
             withAsterisk
             {...editForm.getInputProps("added_date")}

@@ -251,8 +251,35 @@ const ManageStocks = () => {
   }
 
   // delete Stock function
-  const deleteSpecificStock = (stockId: string, reason: string) => {
-    console.log(stockId, reason);
+  const deleteSpecificStock = (values : {_id : string, reason : string,stock_id : string}) => {
+    BatteryAPI.deleteBattery(values).then((res) =>{
+      showNotification({
+        title : `${values.stock_id} was deleted`,
+        message : "Stock was deleted successfully",
+        autoClose : 1500,
+        icon:<IconCheck/>,
+        color: "teal"
+      });
+
+      // after successing the deletion refetch the data from the database
+      refetch();
+
+      // clear all the fields
+      deleteForm.reset();
+      
+      // then close the delete modal
+      setDeleteOpen(false);
+
+    }).catch((err)=>{
+      showNotification({
+        title : `${values.stock_id} was not deleted`,
+        message : "Stock was not deleted",
+        autoClose : 1500,
+        icon:<IconX/>,
+        color: "red"
+      });
+    });
+
   };
 
   // form for deletion
@@ -381,7 +408,7 @@ const ManageStocks = () => {
           </Text>
           <form
             onSubmit={deleteForm.onSubmit((values) => {
-              console.log(values);
+              deleteSpecificStock(values)
             })}
           >
             <TextInput

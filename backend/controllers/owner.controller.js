@@ -61,3 +61,37 @@ export const logout = (req,res) =>{
   res.cookie('accessToken','',{maxAge : 1});
   res.status(200).json({});
 }
+
+
+export const registerWorker = async (req, res) => {
+  const { name, email, password, phone, nic,address,gender} = req.body;
+
+
+  console.log("Hello")
+
+
+  try {
+    const existingWorker = await Worker.findOne({ email });
+
+    if (existingWorker) {
+      return res.status(409).json({ message: 'Worker already exists' });
+    }
+
+    const newWorker = new Worker({
+      name,
+      email,
+      password,
+      phone, 
+      nic,
+      address,
+      gender,
+    });
+
+    const savedWorker = await newWorker.save();
+
+    res.status(201).json(savedWorker);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to register worker', error });
+  }
+};
+

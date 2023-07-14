@@ -14,7 +14,8 @@ import AdminAPI from "../../API/workerAPI/admin.api";
 
 
 interface Data{
-      _id:string;
+      _id:string,
+      worker_id:string;
       name : string; 
       email : string;
       password : string; 
@@ -30,6 +31,7 @@ const Register = () => {
   const [data, setData] = useState<Data[]>([]);
 
   const registerWorker = async(values:{
+      worker_id:string,
       name : string; 
       email : string;
       password : string; 
@@ -65,6 +67,7 @@ const Register = () => {
         ...data,
         {
           _id:Response.data._id,
+          worker_id:Response.data.worker_id,
           name: values.name,
           email: values.email,
           password: values.password,
@@ -94,6 +97,7 @@ const Register = () => {
 
 
     initialValues: {
+      worker_id:"",
       name: "",
       email: "",
       password: "",
@@ -147,6 +151,7 @@ const Register = () => {
       <Paper withBorder shadow="md" p={30} mt={30} radius="md">
         <form onSubmit={registerForm.onSubmit((values)=>registerWorker(values))}>
 
+        <TextInput label="ID" placeholder="Enter ID" name="worker_id"  required  {...registerForm.getInputProps("worker_id")}/>
         <TextInput label="Name" placeholder="Enter name" name="name"  required  {...registerForm.getInputProps("name")}/>
         <TextInput
           label="Email"

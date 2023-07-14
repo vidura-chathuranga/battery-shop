@@ -76,7 +76,7 @@ const useStyles = createStyles((theme) => ({
 }));
 
 interface Data {
-  _id: string;
+  worker_id: string;
   name: string;
   email: string;
   phone: string;
@@ -100,7 +100,7 @@ const ManageWorker = () => {
 
   const data = [
     {
-      _id: "asdadada",
+      worker_id: "asdadada",
       name: "asdadada",
       email: "asdadada",
       phone: "asdadada",
@@ -109,7 +109,7 @@ const ManageWorker = () => {
       gender: "asdadada",
     },
     {
-      _id: "asdadada",
+      worker_id: "asdadada",
       name: "asdadada",
       email: "asdadada",
       phone: "asdadada",
@@ -122,7 +122,7 @@ const ManageWorker = () => {
 
 
   const rows = data?.map((row) => (
-    <tr key={row._id}>
+    <tr key={row.worker_id}>
       <td>
         <Text size={15}>{row.name}</Text>
       </td>

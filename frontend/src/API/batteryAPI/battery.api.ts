@@ -6,7 +6,7 @@ class BatteryAPI {
 
     //get all items
     static getAllItems = () => {
-        return axios.post(`${BASE_URL}/batteries`, /*requestConfig*/);
+        return axios.get(`${BASE_URL}/batteries`,{withCredentials:true});
 
     };
 

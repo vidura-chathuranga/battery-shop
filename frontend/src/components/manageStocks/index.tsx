@@ -12,18 +12,16 @@ import {
   Textarea,
   Box,
   Modal,
-  Container,
+  LoadingOverlay,
 } from "@mantine/core";
 import { keys } from "@mantine/utils";
-import { IconSearch, IconPlus, IconEdit, IconTrash } from "@tabler/icons-react";
-import { useRef, useState } from "react";
-import { modals } from "@mantine/modals";
+import { IconSearch, IconPlus, IconEdit, IconTrash, IconX, IconCheck } from "@tabler/icons-react";
+import { useState } from "react";
 import { useForm } from "@mantine/form";
 import { showNotification, updateNotification } from "@mantine/notifications";
-//import {IconCheck, IconAlertTriangle} from '@tabler/icons';
-
 import BatteryAPI from "../../API/batteryAPI/battery.api";
-import { getHotkeyHandler, useDisclosure } from "@mantine/hooks";
+import {useQuery} from '@tanstack/react-query';
+
 
 // styles
 const useStyles = createStyles((theme) => ({
@@ -98,11 +96,16 @@ const ManageStocks = () => {
   const [search, setSearch] = useState("");
   const { classes, cx } = useStyles();
   const [scrolled, setScrolled] = useState(false);
-
   const [opened, setOpened] = useState(false);
-  const [adata, setData] = useState<Data[]>([]);
-
+  // const [adata, setData] = useState<Data[]>([]);
   const [deleteOpen, setDeleteOpen] = useState(false);
+
+  // use react query and fetch data
+  const {data,isLoading,isError,refetch} = useQuery(["stockData"],() => {
+    return BatteryAPI.getAllItems().then((res) => res.data)
+  })
+
+
 
   // const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
   //     const { value } = event.currentTarget;
@@ -110,12 +113,7 @@ const ManageStocks = () => {
   //     filterData(data,search);
   //   };
 
-  //Get all Items records from the database
-  const getAllItems = async () => {
-    const response = await BatteryAPI.getAllItems();
-    const data = await response.data;
-    return data;
-  };
+
 
   //declare add form
   const addForm = useForm({
@@ -155,6 +153,7 @@ const ManageStocks = () => {
         updateNotification({
           id: "add-items",
           color: "teal",
+          icon:<IconCheck/>,
           title: "Items added successfully",
           message: "Items data added successfully.",
           //icon: <IconCheck />,
@@ -162,201 +161,22 @@ const ManageStocks = () => {
         });
         addForm.reset();
         setOpened(false);
-        const newData = [
-          ...data,
-          {
-            _id: response.data._id,
-            stock_id: response.data.stock_id,
-            batry_brand: values.batry_brand,
-            actualPrice: values.actualPrice,
-            sellingPrice: values.sellingPrice,
-            Battery_description: values.Battery_description,
-            quantity: values.quantity,
-            warnty_priod: values.warnty_priod,
-            added_data: values.added_date,
-          },
-        ];
-        // setData(newData)
+        
+        // refetch data from the database
+        refetch();
       })
       .catch((error) => {
         updateNotification({
           id: "add-items",
           color: "red",
           title: "Items Adding failed",
+          icon : <IconX/>,
           message: "We were unable to add the Items",
           // icon: <IconAlertTriangle />,
           autoClose: 5000,
         });
       });
   };
-
-  const data = [
-    {
-      _id: "1",
-      stock_id: "STK-001",
-      quantity: "asdadada",
-      added_data: "asdadada",
-      warnty_priod: "asdadada",
-      sellingPrice: "asdadada",
-      actualPrice: "asdadada",
-      batry_brand: "asdadada",
-      Battery_description: "asdadada",
-    },
-    {
-      _id: "2",
-      stock_id: "asdadada",
-      quantity: "asdadada",
-      added_data: "asdadada",
-      warnty_priod: "asdadada",
-      sellingPrice: "asdadada",
-      actualPrice: "asdadada",
-      batry_brand: "asdadada",
-      Battery_description: "adasdasda",
-    },
-    {
-      _id: "3",
-      stock_id: "asdadada",
-      quantity: "asdadada",
-      added_data: "asdadada",
-      warnty_priod: "asdadada",
-      sellingPrice: "asdadada",
-      actualPrice: "asdadada",
-      batry_brand: "asdadada",
-      Battery_description: "adasdasda",
-    },
-    {
-      _id: "4",
-      stock_id: "asdadada",
-      quantity: "asdadada",
-      added_data: "asdadada",
-      warnty_priod: "asdadada",
-      sellingPrice: "asdadada",
-      actualPrice: "asdadada",
-      batry_brand: "asdadada",
-      Battery_description: "adasdasda",
-    },
-    {
-      _id: "5",
-      stock_id: "asdadada",
-      quantity: "asdadada",
-      added_data: "asdadada",
-      warnty_priod: "asdadada",
-      sellingPrice: "asdadada",
-      actualPrice: "asdadada",
-      batry_brand: "asdadada",
-      Battery_description: "adasdasda",
-    },
-    {
-      _id: "6",
-      stock_id: "asdadada",
-      quantity: "asdadada",
-      added_data: "asdadada",
-      warnty_priod: "asdadada",
-      sellingPrice: "asdadada",
-      actualPrice: "asdadada",
-      batry_brand: "asdadada",
-      Battery_description: "adasdasda",
-    },
-    {
-      _id: "7",
-      stock_id: "asdadada",
-      quantity: "asdadada",
-      added_data: "asdadada",
-      warnty_priod: "asdadada",
-      sellingPrice: "asdadada",
-      actualPrice: "asdadada",
-      batry_brand: "asdadada",
-      Battery_description: "adasdasda",
-    },
-    {
-      _id: "8",
-      stock_id: "asdadada",
-      quantity: "asdadada",
-      added_data: "asdadada",
-      warnty_priod: "asdadada",
-      sellingPrice: "asdadada",
-      actualPrice: "asdadada",
-      batry_brand: "asdadada",
-      Battery_description: "adasdasda",
-    },
-    {
-      _id: "9",
-      stock_id: "asdadada",
-      quantity: "asdadada",
-      added_data: "asdadada",
-      warnty_priod: "asdadada",
-      sellingPrice: "asdadada",
-      actualPrice: "asdadada",
-      batry_brand: "asdadada",
-      Battery_description: "adasdasda",
-    },
-    {
-      _id: "0",
-      stock_id: "asdadada",
-      quantity: "asdadada",
-      added_data: "asdadada",
-      warnty_priod: "asdadada",
-      sellingPrice: "asdadada",
-      actualPrice: "asdadada",
-      batry_brand: "asdadada",
-      Battery_description: "adasdasda",
-    },
-    {
-      _id: "11",
-      stock_id: "asdadada",
-      quantity: "asdadada",
-      added_data: "asdadada",
-      warnty_priod: "asdadada",
-      sellingPrice: "asdadada",
-      actualPrice: "asdadada",
-      batry_brand: "asdadada",
-      Battery_description: "adasdasda",
-    },
-    {
-      _id: "12",
-      stock_id: "asdadada",
-      quantity: "asdadada",
-      added_data: "asdadada",
-      warnty_priod: "asdadada",
-      sellingPrice: "asdadada",
-      actualPrice: "asdadada",
-      batry_brand: "asdadada",
-      Battery_description: "adasdasda",
-    },
-    {
-      _id: "13",
-      stock_id: "asdadada",
-      quantity: "asdadada",
-      added_data: "asdadada",
-      warnty_priod: "asdadada",
-      sellingPrice: "asdadada",
-      actualPrice: "asdadada",
-      batry_brand: "asdadada",
-      Battery_description: "adasdasda",
-    },
-    {
-      _id: "14",
-      stock_id: "asdadada",
-      quantity: "asdadada",
-      added_data: "asdadada",
-      warnty_priod: "asdadada",
-      sellingPrice: "asdadada",
-      actualPrice: "asdadada",
-      batry_brand: "asdadada",
-      Battery_description: "adasdasda",
-    },
-    {
-      _id: "15",
-      stock_id: "asdadada",
-      quantity: "asdadada",
-      added_data: "asdadada",
-      warnty_priod: "asdadada",
-      sellingPrice: "asdadada",
-      actualPrice: "asdadada",
-      batry_brand: "asdadada",
-      Battery_description: "adasdasda",
-    },
-  ];
 
   // delete Stock function
   const deleteSpecificStock = (stockId: string, reason: string) => {
@@ -379,16 +199,16 @@ const ManageStocks = () => {
   });
 
   // rows map
-  const rows = data?.map((row) => (
+  const rows = data?.map((row : any) => (
     <tr key={row._id}>
       <td>
         <Text size={15}>{row.stock_id}</Text>
       </td>
       <td>
-        <Text size={15}>{row.batry_brand}</Text>
+        <Text size={15}>{row.batteryBrand}</Text>
       </td>
       <td>
-        <Text size={15}>{row.Battery_description}</Text>
+        <Text size={15}>{row.batteryDescription}</Text>
       </td>
       <td>
         <Text size={15}>{row.quantity}</Text>
@@ -397,10 +217,10 @@ const ManageStocks = () => {
         <Text size={15}>{row.sellingPrice}</Text>
       </td>
       <td>
-        <Text size={15}>{row.added_data}</Text>
+        <Text size={15}>{new Date(row.added_date).toISOString().split('T')[0]}</Text>
       </td>
       <td>
-        <Text size={15}>{row.warnty_priod}</Text>
+        <Text size={15}>{row.warranty}</Text>
       </td>
       <td>
         {
@@ -434,6 +254,21 @@ const ManageStocks = () => {
       </td>
     </tr>
   ));
+
+  // if data is fetching this overalay will be shows to the user
+  if(isLoading){
+    return <LoadingOverlay visible={isLoading} overlayBlur={2} />
+  }
+
+  if(isError){
+    showNotification({
+      title:"Cannot fetching Stock Data",
+      message : "check internet connection",
+      color : "red",
+      icon : <IconX/>,
+      autoClose : 1500,
+    });
+  }
 
   // table
   return (
@@ -611,11 +446,11 @@ const ManageStocks = () => {
               </tr>
             </thead>
             <tbody>
-              {rows.length > 0 ? (
+              {rows?.length > 0 ? (
                 rows
               ) : (
                 <tr>
-                  <td colSpan={Object.keys(data[0]).length}>
+                  <td>
                     <Text weight={500} align="center">
                       Nothing found
                     </Text>

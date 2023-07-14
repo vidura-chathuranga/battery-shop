@@ -12,6 +12,7 @@ import {
   Textarea,
   Box,
   Modal,
+  Container,
 } from "@mantine/core";
 import { keys } from "@mantine/utils";
 import { IconSearch, IconPlus, IconEdit, IconTrash } from "@tabler/icons-react";
@@ -22,6 +23,7 @@ import { showNotification, updateNotification } from "@mantine/notifications";
 //import {IconCheck, IconAlertTriangle} from '@tabler/icons';
 
 import BatteryAPI from "../../API/batteryAPI/battery.api";
+import { getHotkeyHandler, useDisclosure } from "@mantine/hooks";
 
 // styles
 const useStyles = createStyles((theme) => ({
@@ -77,8 +79,8 @@ interface Data {
   _id: string;
   stock_id: string;
   quantity: string;
-  added_data: string;
-  warnty_priod: String;
+  added_date: string;
+  warnty_period: string;
   sellingPrice: string;
   actualPrice: string;
   batry_brand: string;
@@ -100,8 +102,8 @@ const ManageStocks = () => {
   const [opened, setOpened] = useState(false);
   const [adata, setData] = useState<Data[]>([]);
 
-  const [deletionReason, setDeletionReason] = useState("");
-  const[dError,setDError] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+
   // const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
   //     const { value } = event.currentTarget;
   //     setSearch(value);
@@ -121,7 +123,7 @@ const ManageStocks = () => {
     initialValues: {
       stock_id: "",
       quantity: "",
-      added_data: "",
+      added_date: "",
       warnty_priod: "",
       sellingPrice: "",
       actualPrice: "",
@@ -134,7 +136,7 @@ const ManageStocks = () => {
   const addItems = async (values: {
     stock_id: string;
     quantity: string;
-    added_data: string;
+    added_date: string;
     warnty_priod: String;
     sellingPrice: string;
     actualPrice: string;
@@ -171,10 +173,10 @@ const ManageStocks = () => {
             Battery_description: values.Battery_description,
             quantity: values.quantity,
             warnty_priod: values.warnty_priod,
-            added_data: values.added_data,
+            added_data: values.added_date,
           },
         ];
-        setData(newData);
+        // setData(newData)
       })
       .catch((error) => {
         updateNotification({
@@ -191,7 +193,7 @@ const ManageStocks = () => {
   const data = [
     {
       _id: "1",
-      stock_id: "asdadada",
+      stock_id: "STK-001",
       quantity: "asdadada",
       added_data: "asdadada",
       warnty_priod: "asdadada",
@@ -356,77 +358,25 @@ const ManageStocks = () => {
     },
   ];
 
-  // form for deletion
-  // const deleteForm = useForm({
-  //   validateInputOnChange: true,
-
-  //   initialValues: {
-  //     reason: "",
-  //     _id: "",
-  //   },
-  //   validate: {
-  //     // reason: (values) => (values.length > 0 ? null : "Please enter reason"),
-  //   },
-  // });
-
   // delete Stock function
   const deleteSpecificStock = (stockId: string, reason: string) => {
     console.log(stockId, reason);
   };
 
-  // delete Modal
-  const openDeleteModal = (brandName: string, battery_id: string) =>
-    modals.open({
-      title: `Delete ${brandName} stock`,
-      centered: true,
-      children: (
-        <>
-          <Text size={"sm"} mb={10}>
-            Are you sure want to delete this battery stock? This action cannot
-            be undone!
-          </Text>
+  // form for deletion
+  const deleteForm = useForm({
+    validateInputOnChange: true,
 
-          <Textarea
-            size="md"
-            data-autofocus
-            label="reason:"
-            error={
-              deletionReason.length === 0
-                ? "Please enter reason for delete"
-                : null
-            }
-            onChange={(e) => setDeletionReason(e.target.value)}
-            autosize
-            minRows={2}
-            placeholder="this stock was added mistakenly"
-            required
-          />
+    initialValues: {
+      reason: "",
+      stock_id: "",
+      _id: "",
+    },
 
-          <Group spacing={"sm"} position="right" mt={20}>
-            <Button
-              variant="outline"
-              color={"gray"}
-              onClick={() => {
-                modals.closeAll();
-                setDeletionReason("");
-              }}
-            >
-              No don't delete it
-            </Button>
-            <Button
-              color="red"
-              variant="filled"
-              type="submit"
-              // onClick={() => { deletionReason.length === 0 ? null : deleteSpecificStock(battery_id,deletionReason); }}
-            >
-              Delete stock
-            </Button>
-          </Group>
-        </>
-      ),
-      closeOnEscape: false,
-      closeOnClickOutside: false,
-    });
+    validate: {
+      reason: (values) => (values.length > 5 ? null : "Please enter reason"),
+    },
+  });
 
   // rows map
   const rows = data?.map((row) => (
@@ -467,7 +417,13 @@ const ManageStocks = () => {
               <Tooltip label="Delete stock">
                 <ActionIcon
                   color="red"
-                  onClick={() => openDeleteModal(row.batry_brand, row._id)}
+                  onClick={() => {
+                    deleteForm.setValues({
+                      _id: row._id,
+                      stock_id: row.stock_id,
+                    });
+                    setDeleteOpen(true);
+                  }}
                 >
                   <IconTrash size={30} />
                 </ActionIcon>
@@ -482,6 +438,65 @@ const ManageStocks = () => {
   // table
   return (
     <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+
+      {/* // delete modal */}
+      <Modal
+        opened={deleteOpen}
+        centered
+        onClose={() => {
+          addForm.reset();
+          setDeleteOpen(false);
+        }}
+        title="Delete Stock"
+      >
+        <Box>
+          <Text size={"sm"} mb={10}>
+            Are you sure you want to delete this stock? This action cannot be
+            undone!
+          </Text>
+          <form
+            onSubmit={deleteForm.onSubmit((values) => {
+              console.log(values);
+            })}
+          >
+            <TextInput
+              withAsterisk
+              label="Stock ID"
+              required
+              disabled
+              {...deleteForm.getInputProps("stock_id")}
+              mb={10}
+            />
+            <Textarea
+              placeholder="This was added mistakenly"
+              label="Reason"
+              withAsterisk
+              required
+              autosize
+              minRows={3}
+              {...deleteForm.getInputProps("reason")}
+            />
+
+            <Group position="right" spacing={"md"} mt={20}>
+              <Button
+                color="gray"
+                variant="outline"
+                onClick={() => {
+                  deleteForm.reset();
+                  setDeleteOpen(false);
+                }}
+              >
+                No I don't delete it
+              </Button>
+              <Button color="red" type="submit" leftIcon={<IconTrash size={16}/>}>
+                Delete it
+              </Button>
+            </Group>
+          </form>
+        </Box>
+      </Modal>
+
+      {/* stock add Modal */}
       <Modal
         opened={opened}
         onClose={() => {
@@ -528,9 +543,9 @@ const ManageStocks = () => {
             required
           />
           <TextInput
-            label="added_data"
+            label="added_date"
             placeholder="Enter added date"
-            {...addForm.getInputProps("added_data")}
+            {...addForm.getInputProps("added_date")}
             required
           />
           <TextInput
@@ -548,7 +563,6 @@ const ManageStocks = () => {
           </Button>
         </form>
       </Modal>
-
       <div>
         <Button
           leftIcon={<IconPlus size={20} />}

@@ -1,4 +1,4 @@
-import Battery from "../models/battery.model";
+import Battery from "../models/battery.model.js";
 
 
 //get all added data
@@ -12,27 +12,24 @@ export const getAllItems = async (req, res) => {
 };
 
 //add items to the db
-const addBatteries = async (req, res) => {
+export const addBatteries = async (req, res) => {
 
-
-   // const { batteryBrand, actualPrice, sellingPrice, batteryDescription, quantity,warranty,added_date } = req.body;
-    
     try {
       const newBattery = new Battery({
         stock_id : req.body.stock_id,
-        batteryBrand: req.body.batteryBrand,
-        actualPrice: req.body.actualPrice,
-        sellingPrice: req.body.sellerPrice,
-        batteryDescription: req.body.batteryDescription,
         quantity: req.body.quantity,
-        warranty: req.body.warranty,
         added_date: req.body.added_date,
+        warranty: req.body.warnty_priod,
+        sellingPrice: req.body.sellingPrice,
+        actualPrice: req.body.actualPrice,
+        batteryBrand: req.body.batry_brand,
+        batteryDescription: req.body.Battery_description,
       });
-  
-      console.log("battery controller")
 
-      const savedBattery = await Battery.create(newBattery); // Save the new battery document to the database
-  
+      const savedBattery = await newBattery.save(); // Save the new battery document to the database
+      
+      console.log(savedBattery);
+
       res.status(201).json(savedBattery); // Send the saved battery as the response
     } catch (error) {
       res.status(500).json({ message: 'Failed to add battery', error });
@@ -75,11 +72,3 @@ const addBatteries = async (req, res) => {
       res.status(500).json({ message: 'Failed to update battery', error });
     }
   };
-
-
-module.exports = {
-    getAllBatteries,
-    addBatteries,
-    deleteBattery,
-    updateBattery,
-};

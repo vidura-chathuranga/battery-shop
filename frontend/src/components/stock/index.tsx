@@ -12,7 +12,7 @@ import {
 } from '@mantine/core';
 import { keys } from '@mantine/utils';
 import { IconSelector, IconChevronDown, IconChevronUp, IconSearch } from '@tabler/icons-react';
-import AdminAPI from '../../API/workerAPI/admin.api';
+import AdminAPI from '../../API/adminAPI/admin.api';
 
 const useStyles = createStyles((theme) => ({
   th: {

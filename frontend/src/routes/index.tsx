@@ -12,9 +12,13 @@ import WorkerDashboardHeader from "../components/workerDashboardHeader";
 import WorkerNotifications from "../pages/WorkerNotifications";
 import StockTable from "../components/stock";
 import AdminDashboardHeader from "../components/adminDashboardHeader";
+import {QueryClient,QueryClientProvider} from '@tanstack/react-query';
 
 const AllRoutes = () => {
+  const client = new QueryClient();//config query client
   return (
+    <div>
+    <QueryClientProvider client={client}>
     <Router>
       <Routes>
         <Route path="/" element={<LandingPage />} />
@@ -25,7 +29,7 @@ const AllRoutes = () => {
 
         <Route path = "/admin/stock" element ={<StockTable/>} />
 
-        // {/* <Route path = '/admin/stock' element={<StockTable data ={[ {name : "asdasdasd",email : "adadada" , company : "adasdasdad"}]}/>}/> */}
+        {/* <Route path = '/admin/stock' element={<StockTable data ={[ {name : "asdasdasd",email : "adadada" , company : "adasdasdad"}]}/>}/> */}
 
         <Route path="/worker" element={<WorkerOwnerPrivateRoute />}>
           <Route path="/worker/managestock" element={<WorkerDashboard />} />
@@ -37,6 +41,8 @@ const AllRoutes = () => {
         </Route>
       </Routes>
     </Router>
+    </QueryClientProvider>
+    </div>
   );
 };
 

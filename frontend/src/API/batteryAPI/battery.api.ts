@@ -27,8 +27,8 @@ class BatteryAPI {
     };
 
     //delete battery
-    static declareBattery = (stock_id: string) => {
-        return axios.delete(`${BASE_URL}/batteries/delete/${stock_id}`,{withCredentials:true});
+    static deleteBattery = (values : {_id : string, reason : string,stock_id : string}) => {
+        return axios.delete(`${BASE_URL}/batteries/delete/${values._id}/${values.reason}`,{withCredentials:true});
     };
 
     //update battery details

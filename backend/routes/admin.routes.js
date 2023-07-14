@@ -4,10 +4,6 @@ import { validateWorkerAndAdmin } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
-router.get("/details", (req, res) => {
-  res.send("Admin details are sent!");
-});
-
 router.post(`/register`,registerWorker);
 
 

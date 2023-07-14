@@ -81,9 +81,19 @@ const deleteBattery = async (req, res) => {
 };
 
 //update battery
-const updateBattery = async (req, res) => {
-  const stock_id = req.params.stock_id;
-  const updateFields = req.body; // Assuming the updated fields are passed in the request body
+export const updateBattery = async (req, res) => {
+  const stock_id = req.params.id;
+
+  console.log(req.body);
+  const updateFields = {
+    quantity: req.body.quantity,
+    added_date: req.body.added_date,
+    warranty: req.body.warnty_priod,
+    sellingPrice: req.body.sellingPrice,
+    actualPrice: req.body.actualPrice,
+    batteryBrand: req.body.batry_brand,
+    batteryDescription: req.body.Battery_description,
+  };
 
   try {
     const updatedBattery = await Battery.findByIdAndUpdate(

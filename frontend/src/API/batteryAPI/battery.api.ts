@@ -13,7 +13,6 @@ class BatteryAPI {
     //add battery
     static addBattery = (values: {
 
-        stock_id: string;
         quantity: string;
         added_date: string;
         warnty_priod: String;
@@ -35,14 +34,14 @@ class BatteryAPI {
     //update battery details
     static updateBattery = (values: {
         _id: string,
-        stock_id: string;
+        stock_id: string,
         quantity: string;
         added_date: Date;
-        warranty: string;
-        sellingPrice: Number;
-        actualPrice: Number;
-        batteryBrand: string;
-        batteryDescription: string;
+        warnty_priod: String;
+        sellingPrice: string;
+        actualPrice: string;
+        batry_brand: string;
+        Battery_description: string;
     }) => {
 
         return axios.put(`${BASE_URL}/batteries/update/${values._id}`,
@@ -50,6 +49,7 @@ class BatteryAPI {
             {withCredentials:true}
         );
     };
+
 }
 
 export default BatteryAPI;

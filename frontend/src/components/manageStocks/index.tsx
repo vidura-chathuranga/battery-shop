@@ -19,8 +19,10 @@ import { IconSearch, IconPlus, IconEdit, IconTrash, IconX, IconCheck } from "@ta
 import { useState } from "react";
 import { useForm } from "@mantine/form";
 import { showNotification, updateNotification } from "@mantine/notifications";
+import { DateInput } from '@mantine/dates';
+
 import BatteryAPI from "../../API/batteryAPI/battery.api";
-import {useQuery} from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
 
 // styles
@@ -60,11 +62,10 @@ const useStyles = createStyles((theme) => ({
       left: 0,
       right: 0,
       bottom: 0,
-      borderBottom: `${rem(1)} solid ${
-        theme.colorScheme === "dark"
-          ? theme.colors.dark[3]
-          : theme.colors.gray[2]
-      }`,
+      borderBottom: `${rem(1)} solid ${theme.colorScheme === "dark"
+        ? theme.colors.dark[3]
+        : theme.colors.gray[2]
+        }`,
     },
   },
 
@@ -99,9 +100,12 @@ const ManageStocks = () => {
   const [opened, setOpened] = useState(false);
   // const [adata, setData] = useState<Data[]>([]);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [editOpened, setEditOpened] = useState(false);
+  const [date, setDate] = useState<Date | null>(null);
+
 
   // use react query and fetch data
-  const {data,isLoading,isError,refetch} = useQuery(["stockData"],() => {
+  const { data, isLoading, isError, refetch } = useQuery(["stockData"], () => {
     return BatteryAPI.getAllItems().then((res) => res.data)
   })
 
@@ -119,7 +123,6 @@ const ManageStocks = () => {
   const addForm = useForm({
     validateInputOnChange: true,
     initialValues: {
-      stock_id: "",
       quantity: "",
       added_date: "",
       warnty_priod: "",
@@ -130,9 +133,26 @@ const ManageStocks = () => {
     },
   });
 
+
+  //declare edit form
+  const editForm = useForm({
+    validateInputOnChange: true,
+    initialValues: {
+      _id: "",
+      stock_id: "",
+      quantity: "",
+      added_date: new Date(),
+      warnty_priod: "",
+      sellingPrice: "",
+      actualPrice: "",
+      batry_brand: "",
+      Battery_description: "",
+    },
+
+  });
+
   //add Items
   const addItems = async (values: {
-    stock_id: string;
     quantity: string;
     added_date: string;
     warnty_priod: String;
@@ -153,7 +173,7 @@ const ManageStocks = () => {
         updateNotification({
           id: "add-items",
           color: "teal",
-          icon:<IconCheck/>,
+          icon: <IconCheck />,
           title: "Items added successfully",
           message: "Items data added successfully.",
           //icon: <IconCheck />,
@@ -161,7 +181,7 @@ const ManageStocks = () => {
         });
         addForm.reset();
         setOpened(false);
-        
+
         // refetch data from the database
         refetch();
       })
@@ -170,13 +190,65 @@ const ManageStocks = () => {
           id: "add-items",
           color: "red",
           title: "Items Adding failed",
-          icon : <IconX/>,
+          icon: <IconX />,
           message: "We were unable to add the Items",
           // icon: <IconAlertTriangle />,
           autoClose: 5000,
         });
       });
   };
+
+  //update Item  function
+  const updateItem = async (values: {
+    _id: string,
+    stock_id: string,
+    quantity: string;
+    added_date: Date;
+    warnty_priod: String;
+    sellingPrice: string;
+    actualPrice: string;
+    batry_brand: string;
+    Battery_description: string;
+
+  }) => {
+    showNotification({
+      id: "update-items",
+      loading: true,
+      title: "Updating Items record",
+      message: "Please wait while we update Items record..",
+      autoClose: false,
+    });
+    BatteryAPI.updateBattery(values)
+      .then((response) => {
+        updateNotification({
+          id: "update-items",
+          color: "teal",
+          icon: <IconCheck />,
+          title: "Items updated successfully",
+          message: "Items data updated successfully.",
+          //icon: <IconCheck />,
+          autoClose: 5000,
+        });
+        editForm.reset();
+        setEditOpened(false);
+
+        //getting updated items from database
+        refetch();
+
+      }).catch((error) => {
+        updateNotification({
+          id: "update-items",
+          color: "red",
+          title: "Items updatimg failed",
+          icon: <IconX />,
+          message: "We were unable to update the Items",
+          // icon: <IconAlertTriangle />,
+          autoClose: 5000,
+        });
+      });
+
+
+  }
 
   // delete Stock function
   const deleteSpecificStock = (stockId: string, reason: string) => {
@@ -198,8 +270,10 @@ const ManageStocks = () => {
     },
   });
 
+
+
   // rows map
-  const rows = data?.map((row : any) => (
+  const rows = data?.map((row: any) => (
     <tr key={row._id}>
       <td>
         <Text size={15}>{row.stock_id}</Text>
@@ -217,7 +291,7 @@ const ManageStocks = () => {
         <Text size={15}>{row.sellingPrice}</Text>
       </td>
       <td>
-        <Text size={15}>{new Date(row.added_date).toISOString().split('T')[0]}</Text>
+        <Text size={15}>{new Date(row.added_date).toLocaleDateString('en-GB').split('T')[0]}</Text>
       </td>
       <td>
         <Text size={15}>{row.warranty}</Text>
@@ -228,7 +302,23 @@ const ManageStocks = () => {
             <Group spacing={"sm"}>
               {/* edit button */}
               <Tooltip label="Edit stock">
-                <ActionIcon color="teal">
+                <ActionIcon
+                  color="teal"
+                  onClick={() => {
+                    editForm.setValues({
+                      _id: row._id,
+                      stock_id: row.stock_id,
+                      Battery_description: row.batteryDescription,
+                      batry_brand : row.batteryBrand,
+                      actualPrice: row.actualPrice,
+                      sellingPrice: row.sellingPrice,
+                      quantity: row.quantity,
+                      added_date: new Date(row.added_date),
+                      warnty_priod: row.warranty,
+                    });
+                    setEditOpened(true);
+                  }}
+                >
                   <IconEdit size={30} />
                 </ActionIcon>
               </Tooltip>
@@ -256,17 +346,17 @@ const ManageStocks = () => {
   ));
 
   // if data is fetching this overalay will be shows to the user
-  if(isLoading){
+  if (isLoading) {
     return <LoadingOverlay visible={isLoading} overlayBlur={2} />
   }
 
-  if(isError){
+  if (isError) {
     showNotification({
-      title:"Cannot fetching Stock Data",
-      message : "check internet connection",
-      color : "red",
-      icon : <IconX/>,
-      autoClose : 1500,
+      title: "Cannot fetching Stock Data",
+      message: "check internet connection",
+      color: "red",
+      icon: <IconX />,
+      autoClose: 1500,
     });
   }
 
@@ -323,7 +413,7 @@ const ManageStocks = () => {
               >
                 No I don't delete it
               </Button>
-              <Button color="red" type="submit" leftIcon={<IconTrash size={16}/>}>
+              <Button color="red" type="submit" leftIcon={<IconTrash size={16} />}>
                 Delete it
               </Button>
             </Group>
@@ -341,50 +431,46 @@ const ManageStocks = () => {
         title="Add Items Record"
       >
         <form onSubmit={addForm.onSubmit((values) => addItems(values))}>
+
           <TextInput
-            label="Enter ID"
-            placeholder="Enter ID"
-            {...addForm.getInputProps("stock_id")}
-            required
-          />
-          <TextInput
-            label="batry_brand"
+            label="Battery brand"
             placeholder="Enter Brand name"
             {...addForm.getInputProps("batry_brand")}
             required
           />
           <TextInput
-            label="Battery_description"
+            label="Battery description"
             placeholder="Enter Battery Description"
             {...addForm.getInputProps("Battery_description")}
             required
           />
           <TextInput
-            label="quantity"
+            label="Quantity"
             placeholder="Enter Battery quantity"
             {...addForm.getInputProps("quantity")}
             required
           />
           <TextInput
-            label="actualPrice"
+            label="Actual Price"
             placeholder="Enter actualPrice of a Battery"
             {...addForm.getInputProps("actualPrice")}
             required
           />
           <TextInput
-            label="sellingPrice"
+            label="Selling Price"
             placeholder="Enter sellingPrice of a battery"
             {...addForm.getInputProps("sellingPrice")}
             required
           />
-          <TextInput
-            label="added_date"
-            placeholder="Enter added date"
+          <DateInput
+            placeholder="Current date"
+            label="Current date"
+            valueFormat="YYYY MMM DD"
+            withAsterisk
             {...addForm.getInputProps("added_date")}
-            required
           />
           <TextInput
-            label="warnty_priod"
+            label="warnty priod"
             placeholder="Enter warnty priod"
             {...addForm.getInputProps("warnty_priod")}
             required
@@ -395,6 +481,78 @@ const ManageStocks = () => {
             type="submit"
           >
             Add
+          </Button>
+        </form>
+      </Modal>
+
+      {/* items update model */}
+      <Modal
+        opened={editOpened}
+        onClose={() => {
+          editForm.reset();
+          setEditOpened(false);
+        }}
+        title="Update Item Record"
+
+      >
+        <form onSubmit={editForm.onSubmit((values) => updateItem(values))}>
+          <TextInput
+            withAsterisk
+            label="Stock ID"
+            required
+            disabled
+            {...editForm.getInputProps("stock_id")}
+          />
+          <TextInput
+            label="Battery brand"
+            placeholder="Enter Brand name"
+            {...editForm.getInputProps("batry_brand")}
+            required
+          />
+          <TextInput
+            label="Battery description"
+            placeholder="Enter Battery Description"
+            {...editForm.getInputProps("Battery_description")}
+            required
+          />
+          <TextInput
+            label="Quantity"
+            placeholder="Enter Battery quantity"
+            {...editForm.getInputProps("quantity")}
+            required
+          />
+          <TextInput
+            label="Actual Price"
+            placeholder="Enter actualPrice of a Battery"
+            {...editForm.getInputProps("actualPrice")}
+            required
+          />
+          <TextInput
+            label="Selling Price"
+            placeholder="Enter sellingPrice of a battery"
+            {...editForm.getInputProps("sellingPrice")}
+            required
+          />
+           <DateInput
+            placeholder="Current date"
+            label="Current date"
+            valueFormat="YYYY MMM DD"
+            withAsterisk
+            {...editForm.getInputProps("added_date")}
+
+          />
+          <TextInput
+            label="warnty priod"
+            placeholder="Enter warnty priod"
+            {...editForm.getInputProps("warnty_priod")}
+            required
+          />
+          <Button
+            color="blue"
+            sx={{ marginTop: "10px", width: "100%" }}
+            type="submit"
+          >
+            Save
           </Button>
         </form>
       </Modal>

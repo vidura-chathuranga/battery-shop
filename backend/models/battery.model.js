@@ -11,7 +11,7 @@ const batterySchema = mongoose.Schema({
         required : true
     },
     added_date : {
-        type : Date,
+        type : String,
         required : true
     },
     warranty : {

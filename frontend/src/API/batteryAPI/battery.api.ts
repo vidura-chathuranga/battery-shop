@@ -27,8 +27,8 @@ class BatteryAPI {
     };
 
     //delete battery
-    static declareBattery = (stock_id: string) => {
-        return axios.delete(`${BASE_URL}/batteries/delete/${stock_id}`,{withCredentials:true});
+    static deleteBattery = (values : {_id : string, reason : string,stock_id : string}) => {
+        return axios.delete(`${BASE_URL}/batteries/delete/${values._id}/${values.reason}`,{withCredentials:true});
     };
 
     //update battery details
@@ -49,6 +49,19 @@ class BatteryAPI {
             {withCredentials:true}
         );
     };
+
+    // get battery details from database
+    static getBatteryDetails = () => {
+        return axios.get(`${BASE_URL}/batteries`, { withCredentials: true })
+          .then(response => {
+            return response.data;
+          })
+          .catch(error => {
+            console.error("Error fetching battery details:", error);
+            throw error;
+          });
+      };
+      
 
 }
 

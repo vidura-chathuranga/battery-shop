@@ -9,12 +9,95 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useState } from "react";
+import { showNotification, updateNotification } from "@mantine/notifications";
+import AdminAPI from "../../API/adminAPI/admin.api";
+
+
+interface Data{
+      _id:string,
+      worker_id:string;
+      name : string; 
+      email : string;
+      password : string; 
+      phone : string;
+      nic:string;
+      address:string;
+      gender:string;
+}
 
 const Register = () => {
+
+  const [opened, setOpened] = useState(false);
+  const [data, setData] = useState<Data[]>([]);
+
+  const registerWorker = async(values:{
+      worker_id:string,
+      name : string; 
+      email : string;
+      password : string; 
+      phone : string;
+      nic:string;
+      address:string;
+      gender:string;
+    }) => {
+
+      showNotification({
+        id: "Add Worker",
+        loading: true,
+        title: "Adding Worker record",
+        message: "Please wait while we add Worker record..",
+        autoClose: false,
+      });
+
+      AdminAPI.workerRegister(values)
+      .then((Response)=>{
+        updateNotification({
+          id: "Add Worker",
+          color: "teal",
+          title: "Adding Worker record",
+          message: "Please wait while we add Worker record..",
+          //icon: <IconCheck />,
+          autoClose: 5000,
+      });
+
+      registerForm.reset();
+      setOpened(false);
+
+      const newData = [
+        ...data,
+        {
+          _id:Response.data._id,
+          worker_id:Response.data.worker_id,
+          name: values.name,
+          email: values.email,
+          password: values.password,
+          phone: values.phone,
+          nic: values.nic,
+          address: values.address,
+          gender: values.gender,
+        },
+      ];
+      setData(newData);
+      
+  }).catch((error) => {
+    updateNotification({
+      id: "Add Worker",
+      color: "red",
+      title: "Adding Worker record Failed",
+      message: "We were unable to add Worker",
+      // icon: <IconAlertTriangle />,
+      autoClose: 5000,
+    });
+
+  })
+    }
   const registerForm = useForm({
     validateInputOnChange: true,
 
+
+
     initialValues: {
+      worker_id:"",
       name: "",
       email: "",
       password: "",
@@ -66,8 +149,9 @@ const Register = () => {
       </Title>
 
       <Paper withBorder shadow="md" p={30} mt={30} radius="md">
-        <form onSubmit={registerForm.onSubmit((values:any)=>{})}>
+        <form onSubmit={registerForm.onSubmit((values)=>registerWorker(values))}>
 
+        <TextInput label="ID" placeholder="Enter ID" name="worker_id"  required  {...registerForm.getInputProps("worker_id")}/>
         <TextInput label="Name" placeholder="Enter name" name="name"  required  {...registerForm.getInputProps("name")}/>
         <TextInput
           label="Email"

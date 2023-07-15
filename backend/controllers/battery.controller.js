@@ -63,18 +63,16 @@ export const addBatteries = async (req, res) => {
 };
 
 //delete battery
-const deleteBattery = async (req, res) => {
-  const stock_id = req.params.stock_id;
+export const deleteBattery = async (req, res) => {
+  const _id = req.params.id; //get the object id of the deleted stock
+  const reason = req.params.reason; // get the delete reson
 
   try {
-    const deletedBattery = await Battery.findByIdAndDelete(stock_id); // Find and delete the battery by ID
+    
+    //changing delete count to 1 and set the delete reason
+    const deletedStock = await Battery.findByIdAndUpdate(_id,{'isDeleted.count' : 1,'isDeleted.description' : reason},{new : true})
 
-    if (!deletedBattery) {
-      // If the battery is not found, send a 404 status code with a message
-      return res.status(404).json({ message: "Battery not found" });
-    }
-
-    res.status(200).json({ message: "Battery deleted successfully" }); // Send a success message
+    res.status(200).json({ message: "Battery deleted successfully",stock : deletedStock }); // Send a success message with deleted item
   } catch (error) {
     res.status(500).json({ message: "Failed to delete battery", error });
   }
@@ -112,3 +110,22 @@ export const updateBattery = async (req, res) => {
     res.status(500).json({ message: "Failed to update battery", error });
   }
 };
+
+// get battery details
+export const getBattery = async (req, res) => {
+  const stock_id = req.params.id;
+
+  try {
+    const battery = await Battery.findById(stock_id);
+
+    if (!battery) {
+      // If the battery is not found, send a 404 status code with a message
+      return res.status(404).json({ message: "Battery not found" });
+    }
+
+    res.status(200).json(battery); // Send the battery as the response
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch battery", error });
+  }
+};
+

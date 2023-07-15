@@ -13,6 +13,10 @@ import WorkerNotifications from "../pages/WorkerNotifications";
 import StockTable from "../components/stock";
 import AdminDashboardHeader from "../components/adminDashboardHeader";
 import {QueryClient,QueryClientProvider} from '@tanstack/react-query';
+import { WorkerTable } from "../components/workerDetailsTable";
+import ManageWorker from "../components/ManageWorker";
+import StatsProfitCard from "../components/ProfitCard";
+
 
 const AllRoutes = () => {
   const client = new QueryClient();//config query client
@@ -29,7 +33,14 @@ const AllRoutes = () => {
 
         <Route path = "/admin/stock" element ={<StockTable/>} />
 
+        <Route path = "/admin/workerRegister" element={<ManageWorker/>} />
+        <Route path = "/admin/profit" element={<StatsProfitCard/>} />
+
+
+
         {/* <Route path = '/admin/stock' element={<StockTable data ={[ {name : "asdasdasd",email : "adadada" , company : "adasdasdad"}]}/>}/> */}
+
+        <Route path = '/admin/workertable' element={<WorkerTable data = {[{name : "Vinnath", nic : "200126302350" ,email :"vinnath19@gmail.com",gender:"Male", address: "warawala",phone:"0711461016"}]}/>}/>
 
         <Route path="/worker" element={<WorkerOwnerPrivateRoute />}>
           <Route path="/worker/managestock" element={<WorkerDashboard />} />

@@ -40,6 +40,7 @@ import { showNotification,updateNotification } from "@mantine/notifications";
 import BatteryAPI from "../../API/batteryAPI/battery.api";
 import { useQuery } from '@tanstack/react-query';
 import { DateInput } from '@mantine/dates';
+import AdminDashboardHeader from "../adminDashboardHeader";
 
 const useStyles = createStyles((theme) => ({
   th: {
@@ -422,20 +423,20 @@ const StockTable = () => {
         </Box>
       </Modal>
 
-        <Button leftIcon={<IconPlus size={20}/>} style={{position:"fixed",left:1400}}>
+        {/* <Button leftIcon={<IconPlus size={20}/>} style={{position:"fixed",left:1400}}>
           Add new Stock
-        </Button>
+        </Button> */}
 
       {/* search bar */}
       <TextInput
         placeholder="Search by any field"
-        mt={-50}
-        mb={50}
+         mt={50}
+        // mb={50}
         icon={<IconSearch size="0.9rem" stroke={1.5} />}
         // value={search}
         // onChange={handleSearchChange}
         w={800}
-        style={{ position: "relative", left: "50%", translate: "-50%" }}
+        // style={{ position: "relative", left: "50%", translate: "-50%" }}
       />
 
       <ScrollArea
@@ -479,6 +480,7 @@ const StockTable = () => {
           </tbody>
         </Table>
       </ScrollArea>
+      
     </div>
   );
 };

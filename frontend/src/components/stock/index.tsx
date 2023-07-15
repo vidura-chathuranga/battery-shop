@@ -17,6 +17,8 @@ import {
   Box,
   LoadingOverlay,
   Textarea,
+  CloseButton,
+  Paper,
 } from "@mantine/core";
 import AdminAPI from '../../API/adminAPI/admin.api';
 import { keys } from "@mantine/utils";
@@ -37,6 +39,7 @@ import { useForm } from "@mantine/form";
 import { showNotification,updateNotification } from "@mantine/notifications";
 import BatteryAPI from "../../API/batteryAPI/battery.api";
 import { useQuery } from '@tanstack/react-query';
+import { DateInput } from '@mantine/dates';
 
 const useStyles = createStyles((theme) => ({
   th: {
@@ -113,10 +116,76 @@ const StockTable = () => {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [opened, setOpened] = useState(false);
 
+
     // use react query and fetch data
     const { data, isLoading, isError, refetch } = useQuery(["stockData"], () => {
       return BatteryAPI.getAllItems().then((res) => res.data)
     })
+
+     //declare add form
+  const addForm = useForm({
+    validateInputOnChange: true,
+    initialValues: {
+      quantity: "",
+      added_date: "",
+      warnty_priod: "",
+      sellingPrice: "",
+      actualPrice: "",
+      batry_brand: "",
+      Battery_description: "",
+    },
+  });
+
+
+
+     //add Items
+  const addItems = async (values: {
+    quantity: string;
+    added_date: string;
+    warnty_priod: String;
+    sellingPrice: string;
+    actualPrice: string;
+    batry_brand: string;
+    Battery_description: string;
+  }) => {
+    showNotification({
+      id: "add-items",
+      loading: true,
+      title: "Adding Items record",
+      message: "Please wait while we add Items record..",
+      autoClose: false,
+    });
+    BatteryAPI.addBattery(values)
+      .then((response) => {
+        updateNotification({
+          id: "add-items",
+          color: "teal",
+          icon: <IconCheck />,
+          title: "Items added successfully",
+          message: "Items data added successfully.",
+          //icon: <IconCheck />,
+          autoClose: 5000,
+        });
+        addForm.reset();
+        setOpened(false);
+
+        // refetch data from the database
+        refetch();
+      })
+      .catch((error) => {
+        updateNotification({
+          id: "add-items",
+          color: "red",
+          title: "Items Adding failed",
+          icon: <IconX />,
+          message: "We were unable to add the Items",
+          // icon: <IconAlertTriangle />,
+          autoClose: 5000,
+        });
+      });
+  };
+
+    
  
   // const [data, setData] = useState<Data[]>([]);
 
@@ -126,30 +195,7 @@ const StockTable = () => {
   //     filterData(data,search);
   //   };
 
-  // const data = [
-  //   {
-  //     _id: "001",
-  //     stock_id: "ST001",
-  //     quantity: "4",
-  //     added_data: "test",
-  //     warnty_priod: "test",
-  //     sellingPrice: "test",
-  //     actualPrice: "test",
-  //     batry_brand: "test",
-  //     Battery_description: "test",
-  //   },
-  //   {
-  //     _id: "002",
-  //     stock_id: "ST002",
-  //     quantity: "1",
-  //     added_data: "test",
-  //     warnty_priod: "test",
-  //     sellingPrice: "test",
-  //     actualPrice: "test",
-  //     batry_brand: "test",
-  //     Battery_description: "test",
-  //   },
-  // ];
+
 
   const getBatteryDetails = async () => {
     showNotification({
@@ -212,10 +258,10 @@ const StockTable = () => {
         <Text size={15}>{row.stock_id}</Text>
       </td>
       <td>
-        <Text size={15}>{row.batry_brand}</Text>
+        <Text size={15}>{row.batteryBrand}</Text>
       </td>
       <td>
-        <Text size={15}>{row.Battery_description}</Text>
+        <Text size={15}>{row.batteryDescription}</Text>
       </td>
       <td>
         <Text size={15}>{row.quantity}</Text>
@@ -224,18 +270,30 @@ const StockTable = () => {
         <Text size={15}>{row.sellingPrice}</Text>
       </td>
       <td>
-        <Text size={15}>{row.added_data}</Text>
+        <Text size={15}>{new Date(row.added_date).toLocaleDateString('en-GB').split('T')[0]}</Text>
       </td>
       <td>
-        <Text size={15}>{row.warnty_priod}</Text>
+        <Text size={15}>{row.warranty}</Text>
       </td>
       <td>
         {
           <>
             <Group spacing={"sm"}>
               {/* Accept button */}
-              <Button type="submit"   style={{ width: "90px" }}
-              
+              <Button type="submit"   style={{ width: "90px"}}  onClick={() => {
+                    addForm.setValues({
+                    //   _id: row._id,
+                    //   stock_id: row.stock_id,
+                    //   Battery_description: row.batteryDescription,
+                    //   batry_brand : row.batteryBrand,
+                    //   actualPrice: row.actualPrice,
+                    //   sellingPrice: row.sellingPrice,
+                    //   quantity: row.quantity,
+                    //  // added_date: new Date(row.added_date),
+                    //   warnty_priod: row.warranty,
+                    });
+                    setOpened(true);
+                  }}
                >
                    Accept
                 </Button>
@@ -280,6 +338,32 @@ const StockTable = () => {
   // table
   return (
     <div>
+       {/* stock add Modal */}
+       <Modal
+        opened={opened}
+        onClose={() => {
+         // addForm.reset();
+          setOpened(false);
+        }}
+        title="Accept Battery Stocks"
+      >
+        <form onSubmit={addForm.onSubmit((values) => addItems(values))}>
+      <Paper withBorder p="lg" radius="md" shadow="md">
+
+     
+      <Group position="center" mt="md">
+        <Button variant="outline" size="xs" color="red">
+          Cancel
+        </Button>
+        <Button variant="outline" size="xs">
+          Accept all
+        </Button>
+      </Group>
+    </Paper>
+    </form>
+      </Modal>
+
+
 
       {/* // delete modal */}
       <Modal
@@ -356,7 +440,7 @@ const StockTable = () => {
 
       <ScrollArea
         w={"100mw"}
-        h={600}
+        h={800}
         onScrollPositionChange={({ y }) => setScrolled(y !== 0)}
       >
         <Table

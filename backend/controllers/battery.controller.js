@@ -110,3 +110,22 @@ export const updateBattery = async (req, res) => {
     res.status(500).json({ message: "Failed to update battery", error });
   }
 };
+
+// get battery details
+export const getBattery = async (req, res) => {
+  const stock_id = req.params.id;
+
+  try {
+    const battery = await Battery.findById(stock_id);
+
+    if (!battery) {
+      // If the battery is not found, send a 404 status code with a message
+      return res.status(404).json({ message: "Battery not found" });
+    }
+
+    res.status(200).json(battery); // Send the battery as the response
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch battery", error });
+  }
+};
+

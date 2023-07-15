@@ -50,6 +50,19 @@ class BatteryAPI {
         );
     };
 
+    // get battery details from database
+    static getBatteryDetails = () => {
+        return axios.get(`${BASE_URL}/batteries`, { withCredentials: true })
+          .then(response => {
+            return response.data;
+          })
+          .catch(error => {
+            console.error("Error fetching battery details:", error);
+            throw error;
+          });
+      };
+      
+
 }
 
 export default BatteryAPI;

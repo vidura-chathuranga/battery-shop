@@ -334,7 +334,13 @@ const ManageStocks = () => {
           <Text size={15}>{row.batteryDescription}</Text>
         </td>
         <td>
-          <Text size={15}>{row.quantity}</Text>
+          <Text size={15}>
+            {row.quantity === 0 ? (
+              <Text color="red" weight={500}>OUT OF STOCK</Text>
+            ) : (
+              row.quantity
+            )}
+          </Text>
         </td>
         <td>
           <Text size={15}>{row.sellingPrice}</Text>
@@ -352,17 +358,31 @@ const ManageStocks = () => {
             <>
               <Group spacing={"sm"}>
                 {/* add to cart */}
-{/* add to cart */}
-<Tooltip label="Add to cart">
-                  <Popover trapFocus position="bottom" withArrow shadow="md" onClose={()=>{setQValue(0)}}>
+                <Tooltip label="Add to cart">
+                  <Popover
+                    trapFocus
+                    position="bottom"
+                    withArrow
+                    shadow="md"
+                    onClose={() => {
+                      setQValue(0);
+                    }}
+                    disabled={row.quantity === 0 ? true:false}
+                  >
                     <Popover.Target>
-                      <ActionIcon color="blue">
+                      <ActionIcon color={row.quantity === 0 ? "gray" : "blue"}>
                         <IconShoppingCartPlus />
                       </ActionIcon>
                     </Popover.Target>
                     <Popover.Dropdown>
                       {/* text of the selection */}
-                      <Text mb={10} style={{textAlign:"center"}} weight={500}>Select quantity</Text>
+                      <Text
+                        mb={10}
+                        style={{ textAlign: "center" }}
+                        weight={500}
+                      >
+                        Select quantity
+                      </Text>
                       <Group spacing={5} position="center">
                         <ActionIcon
                           size={42}
@@ -393,10 +413,18 @@ const ManageStocks = () => {
                           +
                         </ActionIcon>
                       </Group>
-                      
-                      <Text size={"xs"} color={'red'} mt={10}>{`*Note that, you can select maximum ${row.quantity} items only.`}</Text>
+
+                      <Text
+                        size={"xs"}
+                        color={"red"}
+                        mt={10}
+                      >{`*Note that, you can select maximum ${row.quantity} items only.`}</Text>
                       <Group position="center" grow>
-                        <Button size="xs" mt={10} leftIcon={<IconShoppingCartPlus size={15}/>}>
+                        <Button
+                          size="xs"
+                          mt={10}
+                          leftIcon={<IconShoppingCartPlus size={15} />}
+                        >
                           Add to cart
                         </Button>
                       </Group>
@@ -461,7 +489,13 @@ const ManageStocks = () => {
           <Text size={15}>{row.batteryDescription}</Text>
         </td>
         <td>
-          <Text size={15}>{row.quantity}</Text>
+          <Text size={15}>
+            {row.quantity === 0 ? (
+              <Text color="red" weight={500}>OUT OF STOCK</Text>
+            ) : (
+              row.quantity
+            )}
+          </Text>
         </td>
         <td>
           <Text size={15}>{row.sellingPrice}</Text>
@@ -480,15 +514,30 @@ const ManageStocks = () => {
               <Group spacing={"xs"}>
                 {/* add to cart */}
                 <Tooltip label="Add to cart">
-                  <Popover trapFocus position="bottom" withArrow shadow="md" onClose={()=>{setQValue(0)}}>
+                  <Popover
+                    trapFocus
+                    position="bottom"
+                    withArrow
+                    shadow="md"
+                    onClose={() => {
+                      setQValue(0);
+                    }}
+                    disabled={row.quantity === 0 ? true:false}
+                  >
                     <Popover.Target>
-                      <ActionIcon color="blue">
+                      <ActionIcon color={row.quantity === 0 ? "gray" : "blue"}>
                         <IconShoppingCartPlus />
                       </ActionIcon>
                     </Popover.Target>
                     <Popover.Dropdown>
                       {/* text of the selection */}
-                      <Text mb={10} style={{textAlign:"center"}} weight={500}>Select quantity</Text>
+                      <Text
+                        mb={10}
+                        style={{ textAlign: "center" }}
+                        weight={500}
+                      >
+                        Select quantity
+                      </Text>
                       <Group spacing={5} position="center">
                         <ActionIcon
                           size={42}
@@ -519,10 +568,18 @@ const ManageStocks = () => {
                           +
                         </ActionIcon>
                       </Group>
-                      
-                      <Text size={"xs"} color={'red'} mt={10}>{`*Note that, you can select maximum ${row.quantity} items only.`}</Text>
+
+                      <Text
+                        size={"xs"}
+                        color={"red"}
+                        mt={10}
+                      >{`*Note that, you can select maximum ${row.quantity} items only.`}</Text>
                       <Group position="center" grow>
-                        <Button size="xs" mt={10} leftIcon={<IconShoppingCartPlus size={15}/>}>
+                        <Button
+                          size="xs"
+                          mt={10}
+                          leftIcon={<IconShoppingCartPlus size={15} />}
+                        >
                           Add to cart
                         </Button>
                       </Group>

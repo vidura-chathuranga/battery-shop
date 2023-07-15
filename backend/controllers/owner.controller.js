@@ -86,6 +86,6 @@ export const registerWorker = async (req, res) => {
     console.log(savedWorker);
     res.status(201).json(savedWorker);
   } catch (error) {
-    // res.status(500).json({ message: "Failed to register worker", error });
+    res.status(500).json({ message: "Failed to register worker", error });
   }
 };

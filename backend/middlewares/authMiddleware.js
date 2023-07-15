@@ -24,7 +24,7 @@ export const validateWorkerAndAdmin = (req,res,next) =>{
 }
 
 //validate admin routes
-export const validateAndAdmin = (req,res,next) =>{
+export const validateAdmin = (req,res,next) =>{
     const accessToken = req.cookies.accessToken;
 
     if(accessToken){
@@ -34,7 +34,7 @@ export const validateAndAdmin = (req,res,next) =>{
                 console.log(err.message);
                 res.status(403).json({error:"Token was changed by someone"})
             }else{
-                if(decode.role === "ADMIN" ){
+                if(decode.role === "ADMIN"  ){
                     next();
                 }else{
                     res.status(403).json({error:"Unknown user"});

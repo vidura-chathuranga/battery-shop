@@ -10,7 +10,7 @@ import {
 import { useForm } from "@mantine/form";
 import { useState } from "react";
 import { showNotification, updateNotification } from "@mantine/notifications";
-import AdminAPI from "../../API/workerAPI/admin.api";
+import AdminAPI from "../../API/adminAPI/admin.api";
 
 
 interface Data{

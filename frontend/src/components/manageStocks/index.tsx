@@ -13,6 +13,11 @@ import {
   Box,
   Modal,
   LoadingOverlay,
+  Indicator,
+  Popover,
+  NumberInput,
+  NumberInputHandlers,
+  Divider,
 } from "@mantine/core";
 import { keys } from "@mantine/utils";
 import {
@@ -24,14 +29,17 @@ import {
   IconCheck,
   IconRefresh,
   IconShoppingCartPlus,
+  IconShoppingCart,
 } from "@tabler/icons-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useForm } from "@mantine/form";
 import { showNotification, updateNotification } from "@mantine/notifications";
 import { DateInput } from "@mantine/dates";
 
 import BatteryAPI from "../../API/batteryAPI/battery.api";
 import { useQuery } from "@tanstack/react-query";
+import { IconFileBarcode } from "@tabler/icons-react";
+import { Disabled } from "tabler-icons-react";
 
 // styles
 const useStyles = createStyles((theme) => ({
@@ -115,6 +123,10 @@ const ManageStocks = () => {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [editOpened, setEditOpened] = useState(false);
   const [sortedData, setSortedData] = useState<Data[]>([]);
+
+  // for number quantity Input
+  const [qvalue, setQValue] = useState<number | "">(0);
+  const handlers = useRef<NumberInputHandlers>();
 
   // use react query and fetch data
   const { data, isLoading, isError, refetch } = useQuery(["stockData"], () => {
@@ -339,12 +351,57 @@ const ManageStocks = () => {
           {
             <>
               <Group spacing={"sm"}>
-
                 {/* add to cart */}
-                <Tooltip label="Add to cart">
-                  <ActionIcon>
-                    <IconShoppingCartPlus />
-                  </ActionIcon>
+{/* add to cart */}
+<Tooltip label="Add to cart">
+                  <Popover trapFocus position="bottom" withArrow shadow="md" onClose={()=>{setQValue(0)}}>
+                    <Popover.Target>
+                      <ActionIcon color="blue">
+                        <IconShoppingCartPlus />
+                      </ActionIcon>
+                    </Popover.Target>
+                    <Popover.Dropdown>
+                      {/* text of the selection */}
+                      <Text mb={10} style={{textAlign:"center"}} weight={500}>Select quantity</Text>
+                      <Group spacing={5} position="center">
+                        <ActionIcon
+                          size={42}
+                          variant="default"
+                          onClick={() => handlers.current?.decrement()}
+                        >
+                          –
+                        </ActionIcon>
+
+                        <NumberInput
+                          hideControls
+                          value={qvalue}
+                          onChange={(val) => setQValue(val)}
+                          handlersRef={handlers}
+                          max={row.quantity}
+                          min={0}
+                          step={1}
+                          styles={{
+                            input: { width: rem(54), textAlign: "center" },
+                          }}
+                        />
+
+                        <ActionIcon
+                          size={42}
+                          variant="default"
+                          onClick={() => handlers.current?.increment()}
+                        >
+                          +
+                        </ActionIcon>
+                      </Group>
+                      
+                      <Text size={"xs"} color={'red'} mt={10}>{`*Note that, you can select maximum ${row.quantity} items only.`}</Text>
+                      <Group position="center" grow>
+                        <Button size="xs" mt={10} leftIcon={<IconShoppingCartPlus size={15}/>}>
+                          Add to cart
+                        </Button>
+                      </Group>
+                    </Popover.Dropdown>
+                  </Popover>
                 </Tooltip>
 
                 {/* edit button */}
@@ -366,7 +423,7 @@ const ManageStocks = () => {
                       setEditOpened(true);
                     }}
                   >
-                    <IconEdit/>
+                    <IconEdit />
                   </ActionIcon>
                 </Tooltip>
 
@@ -421,12 +478,56 @@ const ManageStocks = () => {
           {
             <>
               <Group spacing={"xs"}>
+                {/* add to cart */}
+                <Tooltip label="Add to cart">
+                  <Popover trapFocus position="bottom" withArrow shadow="md" onClose={()=>{setQValue(0)}}>
+                    <Popover.Target>
+                      <ActionIcon color="blue">
+                        <IconShoppingCartPlus />
+                      </ActionIcon>
+                    </Popover.Target>
+                    <Popover.Dropdown>
+                      {/* text of the selection */}
+                      <Text mb={10} style={{textAlign:"center"}} weight={500}>Select quantity</Text>
+                      <Group spacing={5} position="center">
+                        <ActionIcon
+                          size={42}
+                          variant="default"
+                          onClick={() => handlers.current?.decrement()}
+                        >
+                          –
+                        </ActionIcon>
 
-              {/* add to cart */}
-              <Tooltip label="Add to cart">
-                  <ActionIcon color="blue">
-                    <IconShoppingCartPlus/>
-                  </ActionIcon>
+                        <NumberInput
+                          hideControls
+                          value={qvalue}
+                          onChange={(val) => setQValue(val)}
+                          handlersRef={handlers}
+                          max={row.quantity}
+                          min={0}
+                          step={1}
+                          styles={{
+                            input: { width: rem(54), textAlign: "center" },
+                          }}
+                        />
+
+                        <ActionIcon
+                          size={42}
+                          variant="default"
+                          onClick={() => handlers.current?.increment()}
+                        >
+                          +
+                        </ActionIcon>
+                      </Group>
+                      
+                      <Text size={"xs"} color={'red'} mt={10}>{`*Note that, you can select maximum ${row.quantity} items only.`}</Text>
+                      <Group position="center" grow>
+                        <Button size="xs" mt={10} leftIcon={<IconShoppingCartPlus size={15}/>}>
+                          Add to cart
+                        </Button>
+                      </Group>
+                    </Popover.Dropdown>
+                  </Popover>
                 </Tooltip>
 
                 {/* edit button */}
@@ -448,7 +549,7 @@ const ManageStocks = () => {
                       setEditOpened(true);
                     }}
                   >
-                    <IconEdit/>
+                    <IconEdit />
                   </ActionIcon>
                 </Tooltip>
 
@@ -710,15 +811,21 @@ const ManageStocks = () => {
             <Button
               variant="gradient"
               gradient={{ from: "orange", to: "red" }}
-              leftIcon={<IconPlus size={20} />}
+              leftIcon={<IconFileBarcode size={20} />}
               onClick={() => setOpened(true)}
             >
               Generate Report
             </Button>
             <Tooltip label="Refresh">
-              <ActionIcon variant="light" onClick={() => refetch()}>
-                <IconRefresh size={50} />
-              </ActionIcon>
+              <Indicator color="red" size={14}>
+                <ActionIcon
+                  variant="outline"
+                  size={35}
+                  onClick={() => refetch()}
+                >
+                  <IconShoppingCart />
+                </ActionIcon>
+              </Indicator>
             </Tooltip>
           </Group>
         </Group>

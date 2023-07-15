@@ -15,15 +15,21 @@ import {
   LoadingOverlay,
 } from "@mantine/core";
 import { keys } from "@mantine/utils";
-import { IconSearch, IconPlus, IconEdit, IconTrash, IconX, IconCheck } from "@tabler/icons-react";
+import {
+  IconSearch,
+  IconPlus,
+  IconEdit,
+  IconTrash,
+  IconX,
+  IconCheck,
+} from "@tabler/icons-react";
 import { useState } from "react";
 import { useForm } from "@mantine/form";
 import { showNotification, updateNotification } from "@mantine/notifications";
-import { DateInput } from '@mantine/dates';
+import { DateInput } from "@mantine/dates";
 
 import BatteryAPI from "../../API/batteryAPI/battery.api";
-import { useQuery } from '@tanstack/react-query';
-
+import { useQuery } from "@tanstack/react-query";
 
 // styles
 const useStyles = createStyles((theme) => ({
@@ -62,10 +68,11 @@ const useStyles = createStyles((theme) => ({
       left: 0,
       right: 0,
       bottom: 0,
-      borderBottom: `${rem(1)} solid ${theme.colorScheme === "dark"
-        ? theme.colors.dark[3]
-        : theme.colors.gray[2]
-        }`,
+      borderBottom: `${rem(1)} solid ${
+        theme.colorScheme === "dark"
+          ? theme.colors.dark[3]
+          : theme.colors.gray[2]
+      }`,
     },
   },
 
@@ -87,9 +94,10 @@ interface Data {
 }
 
 function filterData(data: Data[], search: string) {
-  const query = search.toLowerCase().trim();
+  const query = search.trim();
+
   return data.filter((item) =>
-    keys(data[0]).some((key) => item[key].toLowerCase().includes(query))
+    keys(data[0]).some((key) => item[key].toString().includes(query))
   );
 }
 
@@ -98,26 +106,20 @@ const ManageStocks = () => {
   const { classes, cx } = useStyles();
   const [scrolled, setScrolled] = useState(false);
   const [opened, setOpened] = useState(false);
-  // const [adata, setData] = useState<Data[]>([]);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [editOpened, setEditOpened] = useState(false);
-  const [date, setDate] = useState<Date | null>(null);
-
+  const [sortedData, setSortedData] = useState<Data[]>([]);
 
   // use react query and fetch data
   const { data, isLoading, isError, refetch } = useQuery(["stockData"], () => {
-    return BatteryAPI.getAllItems().then((res) => res.data)
-  })
+    return BatteryAPI.getAllItems().then((res) => res.data);
+  });
 
-
-
-  // const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //     const { value } = event.currentTarget;
-  //     setSearch(value);
-  //     filterData(data,search);
-  //   };
-
-
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.currentTarget;
+    setSearch(value);
+    setSortedData(filterData(data, value));
+  };
 
   //declare add form
   const addForm = useForm({
@@ -133,7 +135,6 @@ const ManageStocks = () => {
     },
   });
 
-
   //declare edit form
   const editForm = useForm({
     validateInputOnChange: true,
@@ -148,7 +149,6 @@ const ManageStocks = () => {
       batry_brand: "",
       Battery_description: "",
     },
-
   });
 
   //add Items
@@ -200,8 +200,8 @@ const ManageStocks = () => {
 
   //update Item  function
   const updateItem = async (values: {
-    _id: string,
-    stock_id: string,
+    _id: string;
+    stock_id: string;
     quantity: string;
     added_date: Date;
     warnty_priod: String;
@@ -209,7 +209,6 @@ const ManageStocks = () => {
     actualPrice: string;
     batry_brand: string;
     Battery_description: string;
-
   }) => {
     showNotification({
       id: "update-items",
@@ -234,8 +233,8 @@ const ManageStocks = () => {
 
         //getting updated items from database
         refetch();
-
-      }).catch((error) => {
+      })
+      .catch((error) => {
         updateNotification({
           id: "update-items",
           color: "red",
@@ -246,40 +245,42 @@ const ManageStocks = () => {
           autoClose: 5000,
         });
       });
-
-
-  }
+  };
 
   // delete Stock function
-  const deleteSpecificStock = (values : {_id : string, reason : string,stock_id : string}) => {
-    BatteryAPI.deleteBattery(values).then((res) =>{
-      showNotification({
-        title : `${values.stock_id} was deleted`,
-        message : "Stock was deleted successfully",
-        autoClose : 1500,
-        icon:<IconCheck/>,
-        color: "teal"
+  const deleteSpecificStock = (values: {
+    _id: string;
+    reason: string;
+    stock_id: string;
+  }) => {
+    BatteryAPI.deleteBattery(values)
+      .then((res) => {
+        showNotification({
+          title: `${values.stock_id} was deleted`,
+          message: "Stock was deleted successfully",
+          autoClose: 1500,
+          icon: <IconCheck />,
+          color: "teal",
+        });
+
+        // after successing the deletion refetch the data from the database
+        refetch();
+
+        // clear all the fields
+        deleteForm.reset();
+
+        // then close the delete modal
+        setDeleteOpen(false);
+      })
+      .catch((err) => {
+        showNotification({
+          title: `${values.stock_id} was not deleted`,
+          message: "Stock was not deleted",
+          autoClose: 1500,
+          icon: <IconX />,
+          color: "red",
+        });
       });
-
-      // after successing the deletion refetch the data from the database
-      refetch();
-
-      // clear all the fields
-      deleteForm.reset();
-      
-      // then close the delete modal
-      setDeleteOpen(false);
-
-    }).catch((err)=>{
-      showNotification({
-        title : `${values.stock_id} was not deleted`,
-        message : "Stock was not deleted",
-        autoClose : 1500,
-        icon:<IconX/>,
-        color: "red"
-      });
-    });
-
   };
 
   // form for deletion
@@ -297,84 +298,162 @@ const ManageStocks = () => {
     },
   });
 
-
+  let rows = [];
 
   // rows map
-  const rows = data?.map((row: any) => (
-    <tr key={row._id}>
-      <td>
-        <Text size={15}>{row.stock_id}</Text>
-      </td>
-      <td>
-        <Text size={15}>{row.batteryBrand}</Text>
-      </td>
-      <td>
-        <Text size={15}>{row.batteryDescription}</Text>
-      </td>
-      <td>
-        <Text size={15}>{row.quantity}</Text>
-      </td>
-      <td>
-        <Text size={15}>{row.sellingPrice}</Text>
-      </td>
-      <td>
-        <Text size={15}>{new Date(row.added_date).toLocaleDateString('en-GB').split('T')[0]}</Text>
-      </td>
-      <td>
-        <Text size={15}>{row.warranty}</Text>
-      </td>
-      <td>
-        {
-          <>
-            <Group spacing={"sm"}>
-              {/* edit button */}
-              <Tooltip label="Edit stock">
-                <ActionIcon
-                  color="teal"
-                  onClick={() => {
-                    editForm.setValues({
-                      _id: row._id,
-                      stock_id: row.stock_id,
-                      Battery_description: row.batteryDescription,
-                      batry_brand : row.batteryBrand,
-                      actualPrice: row.actualPrice,
-                      sellingPrice: row.sellingPrice,
-                      quantity: row.quantity,
-                      added_date: new Date(row.added_date),
-                      warnty_priod: row.warranty,
-                    });
-                    setEditOpened(true);
-                  }}
-                >
-                  <IconEdit size={30} />
-                </ActionIcon>
-              </Tooltip>
+  if (sortedData.length > 0) {
+    rows = sortedData?.map((row: any) => (
+      <tr key={row._id}>
+        <td>
+          <Text size={15}>{row.stock_id}</Text>
+        </td>
+        <td>
+          <Text size={15}>{row.batteryBrand}</Text>
+        </td>
+        <td>
+          <Text size={15}>{row.batteryDescription}</Text>
+        </td>
+        <td>
+          <Text size={15}>{row.quantity}</Text>
+        </td>
+        <td>
+          <Text size={15}>{row.sellingPrice}</Text>
+        </td>
+        <td>
+          <Text size={15}>
+            {new Date(row.added_date).toLocaleDateString("en-GB").split("T")[0]}
+          </Text>
+        </td>
+        <td>
+          <Text size={15}>{row.warranty}</Text>
+        </td>
+        <td>
+          {
+            <>
+              <Group spacing={"sm"}>
+                {/* edit button */}
+                <Tooltip label="Edit stock">
+                  <ActionIcon
+                    color="teal"
+                    onClick={() => {
+                      editForm.setValues({
+                        _id: row._id,
+                        stock_id: row.stock_id,
+                        Battery_description: row.batteryDescription,
+                        batry_brand: row.batteryBrand,
+                        actualPrice: row.actualPrice,
+                        sellingPrice: row.sellingPrice,
+                        quantity: row.quantity,
+                        added_date: new Date(row.added_date),
+                        warnty_priod: row.warranty,
+                      });
+                      setEditOpened(true);
+                    }}
+                  >
+                    <IconEdit size={30} />
+                  </ActionIcon>
+                </Tooltip>
 
-              {/* delete button */}
-              <Tooltip label="Delete stock">
-                <ActionIcon
-                  color="red"
-                  onClick={() => {
-                    deleteForm.setValues({
-                      _id: row._id,
-                      stock_id: row.stock_id,
-                    });
-                    setDeleteOpen(true);
-                  }}
-                >
-                  <IconTrash size={30} />
-                </ActionIcon>
-              </Tooltip>
-            </Group>
-          </>
-        }
-      </td>
-    </tr>
-  ));
+                {/* delete button */}
+                <Tooltip label="Delete stock">
+                  <ActionIcon
+                    color="red"
+                    onClick={() => {
+                      deleteForm.setValues({
+                        _id: row._id,
+                        stock_id: row.stock_id,
+                      });
+                      setDeleteOpen(true);
+                    }}
+                  >
+                    <IconTrash size={30} />
+                  </ActionIcon>
+                </Tooltip>
+              </Group>
+            </>
+          }
+        </td>
+      </tr>
+    ));
+  } else {
+    rows = data?.map((row: any) => (
+      <tr key={row._id}>
+        <td>
+          <Text size={15}>{row.stock_id}</Text>
+        </td>
+        <td>
+          <Text size={15}>{row.batteryBrand}</Text>
+        </td>
+        <td>
+          <Text size={15}>{row.batteryDescription}</Text>
+        </td>
+        <td>
+          <Text size={15}>{row.quantity}</Text>
+        </td>
+        <td>
+          <Text size={15}>{row.sellingPrice}</Text>
+        </td>
+        <td>
+          <Text size={15}>
+            {new Date(row.added_date).toLocaleDateString("en-GB").split("T")[0]}
+          </Text>
+        </td>
+        <td>
+          <Text size={15}>{row.warranty}</Text>
+        </td>
+        <td>
+          {
+            <>
+              <Group spacing={"sm"}>
+                {/* edit button */}
+                <Tooltip label="Edit stock">
+                  <ActionIcon
+                    color="teal"
+                    onClick={() => {
+                      editForm.setValues({
+                        _id: row._id,
+                        stock_id: row.stock_id,
+                        Battery_description: row.batteryDescription,
+                        batry_brand: row.batteryBrand,
+                        actualPrice: row.actualPrice,
+                        sellingPrice: row.sellingPrice,
+                        quantity: row.quantity,
+                        added_date: new Date(row.added_date),
+                        warnty_priod: row.warranty,
+                      });
+                      setEditOpened(true);
+                    }}
+                  >
+                    <IconEdit size={30} />
+                  </ActionIcon>
+                </Tooltip>
+
+                {/* delete button */}
+                <Tooltip label="Delete stock">
+                  <ActionIcon
+                    color="red"
+                    onClick={() => {
+                      deleteForm.setValues({
+                        _id: row._id,
+                        stock_id: row.stock_id,
+                      });
+                      setDeleteOpen(true);
+                    }}
+                  >
+                    <IconTrash size={30} />
+                  </ActionIcon>
+                </Tooltip>
+              </Group>
+            </>
+          }
+        </td>
+      </tr>
+    ));
+  }
 
   // if data is fetching this overalay will be shows to the user
   if (isLoading) {
-    return <LoadingOverlay visible={isLoading} overlayBlur={2} />
+    return <LoadingOverlay visible={isLoading} overlayBlur={2} />;
   }
 
   if (isError) {
@@ -390,7 +469,6 @@ const ManageStocks = () => {
   // table
   return (
     <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-
       {/* // delete modal */}
       <Modal
         opened={deleteOpen}
@@ -408,7 +486,7 @@ const ManageStocks = () => {
           </Text>
           <form
             onSubmit={deleteForm.onSubmit((values) => {
-              deleteSpecificStock(values)
+              deleteSpecificStock(values);
             })}
           >
             <TextInput
@@ -440,7 +518,11 @@ const ManageStocks = () => {
               >
                 No I don't delete it
               </Button>
-              <Button color="red" type="submit" leftIcon={<IconTrash size={16} />}>
+              <Button
+                color="red"
+                type="submit"
+                leftIcon={<IconTrash size={16} />}
+              >
                 Delete it
               </Button>
             </Group>
@@ -458,7 +540,6 @@ const ManageStocks = () => {
         title="Add Items Record"
       >
         <form onSubmit={addForm.onSubmit((values) => addItems(values))}>
-
           <TextInput
             label="Battery brand"
             placeholder="Enter Brand name"
@@ -520,7 +601,6 @@ const ManageStocks = () => {
           setEditOpened(false);
         }}
         title="Update Item Record"
-
       >
         <form onSubmit={editForm.onSubmit((values) => updateItem(values))}>
           <TextInput
@@ -560,13 +640,12 @@ const ManageStocks = () => {
             {...editForm.getInputProps("sellingPrice")}
             required
           />
-           <DateInput
+          <DateInput
             placeholder="Added date"
             label="Added date"
             valueFormat="YYYY MMM DD"
             withAsterisk
             {...editForm.getInputProps("added_date")}
-
           />
           <TextInput
             label="warnty priod"
@@ -598,8 +677,8 @@ const ManageStocks = () => {
           mt={-50}
           mb={50}
           icon={<IconSearch size="0.9rem" stroke={1.5} />}
-          // value={search}
-          // onChange={handleSearchChange}
+          value={search}
+          onChange={handleSearchChange}
           w={800}
           style={{ position: "relative", left: "50%", translate: "-50%" }}
         />

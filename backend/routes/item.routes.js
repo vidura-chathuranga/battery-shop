@@ -1,18 +1,20 @@
 import express from "express";
-import batteriesController from "../controllers/battery.controller";
 import { validateWorkerAndAdmin } from "../middlewares/authMiddleware.js";
+import {addBatteries, getAllItems,updateBattery,deleteBattery} from '../controllers/battery.controller.js';
 
+const router = express.Router();
 
-// const router = express.Router();
+router.get("/",validateWorkerAndAdmin,getAllItems);
+router.post("/add", validateWorkerAndAdmin,addBatteries);
+router.put("/update/:id", validateWorkerAndAdmin,updateBattery);
+router.delete("/delete/:id/:reason",validateWorkerAndAdmin,deleteBattery)
 
-// router.post("/batteries", validateWorkerAndAdmin,batteriesController.addBatteries);
+export default router;
 
-// export default router;
+// const Routes = (app) => {
 
-const Routes = (app) => {
+//     app.post("/batteries", validateWorkerAndAdmin,batteriesController.addBatteries);
 
-    app.post("/batteries", validateWorkerAndAdmin,batteriesController.addBatteries);
+// };
 
-};
-
-module.exports = Routes;
+// module.exports = Routes;

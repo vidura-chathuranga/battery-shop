@@ -11,7 +11,7 @@ import {
     rem,
   } from '@mantine/core';
 
-  import AdminAPI from '../../../API/workerAPI/admin.api';
+  import AdminAPI from '../../../API/adminAPI/admin.api';
   import {useForm} from "@mantine/form";
   import { showNotification } from '@mantine/notifications';
   import { IconX } from '@tabler/icons-react';

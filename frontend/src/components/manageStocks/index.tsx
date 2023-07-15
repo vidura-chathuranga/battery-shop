@@ -22,6 +22,8 @@ import {
   IconTrash,
   IconX,
   IconCheck,
+  IconRefresh,
+  IconShoppingCartPlus,
 } from "@tabler/icons-react";
 import { useState } from "react";
 import { useForm } from "@mantine/form";
@@ -59,7 +61,9 @@ const useStyles = createStyles((theme) => ({
     zIndex: 100,
     top: 0,
     backgroundColor:
-      theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
+      theme.colorScheme === "dark"
+        ? theme.colors.dark[7]
+        : theme.colors.gray[1],
     transition: "box-shadow 150ms ease",
 
     "&::after": {
@@ -94,10 +98,12 @@ interface Data {
 }
 
 function filterData(data: Data[], search: string) {
-  const query = search.trim();
+  const query = search.toString().toLowerCase().trim();
 
   return data.filter((item) =>
-    keys(data[0]).some((key) => item[key].toString().includes(query))
+    keys(data[0]).some((key) =>
+      item[key].toString().toLowerCase().includes(query)
+    )
   );
 }
 
@@ -115,10 +121,11 @@ const ManageStocks = () => {
     return BatteryAPI.getAllItems().then((res) => res.data);
   });
 
+  // search filter
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.currentTarget;
     setSearch(value);
-    setSortedData(filterData(data, value));
+    setSortedData(filterData(data, value)); //store filtered data in the search state
   };
 
   //declare add form
@@ -298,6 +305,7 @@ const ManageStocks = () => {
     },
   });
 
+  //declare the rows variable and based on the filtered data or row data, it will print the table data!
   let rows = [];
 
   // rows map
@@ -331,6 +339,14 @@ const ManageStocks = () => {
           {
             <>
               <Group spacing={"sm"}>
+
+                {/* add to cart */}
+                <Tooltip label="Add to cart">
+                  <ActionIcon>
+                    <IconShoppingCartPlus />
+                  </ActionIcon>
+                </Tooltip>
+
                 {/* edit button */}
                 <Tooltip label="Edit stock">
                   <ActionIcon
@@ -350,7 +366,7 @@ const ManageStocks = () => {
                       setEditOpened(true);
                     }}
                   >
-                    <IconEdit size={30} />
+                    <IconEdit/>
                   </ActionIcon>
                 </Tooltip>
 
@@ -366,7 +382,7 @@ const ManageStocks = () => {
                       setDeleteOpen(true);
                     }}
                   >
-                    <IconTrash size={30} />
+                    <IconTrash />
                   </ActionIcon>
                 </Tooltip>
               </Group>
@@ -404,7 +420,15 @@ const ManageStocks = () => {
         <td>
           {
             <>
-              <Group spacing={"sm"}>
+              <Group spacing={"xs"}>
+
+              {/* add to cart */}
+              <Tooltip label="Add to cart">
+                  <ActionIcon color="blue">
+                    <IconShoppingCartPlus/>
+                  </ActionIcon>
+                </Tooltip>
+
                 {/* edit button */}
                 <Tooltip label="Edit stock">
                   <ActionIcon
@@ -424,7 +448,7 @@ const ManageStocks = () => {
                       setEditOpened(true);
                     }}
                   >
-                    <IconEdit size={30} />
+                    <IconEdit/>
                   </ActionIcon>
                 </Tooltip>
 
@@ -440,7 +464,7 @@ const ManageStocks = () => {
                       setDeleteOpen(true);
                     }}
                   >
-                    <IconTrash size={30} />
+                    <IconTrash />
                   </ActionIcon>
                 </Tooltip>
               </Group>
@@ -663,26 +687,41 @@ const ManageStocks = () => {
         </form>
       </Modal>
       <div>
-        <Button
-          leftIcon={<IconPlus size={20} />}
-          style={{ position: "fixed", left: 1400, top: "130px" }}
-          onClick={() => setOpened(true)}
-        >
-          Add new Stock
-        </Button>
-
-        {/* search bar */}
-        <TextInput
-          placeholder="Search by any field"
-          mt={-50}
-          mb={50}
-          icon={<IconSearch size="0.9rem" stroke={1.5} />}
-          value={search}
-          onChange={handleSearchChange}
-          w={800}
-          style={{ position: "relative", left: "50%", translate: "-50%" }}
-        />
-
+        <Group spacing={35} mb={70} mt={-30}>
+          {/* search bar */}
+          <TextInput
+            placeholder="Search by any field"
+            icon={<IconSearch size="0.9rem" stroke={1.5} />}
+            value={search}
+            onChange={handleSearchChange}
+            ml={"12%"}
+            w={"60%"}
+          />
+          <Group spacing={"lg"} ml={-10}>
+            {" "}
+            <Button
+              variant="gradient"
+              gradient={{ from: "indigo", to: "cyan" }}
+              leftIcon={<IconPlus size={20} />}
+              onClick={() => setOpened(true)}
+            >
+              New Stock
+            </Button>
+            <Button
+              variant="gradient"
+              gradient={{ from: "orange", to: "red" }}
+              leftIcon={<IconPlus size={20} />}
+              onClick={() => setOpened(true)}
+            >
+              Generate Report
+            </Button>
+            <Tooltip label="Refresh">
+              <ActionIcon variant="light" onClick={() => refetch()}>
+                <IconRefresh size={50} />
+              </ActionIcon>
+            </Tooltip>
+          </Group>
+        </Group>
         <ScrollArea
           w={"100mw"}
           h={600}
@@ -690,7 +729,7 @@ const ManageStocks = () => {
         >
           <Table
             highlightOnHover
-            horizontalSpacing={70}
+            horizontalSpacing={60}
             verticalSpacing="lg"
             miw={700}
             sx={{ tableLayout: "fixed" }}

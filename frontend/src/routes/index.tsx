@@ -4,15 +4,14 @@ import LandingPage from "../pages/LandingPage";
 import AdminLoginPage from "../pages/Login/adminLogin";
 import WorkerLoginPage from "../pages/Login/workerLogin";
 import Workerregister from "../pages/WorkerRegister";
-import ADashboard from "../pages/AdminDashboard";
 import WorkerOwnerPrivateRoute from "./workerOwnerPrivateRoute";
 import WorkerDashboard from "../pages/WorkerDashboard";
 import Logout from "../components/logout/logout";
-import WorkerDashboardHeader from "../components/workerDashboardHeader";
 import WorkerNotifications from "../pages/WorkerNotifications";
 import StockTable from "../components/stock";
 import AdminDashboardHeader from "../components/adminDashboardHeader";
 import {QueryClient,QueryClientProvider} from '@tanstack/react-query';
+import GenerateInvoicePage from "../pages/GenerateInvoice";
 
 const AllRoutes = () => {
   const client = new QueryClient();//config query client
@@ -37,6 +36,7 @@ const AllRoutes = () => {
             path="/worker/notifications"
             element={<WorkerNotifications />}
           />
+          <Route path="/worker/invoice" element={<GenerateInvoicePage/>}/>
           <Route path="/worker/logout" element={<Logout />} />
         </Route>
       </Routes>

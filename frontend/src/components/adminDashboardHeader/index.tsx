@@ -6,6 +6,7 @@ import {
   Code,
   getStylesRef,
   rem,
+  Image,
 } from "@mantine/core";
 import {
   IconBellRinging,
@@ -24,6 +25,7 @@ import { MantineLogo } from "@mantine/ds";
 import AdminDBoard from "../../components/AdminDashboard/index";
 import logo from "../../assets/shopLogo.png";
 import StockTable from "../stock";
+import AdminDashboaord from "../../pages/AdminDashboard";
 
 const adminDashboard = createStyles((theme) => ({
   header: {
@@ -102,9 +104,9 @@ const adminDashboard = createStyles((theme) => ({
 
 const data = [
 
-  { link: "/login/register", label: "Manage Worker", icon: IconAdjustmentsHeart },
-  { link: "", label: "Profit", icon: IconReceipt2 },
-  { link: "/admin/stock", label: "Stocks", icon: IconDatabaseImport },
+  { link: "/admin/workerRegister", label: "Manage Worker", icon: IconAdjustmentsHeart },
+  { link: "/admin/profit", label: "Profit", icon: IconReceipt2 },
+  { link: "/login/adminDashboard", label: "Stocks", icon: IconDatabaseImport },
   { link: "", label: "Notifications", icon: IconNotification },
 
 ];
@@ -137,8 +139,8 @@ const AdminDashboardHeader = ({link_id} : any) => {
       <Navbar height={950} width={{ sm: 250 }} p="md" style={{ backgroundColor: "lightblue" }}>
           <Navbar.Section grow>
             <Group className={classes.header} position="apart">
-              <MantineLogo size={28} />
-              {/* <Image width={200} height={50} src={logo} mt={5} /> */}
+              {/* <MantineLogo size={28} /> */}
+              <Image width={200} height={50} src={logo} mt={5} />
             </Group>
             {links}
           </Navbar.Section>

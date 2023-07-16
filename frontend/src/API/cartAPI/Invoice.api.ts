@@ -16,6 +16,12 @@ class Invoice{
         return axios.post(`${BASE_URL}/invoice/add`,values,{withCredentials:true});
     }
 
+    static getAllInvoice =()=>{
+
+        return axios.get(`${BASE_URL}/invoices`,{withCredentials:true});
+
+    }
+
 
 };
 

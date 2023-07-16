@@ -1364,7 +1364,7 @@ const ManageStocks = () => {
                 <th>Description</th>
                 <th>Quantity</th>
                 <th>Selling Price</th>
-                <th>Added_Date</th>
+                <th>Added Date</th>
                 <th>Warranty</th>
                 <th>Actions</th>
               </tr>

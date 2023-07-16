@@ -17,7 +17,6 @@ import {
   Popover,
   NumberInput,
   NumberInputHandlers,
-  Divider,
   Select,
 } from "@mantine/core";
 import { keys } from "@mantine/utils";
@@ -42,6 +41,8 @@ import { DateInput } from "@mantine/dates";
 import BatteryAPI from "../../API/batteryAPI/battery.api";
 import { useQuery } from "@tanstack/react-query";
 import { IconFileBarcode } from "@tabler/icons-react";
+import { IconArrowNarrowRight } from "@tabler/icons-react";
+import { modals } from "@mantine/modals";
 
 // styles
 const useStyles = createStyles((theme) => ({
@@ -160,6 +161,9 @@ const ManageStocks = () => {
   const [cartDiscount, setCartDiscount] = useState(0);
   const [discountType, setDiscountType] = useState("");
 
+  // customer details modal
+  const [openedCustomerDetails, setOpenedCutomerDetails] = useState(false);
+
   // search filter
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.currentTarget;
@@ -199,6 +203,20 @@ const ManageStocks = () => {
       Battery_description: "",
     },
   });
+
+    // customer details form
+    const customerForm = useForm({
+      validateInputOnChange : true,
+      initialValues :{
+        name : '',
+        phoneNumber : '',
+        address : ''
+      },
+      validate : {
+        name : (value) => value.length < 2 ? "Please enter valid name" : null,
+        phoneNumber : (value) => value.length < 10 ? "Please enter valid phone number": null,
+      }
+    });
 
   //add Items
   const addItems = async (values: {
@@ -295,6 +313,24 @@ const ManageStocks = () => {
         });
       });
   };
+
+  // Cart Confirmation Modal
+
+  const openCartCheckoutModal = () =>
+    modals.openConfirmModal({
+      shadow: "xl",
+      title: "Checkout confimation",
+      children: (
+        <Text size="sm">
+          Are you sure to proceed checkout? That means you are going to generate
+          a Invoice.This action cannot be reversed!
+        </Text>
+      ),
+      labels: { confirm: "Checkout", cancel: "Cancel" },
+      confirmProps: { color: "teal" },
+      onCancel: () => modals.close,
+      onConfirm: () => {},
+    });
 
   // delete Stock function
   const deleteSpecificStock = (values: {
@@ -750,20 +786,6 @@ const ManageStocks = () => {
     return total;
   };
 
-  // reArrange the discount price
-  const reArrangeDiscount = (value: string) => {
-    if (discountType === "PERCENTAGE") {
-      setCartDiscount(parseInt(value.trim().split("%")[0]));
-      return;
-    } else {
-      if (value.toLowerCase().trim().includes("rs")) {
-        setCartDiscount(parseFloat(value.split("rs")[1]));
-      } else {
-        setCartDiscount(parseFloat(value.trim()));
-      }
-    }
-  };
-
   // calculate Discount
   const calculateDiscount = () => {
     console.log(discountType);
@@ -774,9 +796,55 @@ const ManageStocks = () => {
       return cartDiscount;
     }
   };
+
+
+
   // table
   return (
     <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+      {/* Customer details getting */}
+      <Modal
+        opened={openedCustomerDetails}
+        onClose={() => setOpenedCutomerDetails(false)}
+        title="Customer Details"
+        size={"lg"}
+        zIndex={1000}
+      >
+        <form onSubmit={customerForm.onSubmit((values) => console.log(values))}>
+          <TextInput
+            label="Customer name"
+            withAsterisk
+            placeholder="Gayan Silve"
+            required
+            mb={10}
+            {...customerForm.getInputProps("name")}
+          />
+          <NumberInput
+            label="Phone Number"
+            withAsterisk
+            placeholder="0712906815"
+            required
+            hideControls
+            mb={10}
+            {...customerForm.getInputProps("phoneNumber")}
+          />
+          <TextInput
+            label="Address"
+            placeholder="No . 119 Malabe,Kaduwela"
+            mb={10}
+            {...customerForm.getInputProps("address")}
+          />
+          <Group grow position="center">
+            <Button
+              rightIcon={<IconArrowNarrowRight size={18} />}
+              color="teal"
+              mt={10}
+            >
+              CHECKOUT
+            </Button>
+          </Group>
+        </form>
+      </Modal>
       {/* cart Modal */}
       <Modal
         opened={cartOpened}
@@ -929,6 +997,17 @@ const ManageStocks = () => {
             ) : null}
           </tbody>
         </Table>
+
+        <Group position="right" mt={10} mb={10}>
+          <Button
+            rightIcon={<IconArrowNarrowRight size={18} />}
+            color="green"
+            disabled={cartData.length > 0 ? false : true}
+            onClick={() => setOpenedCutomerDetails(true)}
+          >
+            NEXT
+          </Button>
+        </Group>
       </Modal>
 
       {/* // delete modal */}

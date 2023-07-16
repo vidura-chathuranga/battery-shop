@@ -26,7 +26,6 @@ import { MantineLogo } from "@mantine/ds";
 import profitBoard from "../ProfitDashboard/index";
 import logo from "../../assets/shopLogo.png";
 import StockTable from "../stock";
-import AdminDashboaord from "../../pages/AdminDashboard";
 
 const adminDashboard = createStyles((theme) => ({
   header: {

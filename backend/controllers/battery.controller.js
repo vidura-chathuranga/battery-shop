@@ -129,3 +129,22 @@ export const getBattery = async (req, res) => {
   }
 };
 
+//delete battery from stock
+export const rejectStock = async (req, res) => {
+  const stock_id = req.params.id;
+
+  try {
+    const deletedBattery = await Battery.findByIdAndRemove(stock_id);
+
+    if (!deletedBattery) {
+      // If the battery is not found, send a 404 status code with a message
+      return res.status(404).json({ message: "Battery not found" });
+    }
+
+    res.status(200).json({ message: "Battery deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to delete battery", error });
+  }
+};
+
+

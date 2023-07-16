@@ -1,5 +1,5 @@
 import WorkerDashboardHeader from "../../components/workerDashboardHeader";
-import InvoiceRender from "../../components/InvoiceRender/invoice";
+import InvoiceRender from "../../components/Invoices/renderInvoice";
 
 const GenerateInvoicePage = () =>{
     return(

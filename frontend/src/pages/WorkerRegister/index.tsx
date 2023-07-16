@@ -6,11 +6,14 @@ import {
   Container,
   Button,
   Select,
+  Modal,
+  Group,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useState } from "react";
 import { showNotification, updateNotification } from "@mantine/notifications";
 import AdminAPI from "../../API/adminAPI/admin.api";
+
 
 
 interface Data{
@@ -29,6 +32,8 @@ const Register = () => {
 
   const [opened, setOpened] = useState(false);
   const [data, setData] = useState<Data[]>([]);
+  
+  
 
   const registerWorker = async(values:{
       worker_id:string,
@@ -215,6 +220,7 @@ const Register = () => {
 
         </form>
       </Paper>
+
     </Container>
   );
 };

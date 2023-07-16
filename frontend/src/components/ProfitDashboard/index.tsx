@@ -1,8 +1,8 @@
 import React from "react";
 import { Grid } from "@mantine/core";
-import StatsProfitCard from "../ProfitCard/";
+import StatsProfitCard from "../ProfitCard";
 
-function AdminDBoard() {
+function profitBoard() {
   return (
     <div>
       <Grid>
@@ -20,4 +20,4 @@ function AdminDBoard() {
   );
 }
 
-export default AdminDBoard;
+export default profitBoard;

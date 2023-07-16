@@ -13,6 +13,8 @@ import AdminDashboardHeader from "../components/adminDashboardHeader";
 import {QueryClient,QueryClientProvider} from '@tanstack/react-query';
 import GenerateInvoicePage from "../pages/GenerateInvoice";
 import { WorkerTable } from "../components/workerDetailsTable";
+import ManageWorker from "../components/ManageWorker";
+import StatsProfitCard from "../components/ProfitCard";
 
 
 const AllRoutes = () => {
@@ -29,6 +31,11 @@ const AllRoutes = () => {
         <Route path="/login/adminDashboard" element={<AdminDashboardHeader />} />
 
         <Route path = "/admin/stock" element ={<StockTable/>} />
+
+        <Route path = "/admin/workerRegister" element={<ManageWorker/>} />
+        <Route path = "/admin/profit" element={<StatsProfitCard/>} />
+
+
 
         {/* <Route path = '/admin/stock' element={<StockTable data ={[ {name : "asdasdasd",email : "adadada" , company : "adasdasdad"}]}/>}/> */}
 

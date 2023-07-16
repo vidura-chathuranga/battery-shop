@@ -169,14 +169,14 @@ const ManageWorker = () => {
 
     <div>
 
-    <Button leftIcon={<IconPlus size={20}/>} style={{position:"fixed",left:1400}}>
+    <Button leftIcon={<IconPlus size={20}/>} style={{position:"fixed",left:1200}}>
       Add new Stock
     </Button>
 
   {/* search bar */}
   <TextInput
     placeholder="Search by any field"
-    mt={-50}
+    mt={50}
     mb={50}
     icon={<IconSearch size="0.9rem" stroke={1.5} />}
     // value={search}

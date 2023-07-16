@@ -61,9 +61,17 @@ class BatteryAPI {
             throw error;
           });
       };
+
+        //Reject Battery Stock
+  static rejectBattery = (values : {_id : string,stock_id : string}) => {
+    return axios.delete(`${BASE_URL}/batteries/delete/${values._id}`,{withCredentials:true});
+};
       
       
 
 }
+
+
+
 
 export default BatteryAPI;

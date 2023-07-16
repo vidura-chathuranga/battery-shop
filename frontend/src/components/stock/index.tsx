@@ -186,6 +186,41 @@ const StockTable = () => {
       });
   };
 
+    // delete Stock function
+    const deleteSpecificStock = (values: {
+      _id: string;
+      stock_id: string;
+    }) => {
+      BatteryAPI.rejectBattery(values)
+        .then((res) => {
+          showNotification({
+            title: `${values.stock_id} was deleted`,
+            message: "Stock was deleted successfully",
+            autoClose: 1500,
+            icon: <IconCheck />,
+            color: "teal",
+          });
+  
+          // after successing the deletion refetch the data from the database
+          refetch();
+  
+          // clear all the fields
+          deleteForm.reset();
+  
+          // then close the delete modal
+          setDeleteOpen(false);
+        })
+        .catch((err) => {
+          showNotification({
+            title: `${values.stock_id} was not deleted`,
+            message: "Stock was not deleted",
+            autoClose: 1500,
+            icon: <IconX />,
+            color: "red",
+          });
+        });
+    };
+
     
  
   // const [data, setData] = useState<Data[]>([]);
@@ -239,18 +274,12 @@ const StockTable = () => {
       validateInputOnChange: true,
   
       initialValues: {
-        reason: "",
         stock_id: "",
         _id: "",
       },
   
-      validate: {
-        reason: (values) => (values.length > 5 ? null : "Please enter reason"),
-      },
     });
   
-
-
 
   // rows map
   const rows = data?.map((row:any) => (
@@ -383,7 +412,7 @@ const StockTable = () => {
           </Text>
           <form
             onSubmit={deleteForm.onSubmit((values) => {
-              //deleteSpecificStock(values)
+              deleteSpecificStock(values)
             })}
           >
             <TextInput
@@ -394,15 +423,7 @@ const StockTable = () => {
               {...deleteForm.getInputProps("stock_id")}
               mb={10}
             />
-            <Textarea
-              placeholder="This was added mistakenly"
-              label="Reason"
-              withAsterisk
-              required
-              autosize
-              minRows={3}
-              {...deleteForm.getInputProps("reason")}
-            />
+            
 
             <Group position="right" spacing={"md"} mt={20}>
               <Button

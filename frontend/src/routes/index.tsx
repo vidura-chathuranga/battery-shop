@@ -12,7 +12,7 @@ import StockTable from "../components/stock";
 import AdminDashboardHeader from "../components/adminDashboardHeader";
 import {QueryClient,QueryClientProvider} from '@tanstack/react-query';
 import GenerateInvoicePage from "../pages/GenerateInvoice";
-import { WorkerTable } from "../components/workerDetailsTable";
+import { WorkerTable } from "../components/deleteStockTable";
 import ManageWorker from "../components/ManageWorker";
 import StatsProfitCard from "../components/ProfitCard";
 
@@ -47,7 +47,6 @@ const AllRoutes = () => {
             path="/worker/notifications"
             element={<WorkerNotifications />}
           />
-          <Route path="/worker/invoice" element={<GenerateInvoicePage/>}/>
           <Route path="/worker/logout" element={<Logout />} />
         </Route>
       </Routes>

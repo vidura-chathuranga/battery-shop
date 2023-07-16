@@ -82,12 +82,10 @@ import {
         <Table sx={{ minWidth: 800 }} verticalSpacing="sm" >
           <thead>
             <tr>
-              <th>Employee</th>
-              <th>NIC NO</th>
-              <th>Email</th>
-              <th>Gender</th>
-              <th>Address</th>
-              <th>Phone</th>
+              <th>Stock ID</th>
+              <th>Brand</th>
+              <th>Description</th>
+              <th>Quantity</th>
               <th />
             </tr>
           </thead>

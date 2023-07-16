@@ -17,7 +17,6 @@ import {
   Popover,
   NumberInput,
   NumberInputHandlers,
-  Divider,
   Select,
 } from "@mantine/core";
 import { keys } from "@mantine/utils";
@@ -42,6 +41,10 @@ import { DateInput } from "@mantine/dates";
 import BatteryAPI from "../../API/batteryAPI/battery.api";
 import { useQuery } from "@tanstack/react-query";
 import { IconFileBarcode } from "@tabler/icons-react";
+import { IconArrowNarrowRight } from "@tabler/icons-react";
+import { modals } from "@mantine/modals";
+import InvoiceAPI from "../../API/cartAPI/Invoice.api";
+import { useDisclosure } from "@mantine/hooks";
 
 // styles
 const useStyles = createStyles((theme) => ({
@@ -111,6 +114,7 @@ interface cartData {
   _id: string;
   brand: string;
   quantity: number;
+  actualTotal: number;
   price: number;
   warranty: string;
   totalPrice: number;
@@ -160,6 +164,12 @@ const ManageStocks = () => {
   const [cartDiscount, setCartDiscount] = useState(0);
   const [discountType, setDiscountType] = useState("");
 
+  // customer details modal
+  const [openedCustomerDetails, setOpenedCutomerDetails] = useState(false);
+
+  // show the loading overlay when adding invoice to the database
+  const[invoiceOverlay,setInvoiceOverlay] = useState(false);
+
   // search filter
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.currentTarget;
@@ -197,6 +207,21 @@ const ManageStocks = () => {
       actualPrice: "",
       batry_brand: "",
       Battery_description: "",
+    },
+  });
+
+  // customer details form
+  const customerForm = useForm({
+    validateInputOnChange: true,
+    initialValues: {
+      name: "",
+      phoneNumber: "",
+      address: "",
+    },
+    validate: {
+      name: (value) => (value.length < 2 ? "Please enter valid name" : null),
+      phoneNumber: (value) =>
+        value.length < 10 ? "Please enter valid phone number" : null,
     },
   });
 
@@ -295,6 +320,88 @@ const ManageStocks = () => {
         });
       });
   };
+
+  // calculate the actual TotalOf the Items
+  const calculateActualTotal = () => {
+    let total = 0;
+    cartData.map((item) => {
+      total += item.actualTotal;
+    });
+    return total;
+  };
+
+  // save invoice data in the database
+  const saveInvoice = (values: any) => {
+
+    // set invoice overlay visible
+    setInvoiceOverlay(true)
+
+    // create invoice object
+    const invoice = {
+      cusName: values.name,
+      cusAddress: values.address,
+      cusPhone: values.phoneNumber,
+      items: [...cartData],
+      issuedDate: new Date(),
+      discount: calculateDiscount(),
+      totalSoldPrice: calculateTotalPrice() - calculateDiscount(),
+      totalActualPrice: calculateActualTotal(),
+    };
+
+    // call to the API and send back to the backend
+    InvoiceAPI.submitInvoice(invoice).then((res) => {
+      // after successing the invoice saving set to overlay disappear
+      setInvoiceOverlay(false)
+
+      // also show the notification
+      showNotification({
+        title : "Invoice Saved Successful",
+        message : "Invoice data saved successfully",
+        autoClose : 2500,
+        color : "teal",
+        icon : <IconCheck/>
+      });
+    }).catch((error)=>{
+      // if error happens,
+
+      // 1. overlay will be disappeared
+      setInvoiceOverlay(false);
+
+      // then show the error notification
+      showNotification({
+        title : "Saving invoice failed",
+        message : "Something went wrong while saving invoice data",
+        autoClose : 2500,
+        color : "red",
+        icon : <IconX/>
+      });
+    });
+  };
+
+  // Cart Confirmation Modal
+
+  const openCartCheckoutModal = (values: any) =>
+    modals.openConfirmModal({
+      zIndex: 2000,
+      shadow: "xl",
+      title: "Checkout confimation",
+      children: (
+        <Text size="sm">
+          Are you sure to proceed checkout? That means you are going to generate
+          a Invoice.This action cannot be reversed!
+        </Text>
+      ),
+      labels: { confirm: "Checkout", cancel: "Cancel" },
+      confirmProps: { color: "teal" },
+      onCancel: () => modals.close,
+      onConfirm: () => {
+        saveInvoice(values);
+        setOpenedCutomerDetails(false);
+        customerForm.reset();
+        setCartOpened(false);
+        setCartData([]);
+      },
+    });
 
   // delete Stock function
   const deleteSpecificStock = (values: {
@@ -464,6 +571,9 @@ const ManageStocks = () => {
                               quantity: parseInt(qvalue.toString()),
                               price: row.sellingPrice,
                               warranty: row.warranty,
+                              actualTotal:
+                                parseFloat(row.actualPrice) *
+                                parseInt(qvalue.toString()),
                               totalPrice:
                                 parseFloat(row.sellingPrice) *
                                 parseInt(qvalue.toString()),
@@ -643,6 +753,9 @@ const ManageStocks = () => {
                               _id: row._id,
                               brand: row.batteryBrand,
                               quantity: parseInt(qvalue.toString()),
+                              actualTotal:
+                                parseFloat(row.actualPrice) *
+                                parseInt(qvalue.toString()),
                               price: row.sellingPrice,
                               warranty: row.warranty,
                               totalPrice:
@@ -750,33 +863,70 @@ const ManageStocks = () => {
     return total;
   };
 
-  // reArrange the discount price
-  const reArrangeDiscount = (value: string) => {
-    if (discountType === "PERCENTAGE") {
-      setCartDiscount(parseInt(value.trim().split("%")[0]));
-      return;
-    } else {
-      if (value.toLowerCase().trim().includes("rs")) {
-        setCartDiscount(parseFloat(value.split("rs")[1]));
-      } else {
-        setCartDiscount(parseFloat(value.trim()));
-      }
-    }
-  };
-
   // calculate Discount
   const calculateDiscount = () => {
-    console.log(discountType);
-    console.log(cartDiscount);
     if (discountType === "PERCENTAGE") {
       return (calculateTotalPrice() * cartDiscount) / 100;
     } else {
       return cartDiscount;
     }
   };
+
   // table
   return (
-    <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+    <Box
+      sx={{ display: "flex", justifyContent: "space-between" }}
+      pos="relative"
+    >
+      {/* loading overaly when creating the invoice */}
+      <LoadingOverlay visible={invoiceOverlay} overlayBlur={2} />
+      {/* Customer details getting */}
+      <Modal
+        opened={openedCustomerDetails}
+        onClose={() => setOpenedCutomerDetails(false)}
+        title="Customer Details"
+        size={"lg"}
+        zIndex={1000}
+      >
+        <form
+          onSubmit={customerForm.onSubmit((values) => {
+            openCartCheckoutModal(values);
+          })}
+        >
+          <TextInput
+            label="Customer name"
+            withAsterisk
+            placeholder="Gayan Silve"
+            required
+            mb={10}
+            {...customerForm.getInputProps("name")}
+          />
+          <TextInput
+            label="Phone Number"
+            withAsterisk
+            placeholder="0712906815"
+            required
+            mb={10}
+            {...customerForm.getInputProps("phoneNumber")}
+          />
+          <TextInput
+            label="Address"
+            placeholder="No . 119 Malabe,Kaduwela"
+            mb={10}
+            {...customerForm.getInputProps("address")}
+          />
+          <Group grow position="center">
+            <Button
+              rightIcon={<IconArrowNarrowRight size={18} />}
+              color="teal"
+              mt={10}
+              type="submit"
+            >
+              CHECKOUT
+            </Button>
+          </Group>
+        </form>
+      </Modal>
       {/* cart Modal */}
       <Modal
         opened={cartOpened}
@@ -836,12 +986,12 @@ const ManageStocks = () => {
                   setDiscountType(e ? e : "");
                 }}
               />
-              <TextInput
+              <NumberInput
                 size="xs"
                 value={cartDiscount}
                 label="Discount Amount"
                 placeholder="5000 or 5%"
-                onChange={(e) => reArrangeDiscount(e.target.value)}
+                onChange={(e) => setCartDiscount(e ? e : 0)}
               />
             </Popover.Dropdown>
           </Popover>
@@ -901,7 +1051,17 @@ const ManageStocks = () => {
             ) : null}
             {cartData.length !== 0 ? (
               <tr style={{ background: "#f8f8fa" }}>
-                <td colSpan={5}></td>
+                <td colSpan={5}>
+                  {cartDiscount > 0 ? (
+                    <Text weight={500} align="center">
+                      SUB TOTAL
+                    </Text>
+                  ) : (
+                    <Text weight={500} align="center">
+                      TOTAL
+                    </Text>
+                  )}
+                </td>
                 <td>
                   <Text weight={cartDiscount == 0 ? 600 : 400} size={20}>
                     {rupee.format(calculateTotalPrice())}
@@ -929,6 +1089,17 @@ const ManageStocks = () => {
             ) : null}
           </tbody>
         </Table>
+
+        <Group position="right" mt={10} mb={10}>
+          <Button
+            rightIcon={<IconArrowNarrowRight size={18} />}
+            color="green"
+            disabled={cartData.length > 0 ? false : true}
+            onClick={() => setOpenedCutomerDetails(true)}
+          >
+            NEXT
+          </Button>
+        </Group>
       </Modal>
 
       {/* // delete modal */}

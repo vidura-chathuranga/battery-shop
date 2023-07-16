@@ -1,5 +1,4 @@
 import easyinvoice from 'easyinvoice';
-import fs from 'fs';
 
 
 const InvoiceRender = () => {
@@ -9,6 +8,7 @@ const InvoiceRender = () => {
         "customize": {
             
             //  fs.readFileSync('template.html', 'base64') ,
+            
         },
         "images": {
             // The logo on top of your invoice
@@ -22,18 +22,18 @@ const InvoiceRender = () => {
             "address": "Sample Street 123",
             "zip": "1234 AB",
             "city": "Sampletown",
-            "country": "Sri Lanka"
-            //"custom1": "custom value 1",
+            "country": "Sri Lanka",
+            "custom1": "07xxxxxxxx",
             //"custom2": "custom value 2",
             //"custom3": "custom value 3"
         },
         // Your recipient
         "client": {
-            "company": "Client Corp",
-            "address": "Clientstreet 456",
+            "company": "test name",
+            "address": "07xxxxxxxx",
             "zip": "4567 CD",
-            "city": "Clientcity",
-            "country": "Clientcountry"
+           //"city": "Clientcity",
+            //"country": "Clientcountry"
             // "custom1": "custom value 1",
             // "custom2": "custom value 2",
             // "custom3": "custom value 3"
@@ -53,7 +53,10 @@ const InvoiceRender = () => {
                 "quantity": "2",
                 "description": "Product 1",
                 "tax-rate": 0,
-                "price": 5000
+                "discount":100,
+
+                "price": 5000,
+                
             },
             {
                 "quantity": "1",
@@ -67,6 +70,7 @@ const InvoiceRender = () => {
                 "tax-rate": 0,
                 "price": 6000
             }
+            
         ],
         // The message you would like to display on the bottom of your invoice
         "bottom-notice": "Thank You...!!",

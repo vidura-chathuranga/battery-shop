@@ -96,7 +96,7 @@ const useStyles = createStyles((theme) => ({
 const links = [
   { label: "Manage Stock", link: "/worker/manageStock" },
   { label: "Notification", link: "/worker/notifications" },
-  { label: "Generate Invoice", link: "/worker/invoice" },
+  { label: "Invoices", link: "/worker/invoice" },
 ];
 
 const WorkerDashboardHeader = ({link_id} : any) => {

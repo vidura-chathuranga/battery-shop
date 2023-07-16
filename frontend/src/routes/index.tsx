@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LandingPage from "../pages/LandingPage";
 import AdminLoginPage from "../pages/Login/adminLogin";
 import WorkerLoginPage from "../pages/Login/workerLogin";
-import Workerregister from "../pages/WorkerRegister";
 import WorkerOwnerPrivateRoute from "./workerOwnerPrivateRoute";
 import WorkerDashboard from "../pages/WorkerDashboard";
 import Logout from "../components/logout/logout";
@@ -42,6 +41,7 @@ const AllRoutes = () => {
             path="/worker/notifications"
             element={<WorkerNotifications />}
           />
+          <Route path="/worker/invoice" element={<GenerateInvoicePage/>}/>
           <Route path="/worker/logout" element={<Logout />} />
         </Route>
       </Routes>

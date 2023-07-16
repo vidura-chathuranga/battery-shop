@@ -836,12 +836,12 @@ const ManageStocks = () => {
                   setDiscountType(e ? e : "");
                 }}
               />
-              <TextInput
+              <NumberInput
                 size="xs"
                 value={cartDiscount}
                 label="Discount Amount"
                 placeholder="5000 or 5%"
-                onChange={(e) => reArrangeDiscount(e.target.value)}
+                onChange={(e) => setCartDiscount(e ? e : 0)}
               />
             </Popover.Dropdown>
           </Popover>

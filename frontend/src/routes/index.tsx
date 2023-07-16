@@ -47,6 +47,7 @@ const AllRoutes = () => {
             path="/worker/notifications"
             element={<WorkerNotifications />}
           />
+          <Route path="/worker/invoice" element={<GenerateInvoicePage/>}/>
           <Route path="/worker/logout" element={<Logout />} />
         </Route>
       </Routes>

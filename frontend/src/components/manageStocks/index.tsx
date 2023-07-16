@@ -18,6 +18,7 @@ import {
   NumberInput,
   NumberInputHandlers,
   Divider,
+  Select,
 } from "@mantine/core";
 import { keys } from "@mantine/utils";
 import {
@@ -27,9 +28,11 @@ import {
   IconTrash,
   IconX,
   IconCheck,
-  IconRefresh,
   IconShoppingCartPlus,
   IconShoppingCart,
+  IconTrashX,
+  IconDiscount2,
+  IconDiscount2Off,
 } from "@tabler/icons-react";
 import { useRef, useState } from "react";
 import { useForm } from "@mantine/form";
@@ -39,7 +42,6 @@ import { DateInput } from "@mantine/dates";
 import BatteryAPI from "../../API/batteryAPI/battery.api";
 import { useQuery } from "@tanstack/react-query";
 import { IconFileBarcode } from "@tabler/icons-react";
-import { Disabled } from "tabler-icons-react";
 
 // styles
 const useStyles = createStyles((theme) => ({
@@ -105,6 +107,14 @@ interface Data {
   Battery_description: string;
 }
 
+interface cartData {
+  _id: string;
+  brand: string;
+  quantity: number;
+  price: number;
+  warranty: string;
+  totalPrice: number;
+}
 function filterData(data: Data[], search: string) {
   const query = search.toString().toLowerCase().trim();
 
@@ -128,16 +138,36 @@ const ManageStocks = () => {
   const [qvalue, setQValue] = useState<number | "">(0);
   const handlers = useRef<NumberInputHandlers>();
 
+  //store cart details
+  const [cartData, setCartData] = useState<cartData[]>([]); //state for storing cart data
+
+  // open the cart modal
+  const [cartOpened, setCartOpened] = useState(false);
+
   // use react query and fetch data
   const { data, isLoading, isError, refetch } = useQuery(["stockData"], () => {
     return BatteryAPI.getAllItems().then((res) => res.data);
   });
+
+  // Format the prices
+  // format number to SL rupee
+  let rupee = new Intl.NumberFormat("ta-LK", {
+    style: "currency",
+    currency: "LKR",
+  });
+
+  // store the cart discount
+  const [cartDiscount, setCartDiscount] = useState(0);
+  const [discountType, setDiscountType] = useState("");
 
   // search filter
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.currentTarget;
     setSearch(value);
     setSortedData(filterData(data, value)); //store filtered data in the search state
+    if (sortedData.length === data.length) {
+      setSortedData([]);
+    }
   };
 
   //declare add form
@@ -336,14 +366,16 @@ const ManageStocks = () => {
         <td>
           <Text size={15}>
             {row.quantity === 0 ? (
-              <Text color="red" weight={500}>OUT OF STOCK</Text>
+              <Text color="red" weight={500}>
+                OUT OF STOCK
+              </Text>
             ) : (
               row.quantity
             )}
           </Text>
         </td>
         <td>
-          <Text size={15}>{row.sellingPrice}</Text>
+          <Text size={15}>{rupee.format(row.sellingPrice)}</Text>
         </td>
         <td>
           <Text size={15}>
@@ -367,7 +399,7 @@ const ManageStocks = () => {
                     onClose={() => {
                       setQValue(0);
                     }}
-                    disabled={row.quantity === 0 ? true:false}
+                    disabled={row.quantity === 0 ? true : false}
                   >
                     <Popover.Target>
                       <ActionIcon color={row.quantity === 0 ? "gray" : "blue"}>
@@ -424,6 +456,30 @@ const ManageStocks = () => {
                           size="xs"
                           mt={10}
                           leftIcon={<IconShoppingCartPlus size={15} />}
+                          onClick={() => {
+                            // create object for storing the cart
+                            const newCartData = {
+                              _id: row._id,
+                              brand: row.batteryBrand,
+                              quantity: parseInt(qvalue.toString()),
+                              price: row.sellingPrice,
+                              warranty: row.warranty,
+                              totalPrice:
+                                parseFloat(row.sellingPrice) *
+                                parseInt(qvalue.toString()),
+                            };
+                            //save the cart details in the state
+                            setCartData((current) => [...current, newCartData]);
+
+                            // shows the confirmation notification
+                            showNotification({
+                              title: "Item added to the cart",
+                              message: "Item added to the cart successfully",
+                              autoClose: 1000,
+                              color: "teal",
+                              icon: <IconCheck />,
+                            });
+                          }}
                         >
                           Add to cart
                         </Button>
@@ -491,14 +547,16 @@ const ManageStocks = () => {
         <td>
           <Text size={15}>
             {row.quantity === 0 ? (
-              <Text color="red" weight={500}>OUT OF STOCK</Text>
+              <Text color="red" weight={500}>
+                OUT OF STOCK
+              </Text>
             ) : (
               row.quantity
             )}
           </Text>
         </td>
         <td>
-          <Text size={15}>{row.sellingPrice}</Text>
+          <Text size={15}>{rupee.format(row.sellingPrice)}</Text>
         </td>
         <td>
           <Text size={15}>
@@ -522,7 +580,7 @@ const ManageStocks = () => {
                     onClose={() => {
                       setQValue(0);
                     }}
-                    disabled={row.quantity === 0 ? true:false}
+                    disabled={row.quantity === 0 ? true : false}
                   >
                     <Popover.Target>
                       <ActionIcon color={row.quantity === 0 ? "gray" : "blue"}>
@@ -579,6 +637,30 @@ const ManageStocks = () => {
                           size="xs"
                           mt={10}
                           leftIcon={<IconShoppingCartPlus size={15} />}
+                          onClick={() => {
+                            // create object for storing the cart
+                            const newCartData = {
+                              _id: row._id,
+                              brand: row.batteryBrand,
+                              quantity: parseInt(qvalue.toString()),
+                              price: row.sellingPrice,
+                              warranty: row.warranty,
+                              totalPrice:
+                                parseFloat(row.sellingPrice) *
+                                parseInt(qvalue.toString()),
+                            };
+                            //save the cart details in the state
+                            setCartData((current) => [...current, newCartData]);
+
+                            // shows the confirmation notification
+                            showNotification({
+                              title: "Item added to the cart",
+                              message: "Item added to the cart successfully",
+                              autoClose: 1000,
+                              color: "teal",
+                              icon: <IconCheck />,
+                            });
+                          }}
                         >
                           Add to cart
                         </Button>
@@ -633,6 +715,17 @@ const ManageStocks = () => {
     ));
   }
 
+  // cart rowws
+  const cartRows = cartData.map((item: any, index: any) => (
+    <tr id={item._id}>
+      <td>{index + 1}</td>
+      <td>{item.brand}</td>
+      <td>{item.warranty}</td>
+      <td>{rupee.format(item.price)}</td>
+      <td>{item.quantity}</td>
+      <td>{rupee.format(item.totalPrice)}</td>
+    </tr>
+  ));
   // if data is fetching this overalay will be shows to the user
   if (isLoading) {
     return <LoadingOverlay visible={isLoading} overlayBlur={2} />;
@@ -648,9 +741,196 @@ const ManageStocks = () => {
     });
   }
 
+  // calculate the total of the cart items
+  const calculateTotalPrice = () => {
+    let total = 0;
+    cartData.map((item) => {
+      total += item.totalPrice;
+    });
+    return total;
+  };
+
+  // reArrange the discount price
+  const reArrangeDiscount = (value: string) => {
+    if (discountType === "PERCENTAGE") {
+      setCartDiscount(parseInt(value.trim().split("%")[0]));
+      return;
+    } else {
+      if (value.toLowerCase().trim().includes("rs")) {
+        setCartDiscount(parseFloat(value.split("rs")[1]));
+      } else {
+        setCartDiscount(parseFloat(value.trim()));
+      }
+    }
+  };
+
+  // calculate Discount
+  const calculateDiscount = () => {
+    console.log(discountType);
+    console.log(cartDiscount);
+    if (discountType === "PERCENTAGE") {
+      return (calculateTotalPrice() * cartDiscount) / 100;
+    } else {
+      return cartDiscount;
+    }
+  };
   // table
   return (
     <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+      {/* cart Modal */}
+      <Modal
+        opened={cartOpened}
+        onClose={() => setCartOpened(false)}
+        title="Item cart"
+        size={"80%"}
+      >
+        <Group position="right">
+          <Button
+            color="red"
+            mb={10}
+            leftIcon={<IconTrashX size={18} />}
+            onClick={() => {
+              setCartData([]);
+              setCartDiscount(0);
+              setDiscountType("");
+            }}
+            variant="subtle"
+          >
+            CLEAR ALL
+          </Button>
+          {/* discount popup */}
+          <Popover
+            width={300}
+            trapFocus
+            position="bottom"
+            withArrow
+            shadow="md"
+          >
+            <Popover.Target>
+              <Button
+                leftIcon={<IconDiscount2 size={18} />}
+                mb={10}
+                variant="subtle"
+              >
+                DISCOUNT
+              </Button>
+            </Popover.Target>
+            <Popover.Dropdown
+              sx={(theme) => ({
+                background:
+                  theme.colorScheme === "dark"
+                    ? theme.colors.dark[7]
+                    : theme.white,
+              })}
+            >
+              <Select
+                label="Discount type"
+                size="xs"
+                defaultChecked
+                value={discountType}
+                data={[
+                  { value: "PERCENTAGE", label: "Percentage" },
+                  { value: "CASH", label: "Cash" },
+                ]}
+                onChange={(e) => {
+                  setDiscountType(e ? e : "");
+                }}
+              />
+              <TextInput
+                size="xs"
+                value={cartDiscount}
+                label="Discount Amount"
+                placeholder="5000 or 5%"
+                onChange={(e) => reArrangeDiscount(e.target.value)}
+              />
+            </Popover.Dropdown>
+          </Popover>
+          <Button
+            variant="subtle"
+            color="red"
+            mb={10}
+            leftIcon={<IconDiscount2Off size={18} />}
+            onClick={() => {
+              setCartDiscount(0);
+              setDiscountType("");
+            }}
+          >
+            CLEAR DISCOUNT
+          </Button>
+        </Group>
+        <Table
+          withBorder
+          withColumnBorders
+          highlightOnHover
+          horizontalSpacing={60}
+          verticalSpacing="md"
+          miw={700}
+          fontSize={15}
+        >
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Brand</th>
+              <th>Warranty</th>
+              <th>Unit Price</th>
+              <th>Quantity</th>
+              <th>Total Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            {cartData.length === 0 ? (
+              <tr>
+                <td colSpan={6}>
+                  <Text size={20} weight={500} align="center">
+                    Cart is empty.
+                  </Text>
+                </td>
+              </tr>
+            ) : (
+              cartRows
+            )}
+            {cartDiscount !== 0 ? (
+              <tr>
+                <td colSpan={5}>
+                  <Text weight={500} align="center">
+                    DISCOUNT
+                  </Text>
+                </td>
+                <td>{`- ${rupee.format(calculateDiscount())}`}</td>
+              </tr>
+            ) : null}
+            {cartData.length !== 0 ? (
+              <tr style={{ background: "#f8f8fa" }}>
+                <td colSpan={5}></td>
+                <td>
+                  <Text weight={cartDiscount == 0 ? 600 : 400} size={20}>
+                    {rupee.format(calculateTotalPrice())}
+                  </Text>
+                </td>
+              </tr>
+            ) : null}
+            {cartDiscount !== 0 ? (
+              <tr>
+                <td colSpan={5}>
+                  <Text weight={500} align="center">
+                    TOTAL
+                  </Text>
+                </td>
+                <td>
+                  {
+                    <Text weight={600} size={21}>
+                      {rupee.format(
+                        calculateTotalPrice() - calculateDiscount()
+                      )}
+                    </Text>
+                  }
+                </td>
+              </tr>
+            ) : null}
+          </tbody>
+        </Table>
+      </Modal>
+
       {/* // delete modal */}
       <Modal
         opened={deleteOpen}
@@ -873,12 +1153,18 @@ const ManageStocks = () => {
             >
               Generate Report
             </Button>
-            <Tooltip label="Refresh">
-              <Indicator color="red" size={14}>
+            <Tooltip label="Cart">
+              <Indicator
+                color="red"
+                size={14}
+                disabled={cartData.length === 0 ? true : false}
+              >
                 <ActionIcon
                   variant="outline"
                   size={35}
-                  onClick={() => refetch()}
+                  onClick={() => {
+                    setCartOpened(true);
+                  }}
                 >
                   <IconShoppingCart />
                 </ActionIcon>

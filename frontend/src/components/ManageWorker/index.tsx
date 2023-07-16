@@ -21,11 +21,16 @@ import {
   IconPlus,
   IconEdit,
   IconTrash,
+  IconCheck,
+  IconX,
 } from "@tabler/icons-react";
 import { useState } from "react";
+import { showNotification,updateNotification } from "@mantine/notifications";
 import WorkerRegister from "../../pages/WorkerRegister";
 import { useDisclosure } from '@mantine/hooks';
 import { Modal, Group, Button } from '@mantine/core';
+import WorkerAPI from "../../API/workerAPI/worker.api";
+import { useQuery } from '@tanstack/react-query';
 
 
 
@@ -103,30 +108,71 @@ const ManageWorker = () => {
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
   
 
-  const data = [
-    {
-      worker_id: "asdadada",
-      name: "asdadada",
-      email: "asdadada",
-      phone: "asdadada",
-     nic: "asdadada",
-      address: "asdadada",
-      gender: "asdadada",
-    },
-    {
-      worker_id: "asdadada",
-      name: "asdadada",
-      email: "asdadada",
-      phone: "asdadada",
-     nic: "asdadada",
-      address: "asdadada",
-      gender: "asdadada",
-    },
+  // const data = [
+  //   {
+  //     worker_id: "asdadada",
+  //     name: "asdadada",
+  //     email: "asdadada",
+  //     phone: "asdadada",
+  //    nic: "asdadada",
+  //     address: "asdadada",
+  //     gender: "asdadada",
+  //   },
+  //   {
+  //     worker_id: "asdadada",
+  //     name: "asdadada",
+  //     email: "asdadada",
+  //     phone: "asdadada",
+  //    nic: "asdadada",
+  //     address: "asdadada",
+  //     gender: "asdadada",
+  //   },
    
-  ];
+  // ];
+
+   // use react query and fetch data
+   const { data, isLoading, isError, refetch } = useQuery(["stockData"], () => {
+    return WorkerAPI.getAllWorkerDetails().then((res) => res.data)
+  })
+
+  const getWorkerDetails = async () => {
+    showNotification({
+      id: "get-worker-details",
+      loading: true,
+      title: "Fetching Worker Details",
+      message: "Please wait while we fetch worker details..",
+      autoClose: false,
+    });
+  
+    try {
+      const workerDetails = await WorkerAPI.getAllWorkerDetails();
+  
+      updateNotification({
+        id: "get-worker-details",
+        color: "teal",
+        icon: <IconCheck />,
+        title: "Worker Details Fetched",
+        message: "Successfully fetched worker details.",
+        autoClose: 5000,
+      });
+  
+      return workerDetails;
+    } catch (error) {
+      updateNotification({
+        id: "get-worker-details",
+        color: "red",
+        icon: <IconX />,
+        title: "Failed to Fetch Worker Details",
+        message: "We were unable to fetch worker details.",
+        autoClose: 5000,
+      });
+  
+      throw error;
+    }
+  };
 
 
-  const rows = data?.map((row) => (
+  const rows = data?.map((row:any) => (
     <tr key={row.worker_id}>
       <td>
         <Text size={15}>{row.name}</Text>
@@ -217,7 +263,7 @@ const ManageWorker = () => {
           <th>Gender</th>
         </tr>
       </thead>
-      <tbody>
+      {/* <tbody>
         {rows.length > 0 ? (
           rows
         ) : (
@@ -229,7 +275,7 @@ const ManageWorker = () => {
             </td>
           </tr>
         )}
-      </tbody>
+      </tbody> */}
     </Table>
   </ScrollArea>
 </div> 

@@ -23,10 +23,10 @@ import {
   IconTrash,
 } from "@tabler/icons-react";
 import { MantineLogo } from "@mantine/ds";
-import profitBoard from "../ProfitDashboard/index";
 import logo from "../../assets/shopLogo.png";
 import StockTable from "../stock";
-import AdminDashboaord from "../../pages/AdminDashboard";
+
+
 
 const adminDashboard = createStyles((theme) => ({
   header: {
@@ -103,36 +103,37 @@ const adminDashboard = createStyles((theme) => ({
   },
 }));
 
-const data = [
+const links = [
 
-  { link: "/admin/workerRegister", label: "Manage Worker", icon: IconAdjustmentsHeart },
-  { link: "/admin/profit", label: "Profit", icon: IconReceipt2 },
-  { link: "/login/adminDashboard", label: "Stock", icon: IconDatabaseImport },
-  { link: "/login/adminDashboard", label: "Delete Stock", icon: IconTrash },
+  { link: "/admin/manageworker", label: "Manage Worker", icon: IconAdjustmentsHeart },
+  { link: "/admin/profitpage", label: "Profit", icon: IconReceipt2 },
+  { link: "/admin/stockpage", label: "Stock", icon: IconDatabaseImport },
+  { link: "", label: "Delete Stock", icon: IconTrash },
   { link: "", label: "Notifications", icon: IconNotification },
 
 ];
 
 const AdminDashboardHeader = ({link_id} : any) => {
     
+  const [active, setActive] = useState(links[link_id].link);
   const { classes, cx } = adminDashboard();
-  const [active, setActive] = useState("Billing");
+  //const [active, setActive] = useState("Billing");
 
-  const links = data.map((item) => (
+  const items = links.map((link,index) => (
     <a
       className={cx(classes.link, {
-        [classes.linkActive]: item.label === active,
+        [classes.linkActive]: link.label === active,
       })}
-      href={item.link}
-      key={item.label}
+      href={link.link}
+      key={link.label}
       onClick={(event) => {
         event.preventDefault();
-        window.location.href = item.link;
-        setActive(item.label);
+        window.location.href = link.link;
+        setActive(link.label);
       }}
     >
-      <item.icon className={classes.linkIcon} stroke={1.5} />
-      <span>{item.label}</span>
+      <link.icon className={classes.linkIcon} stroke={1.5} />
+      <span>{link.label}</span>
     </a>
   ));
   return (
@@ -144,7 +145,7 @@ const AdminDashboardHeader = ({link_id} : any) => {
               {/* <MantineLogo size={28} /> */}
               <Image width={200} height={50} src={logo} mt={5} />
             </Group>
-            {links}
+            {items}
           </Navbar.Section>
 
           <Navbar.Section className={classes.footer}>
@@ -160,7 +161,7 @@ const AdminDashboardHeader = ({link_id} : any) => {
         </Navbar>
       </div>
       <div>
-        <StockTable />
+        {/* <StockTable /> */}
       </div>
     </div>
   );

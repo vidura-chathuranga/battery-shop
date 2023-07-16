@@ -6,6 +6,7 @@ import WorkerLoginPage from "../pages/Login/workerLogin";
 import WorkerOwnerPrivateRoute from "./workerOwnerPrivateRoute";
 import WorkerDashboard from "../pages/WorkerDashboard";
 import Logout from "../components/logout/logout";
+import Adminlogout from "../components/adminLogout";
 import WorkerNotifications from "../pages/WorkerNotifications";
 import StockTable from "../components/stock";
 import AdminDashboardHeader from "../components/adminDashboardHeader";
@@ -33,7 +34,7 @@ const AllRoutes = () => {
 
         <Route path = "/admin/workerRegister" element={<ManageWorker/>} />
         <Route path = "/admin/profit" element={<StatsProfitCard/>} />
-
+        <Route path="/admin/logout" element={<Adminlogout />} />
 
 
         {/* <Route path = '/admin/stock' element={<StockTable data ={[ {name : "asdasdasd",email : "adadada" , company : "adasdasdad"}]}/>}/> */}
@@ -48,6 +49,7 @@ const AllRoutes = () => {
           />
           <Route path="/worker/invoice" element={<GenerateInvoicePage/>}/>
           <Route path="/worker/logout" element={<Logout />} />
+          
         </Route>
       </Routes>
     </Router>

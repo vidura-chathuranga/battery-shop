@@ -27,7 +27,10 @@ import profitBoard from "../ProfitDashboard/index";
 import logo from "../../assets/shopLogo.png";
 import StockTable from "../stock";
 
+
 const adminDashboard = createStyles((theme) => ({
+
+
   header: {
     paddingBottom: theme.spacing.md,
     marginBottom: `calc(${theme.spacing.md} * 1.5)`,
@@ -113,6 +116,10 @@ const data = [
 ];
 
 const AdminDashboardHeader = ({link_id} : any) => {
+
+  const user = JSON.parse(localStorage.getItem('user-worker-session')!!);
+
+ 
     
   const { classes, cx } = adminDashboard();
   const [active, setActive] = useState("Billing");
@@ -148,7 +155,7 @@ const AdminDashboardHeader = ({link_id} : any) => {
 
           <Navbar.Section className={classes.footer}>
             <a
-              href="#"
+              href="/admin/logout"
               className={classes.link}
               onClick={(event) => event.preventDefault()}
             >

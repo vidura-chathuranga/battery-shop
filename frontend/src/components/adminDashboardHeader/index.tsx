@@ -23,7 +23,7 @@ import {
   IconTrash,
 } from "@tabler/icons-react";
 import { MantineLogo } from "@mantine/ds";
-import AdminDBoard from "../../components/AdminDashboard/index";
+import profitBoard from "../ProfitDashboard/index";
 import logo from "../../assets/shopLogo.png";
 import StockTable from "../stock";
 import AdminDashboaord from "../../pages/AdminDashboard";

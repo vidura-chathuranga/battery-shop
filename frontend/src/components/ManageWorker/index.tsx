@@ -3,14 +3,12 @@ import {
   Table,
   ScrollArea,
   UnstyledButton,
-  Group,
   Text,
   Center,
   TextInput,
   rem,
   ActionIcon,
   Tooltip,
-  Button,
   Container,
   Grid,
 } from "@mantine/core";
@@ -25,6 +23,11 @@ import {
   IconTrash,
 } from "@tabler/icons-react";
 import { useState } from "react";
+import WorkerRegister from "../../pages/WorkerRegister";
+import { useDisclosure } from '@mantine/hooks';
+import { Modal, Group, Button } from '@mantine/core';
+
+
 
 const useStyles = createStyles((theme) => ({
   th: {
@@ -97,6 +100,8 @@ const ManageWorker = () => {
   const [search, setSearch] = useState("");
   const { classes, cx } = useStyles();
   const [scrolled, setScrolled] = useState(false);
+  const [showRegistrationForm, setShowRegistrationForm] = useState(false);
+  
 
   const data = [
     {
@@ -146,14 +151,14 @@ const ManageWorker = () => {
           <>
             <Group spacing={"sm"}>
               {/* edit button */}
-              <Tooltip label="Edit stock">
+              <Tooltip label="Edit worker">
                 <ActionIcon color="teal">
                   <IconEdit size={30} />
                 </ActionIcon>
               </Tooltip>
 
               {/* delete button */}
-              <Tooltip label="Delete stock">
+              <Tooltip label="Delete worker">
                 <ActionIcon color="red">
                   <IconTrash size={30} />
                 </ActionIcon>
@@ -168,10 +173,13 @@ const ManageWorker = () => {
   return(
 
     <div>
+      {showRegistrationForm && <WorkerRegister />}
+      
 
-    <Button leftIcon={<IconPlus size={20}/>} style={{position:"fixed",left:1200}}>
-      Add new Stock
+    <Button leftIcon={<IconPlus size={20}/>} style={{position:"fixed",left:1200}} onClick={() => setShowRegistrationForm(!showRegistrationForm)}>
+      Add New Worker
     </Button>
+    
 
   {/* search bar */}
   <TextInput

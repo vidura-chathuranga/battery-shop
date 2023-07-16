@@ -20,6 +20,7 @@ import {
   IconLogout,
   IconNotification,
   IconAdjustmentsHeart,
+  IconTrash,
 } from "@tabler/icons-react";
 import { MantineLogo } from "@mantine/ds";
 import AdminDBoard from "../../components/AdminDashboard/index";
@@ -106,7 +107,8 @@ const data = [
 
   { link: "/admin/workerRegister", label: "Manage Worker", icon: IconAdjustmentsHeart },
   { link: "/admin/profit", label: "Profit", icon: IconReceipt2 },
-  { link: "/login/adminDashboard", label: "Stocks", icon: IconDatabaseImport },
+  { link: "/login/adminDashboard", label: "Stock", icon: IconDatabaseImport },
+  { link: "/login/adminDashboard", label: "Delete Stock", icon: IconTrash },
   { link: "", label: "Notifications", icon: IconNotification },
 
 ];

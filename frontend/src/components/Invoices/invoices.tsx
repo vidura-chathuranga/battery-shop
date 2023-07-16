@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import CartAPI from "../../API/cartAPI/cart.api";
+import CartAPI from "../../API/cartAPI/Invoice.api";
 
 const Invoices=()=>{
 

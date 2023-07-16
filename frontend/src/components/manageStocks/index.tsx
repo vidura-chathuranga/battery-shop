@@ -43,6 +43,8 @@ import { useQuery } from "@tanstack/react-query";
 import { IconFileBarcode } from "@tabler/icons-react";
 import { IconArrowNarrowRight } from "@tabler/icons-react";
 import { modals } from "@mantine/modals";
+import InvoiceAPI from "../../API/cartAPI/Invoice.api";
+import { useDisclosure } from "@mantine/hooks";
 
 // styles
 const useStyles = createStyles((theme) => ({
@@ -112,6 +114,7 @@ interface cartData {
   _id: string;
   brand: string;
   quantity: number;
+  actualTotal: number;
   price: number;
   warranty: string;
   totalPrice: number;
@@ -164,6 +167,9 @@ const ManageStocks = () => {
   // customer details modal
   const [openedCustomerDetails, setOpenedCutomerDetails] = useState(false);
 
+  // show the loading overlay when adding invoice to the database
+  const[invoiceOverlay,setInvoiceOverlay] = useState(false);
+
   // search filter
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.currentTarget;
@@ -204,19 +210,20 @@ const ManageStocks = () => {
     },
   });
 
-    // customer details form
-    const customerForm = useForm({
-      validateInputOnChange : true,
-      initialValues :{
-        name : '',
-        phoneNumber : '',
-        address : ''
-      },
-      validate : {
-        name : (value) => value.length < 2 ? "Please enter valid name" : null,
-        phoneNumber : (value) => value.length < 10 ? "Please enter valid phone number": null,
-      }
-    });
+  // customer details form
+  const customerForm = useForm({
+    validateInputOnChange: true,
+    initialValues: {
+      name: "",
+      phoneNumber: "",
+      address: "",
+    },
+    validate: {
+      name: (value) => (value.length < 2 ? "Please enter valid name" : null),
+      phoneNumber: (value) =>
+        value.length < 10 ? "Please enter valid phone number" : null,
+    },
+  });
 
   //add Items
   const addItems = async (values: {
@@ -314,10 +321,68 @@ const ManageStocks = () => {
       });
   };
 
+  // calculate the actual TotalOf the Items
+  const calculateActualTotal = () => {
+    let total = 0;
+    cartData.map((item) => {
+      total += item.actualTotal;
+    });
+    return total;
+  };
+
+  // save invoice data in the database
+  const saveInvoice = (values: any) => {
+
+    // set invoice overlay visible
+    setInvoiceOverlay(true)
+
+    // create invoice object
+    const invoice = {
+      cusName: values.name,
+      cusAddress: values.address,
+      cusPhone: values.phoneNumber,
+      items: [...cartData],
+      issuedDate: new Date(),
+      discount: calculateDiscount(),
+      totalSoldPrice: calculateTotalPrice() - calculateDiscount(),
+      totalActualPrice: calculateActualTotal(),
+    };
+
+    // call to the API and send back to the backend
+    InvoiceAPI.submitInvoice(invoice).then((res) => {
+      // after successing the invoice saving set to overlay disappear
+      setInvoiceOverlay(false)
+
+      // also show the notification
+      showNotification({
+        title : "Invoice Saved Successful",
+        message : "Invoice data saved successfully",
+        autoClose : 2500,
+        color : "teal",
+        icon : <IconCheck/>
+      });
+    }).catch((error)=>{
+      // if error happens,
+
+      // 1. overlay will be disappeared
+      setInvoiceOverlay(false);
+
+      // then show the error notification
+      showNotification({
+        title : "Saving invoice failed",
+        message : "Something went wrong while saving invoice data",
+        autoClose : 2500,
+        color : "red",
+        icon : <IconX/>
+      });
+    });
+  };
+
   // Cart Confirmation Modal
 
-  const openCartCheckoutModal = () =>
+  const openCartCheckoutModal = (values: any) =>
     modals.openConfirmModal({
+      zIndex: 2000,
       shadow: "xl",
       title: "Checkout confimation",
       children: (
@@ -329,7 +394,13 @@ const ManageStocks = () => {
       labels: { confirm: "Checkout", cancel: "Cancel" },
       confirmProps: { color: "teal" },
       onCancel: () => modals.close,
-      onConfirm: () => {},
+      onConfirm: () => {
+        saveInvoice(values);
+        setOpenedCutomerDetails(false);
+        customerForm.reset();
+        setCartOpened(false);
+        setCartData([]);
+      },
     });
 
   // delete Stock function
@@ -500,6 +571,9 @@ const ManageStocks = () => {
                               quantity: parseInt(qvalue.toString()),
                               price: row.sellingPrice,
                               warranty: row.warranty,
+                              actualTotal:
+                                parseFloat(row.actualPrice) *
+                                parseInt(qvalue.toString()),
                               totalPrice:
                                 parseFloat(row.sellingPrice) *
                                 parseInt(qvalue.toString()),
@@ -679,6 +753,9 @@ const ManageStocks = () => {
                               _id: row._id,
                               brand: row.batteryBrand,
                               quantity: parseInt(qvalue.toString()),
+                              actualTotal:
+                                parseFloat(row.actualPrice) *
+                                parseInt(qvalue.toString()),
                               price: row.sellingPrice,
                               warranty: row.warranty,
                               totalPrice:
@@ -788,8 +865,6 @@ const ManageStocks = () => {
 
   // calculate Discount
   const calculateDiscount = () => {
-    console.log(discountType);
-    console.log(cartDiscount);
     if (discountType === "PERCENTAGE") {
       return (calculateTotalPrice() * cartDiscount) / 100;
     } else {
@@ -797,11 +872,14 @@ const ManageStocks = () => {
     }
   };
 
-
-
   // table
   return (
-    <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+    <Box
+      sx={{ display: "flex", justifyContent: "space-between" }}
+      pos="relative"
+    >
+      {/* loading overaly when creating the invoice */}
+      <LoadingOverlay visible={invoiceOverlay} overlayBlur={2} />
       {/* Customer details getting */}
       <Modal
         opened={openedCustomerDetails}
@@ -810,7 +888,11 @@ const ManageStocks = () => {
         size={"lg"}
         zIndex={1000}
       >
-        <form onSubmit={customerForm.onSubmit((values) => console.log(values))}>
+        <form
+          onSubmit={customerForm.onSubmit((values) => {
+            openCartCheckoutModal(values);
+          })}
+        >
           <TextInput
             label="Customer name"
             withAsterisk
@@ -819,12 +901,11 @@ const ManageStocks = () => {
             mb={10}
             {...customerForm.getInputProps("name")}
           />
-          <NumberInput
+          <TextInput
             label="Phone Number"
             withAsterisk
             placeholder="0712906815"
             required
-            hideControls
             mb={10}
             {...customerForm.getInputProps("phoneNumber")}
           />
@@ -839,6 +920,7 @@ const ManageStocks = () => {
               rightIcon={<IconArrowNarrowRight size={18} />}
               color="teal"
               mt={10}
+              type="submit"
             >
               CHECKOUT
             </Button>
@@ -969,7 +1051,17 @@ const ManageStocks = () => {
             ) : null}
             {cartData.length !== 0 ? (
               <tr style={{ background: "#f8f8fa" }}>
-                <td colSpan={5}></td>
+                <td colSpan={5}>
+                  {cartDiscount > 0 ? (
+                    <Text weight={500} align="center">
+                      SUB TOTAL
+                    </Text>
+                  ) : (
+                    <Text weight={500} align="center">
+                      TOTAL
+                    </Text>
+                  )}
+                </td>
                 <td>
                   <Text weight={cartDiscount == 0 ? 600 : 400} size={20}>
                     {rupee.format(calculateTotalPrice())}

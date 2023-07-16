@@ -3,7 +3,7 @@ import axios from "axios";
 const BASE_URL = "http://localhost:3001";
 
 
-class CartAPI{
+class Invoice{
 
     //get all carts
     static getAllCart =()=>{
@@ -12,7 +12,11 @@ class CartAPI{
 
     }
 
+    static submitInvoice = (values : any) =>{
+        return axios.post(`${BASE_URL}/invoice/add`,values,{withCredentials:true});
+    }
+
 
 };
 
-export default CartAPI;
+export default Invoice;

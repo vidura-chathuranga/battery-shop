@@ -399,6 +399,7 @@ const ManageStocks = () => {
         customerForm.reset();
         setCartOpened(false);
         setCartData([]);
+        setCartDiscount(0);
       },
     });
 

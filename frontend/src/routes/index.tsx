@@ -14,6 +14,7 @@ import GenerateInvoicePage from "../pages/GenerateInvoice";
 import ManageWorkerPage from "../pages/ManageWorker";
 import ProfitPage from "../pages/ProfitPage";
 import StockPage from "../pages/StockPage";
+import DeletedStockPage from "../pages/DeletedPage";
 
 
 const AllRoutes = () => {
@@ -32,6 +33,8 @@ const AllRoutes = () => {
         <Route path="/admin/manageworker" element={<ManageWorkerPage/>} />
         <Route path="/admin/profitpage" element={<ProfitPage/>} />
         <Route path="/admin/stockpage" element={<StockPage/>} />
+
+        <Route path = '/admin/deletedtable' element={<DeletedStockPage/>} />
 
 
         

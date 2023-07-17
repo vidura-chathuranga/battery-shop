@@ -18,7 +18,7 @@ class Invoice{
 
     static getAllInvoice =()=>{
 
-        return axios.get(`${BASE_URL}/invoices`,{withCredentials:true});
+        return axios.get(`${BASE_URL}/invoice/`,{withCredentials:true});
 
     }
 

@@ -266,32 +266,7 @@ const ManageWorker = () => {
     }
   };
 
-  // const data =[
-  //   {
-  //     worker_id : 1,
-  //     name : "vidura",
-  //     email : "vidurachatrhuranga@gmail.com",
-  //     phone : '0712906815',
-  //     address : "colombo,Ruwanwella",
-  //     gender : "male"
-  //   },
-  //   {
-  //     worker_id : 2,
-  //     name : "vidura",
-  //     email : "vidurachatrhuranga@gmail.com",
-  //     phone : '0712906815',
-  //     address : "colombo,Ruwanwella",
-  //     gender : "male"
-  //   },
-  //   {
-  //     worker_id : 3,
-  //     name : "vidura",
-  //     email : "vidurachatrhuranga@gmail.com",
-  //     phone : '0712906815',
-  //     address : "colombo,Ruwanwella",
-  //     gender : "male"
-  //   }
-  // ]
+
 
   const rows = data?.map((row:any) => (
     <tr key={row.worker_id}>
@@ -305,10 +280,10 @@ const ManageWorker = () => {
         <Text size={15}>{row.phone}</Text>
       </td>
       <td>
-        <Text size={15}>{row.nic}</Text>
+        <Text size={15}>{row.address}</Text>
       </td>
       <td>
-        <Text size={15}>{row.address}</Text>
+        <Text size={15}>{row.nic}</Text>
       </td>
       <td>
         <Text size={15}>{row.gender}</Text>
@@ -336,10 +311,6 @@ const ManageWorker = () => {
       </td>
     </tr>
   ));
-
- 
-
- 
 
 
   return(
@@ -481,19 +452,19 @@ const ManageWorker = () => {
           <th>Gender</th>
         </tr>
       </thead>
-      {/* <tbody>
-        {rows.length > 0 ? (
-          rows
-        ) : (
-          <tr>
-            <td colSpan={Object.keys(data[0]).length}>
-              <Text weight={500} align="center">
-                Nothing found
-              </Text>
-            </td>
-          </tr>
-        )}
-      </tbody> */}
+      <tbody>
+            {rows.length > 0 ? (
+              rows
+            ) : (
+              <tr>
+                <td colSpan={Object.keys(data[0]).length}>
+                  <Text weight={500} align="center">
+                    Nothing found
+                  </Text>
+                </td>
+              </tr>
+            )}
+          </tbody>
     </Table>
   </ScrollArea>
 </div> 

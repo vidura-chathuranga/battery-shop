@@ -17,7 +17,8 @@ class WorkerAPI {
     
    //get all Worker Details
    static getAllWorkerDetails= () => {
-    return axios.get(`${BASE_URL}/workers`,{withCredentials:true});
+    console.log("Hello");
+    return axios.get(`${BASE_URL}/worker/getworker`,{withCredentials:true});
 
 };
 

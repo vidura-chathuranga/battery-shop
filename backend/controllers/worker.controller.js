@@ -4,9 +4,6 @@ import User from "../models/users.model.js";
 import jwt from "jsonwebtoken";
 
 
-
-
-
 export const workerLogin = async (req, res) => {
   // get details from the request body
   const NIC = req.body.nic;
@@ -67,10 +64,12 @@ export const logout = (req,res) =>{
 }
 
 export const getAllWorkers = async (req, res) => {
+  console.log("workers");
   try {
     const workers = await User.find({ role: "WORKER" });
-
+    console.log(workers);
     if (workers.length === 0) {
+
       // If no workers found, send a 404 status code with a message
       return res.status(404).json({ message: "No workers found" });
     }
@@ -84,6 +83,7 @@ export const getAllWorkers = async (req, res) => {
       address: worker.address,
       nic : worker.nic,
       gender : worker.gender,
+
     }));
 
     res.status(200).json(workerDetails); // Send the worker details as the response

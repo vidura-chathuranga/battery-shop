@@ -45,8 +45,24 @@ export const addInvoice = async (req, res) => {
 
     // send The success status to the frontend
     res.status(201).json(savedInvoice);
-
   } catch (error) {
-    res.status(500).json({error: error,message : "Invoice saved failed!"});//if anything went wrong this error response will forwarded
+    res.status(500).json({ error: error, message: "Invoice saved failed!" }); //if anything went wrong this error response will forwarded
+  }
+};
+
+// get all invoices
+export const getAllInvocies = async (req, res) => {
+  try {
+    // get invoices data
+    const invoices = await Invoice.find();
+
+    // return data
+    if (invoices.length === 0) {
+      res.status(204).json(invoices);
+    } else {
+      res.status(200).json(invoices);
+    }
+  } catch (error) {
+    res.status(500).json({ error: error, message: "Invoice fetching error" });
   }
 };

@@ -100,6 +100,7 @@ export const registerWorker = async (req, res) => {
     const newWorker = new User({
       id : req.body.worker_id,
       name: req.body.name,
+      email: req.body.email,
       nic:req.body.nic,
       password: req.body.password,
       phone: req.body.phone,
@@ -109,7 +110,7 @@ export const registerWorker = async (req, res) => {
     });
 
     const savedWorker = await newWorker.save();
-    console.log(savedWorker);
+    // console.log(savedWorker);
     res.status(201).json(savedWorker);
   } catch (error) {
     res.status(500).json({ message: "Failed to register worker", error });

@@ -92,3 +92,51 @@ export const getAllWorkers = async (req, res) => {
   }
 };
 
+export const deleteWorker = async (req, res) => {
+  const _id = req.params.id;
+
+  try {
+    const deletedWorker = await User.findByIdAndDelete(_id);
+
+    if (!deletedWorker) {
+      // If the worker is not found, send a 404 status code with a message
+      return res.status(404).json({ message: "Worker not found" });
+    }
+
+    res.status(200).json({ message: "Worker deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to delete worker", error });
+  }
+};
+
+export const updateWorker = async (req, res) => {
+  
+  const _id = req.params.id;
+
+  const updateFields = {
+   name : req.body.name,
+   email :req.body.id,
+   phone :  req.body.phone,
+   address : req.body.address,
+   nic : req.body.nic,
+   gender : req.body.gender,
+  }
+  
+console.log(updateFields);
+  // try {
+  //   const updatedWorker = await User.findByIdAndUpdate(_id, updateFields, {
+  //     new: true,
+  //   });
+
+  //   if (!updatedWorker) {
+  //     // If the worker is not found, send a 404 status code with a message
+  //     return res.status(404).json({ message: "Worker not found" });
+  //   }
+
+  //   res.status(200).json(updatedWorker); // Send the updated worker as the response
+  // } catch (error) {
+  //   res.status(500).json({ message: "Failed to update worker", error });
+  // }
+};
+
+

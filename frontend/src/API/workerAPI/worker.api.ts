@@ -15,6 +15,15 @@ class WorkerAPI {
         return axios.delete(`${BASE_URL}/stock/delete/${batteryId}`,{withCredentials : true});
     }
     
+   //get all Worker Details
+   static getAllWorkerDetails= () => {
+    console.log("Hello");
+    return axios.get(`${BASE_URL}/worker/getworker`,{withCredentials:true});
+
+};
+
+
+    
 };
 
 export default WorkerAPI;

@@ -8,12 +8,13 @@ import WorkerDashboard from "../pages/WorkerDashboard";
 import Logout from "../components/logout/logout";
 import WorkerNotifications from "../pages/WorkerNotifications";
 import StockTable from "../components/stock";
-import AdminDashboardHeader from "../components/adminDashboardHeader";
 import {QueryClient,QueryClientProvider} from '@tanstack/react-query';
 import GenerateInvoicePage from "../pages/GenerateInvoice";
-import { WorkerTable } from "../components/deleteStockTable";
-import ManageWorker from "../components/ManageWorker";
-import StatsProfitCard from "../components/ProfitCard";
+import ManageWorkerPage from "../pages/ManageWorker";
+import ProfitPage from "../pages/ProfitPage";
+import StockPage from "../pages/StockPage";
+
+
 
 
 const AllRoutes = () => {
@@ -26,20 +27,14 @@ const AllRoutes = () => {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login/admin" element={<AdminLoginPage />} />
         <Route path="/login/worker" element={<WorkerLoginPage />} />
-        {/* <Route path="/login/register" element={<Workerregister />} /> */}
-        <Route path="/login/adminDashboard" element={<AdminDashboardHeader />} />
 
-        <Route path = "/admin/stock" element ={<StockTable/>} />
-
-        <Route path = "/admin/workerRegister" element={<ManageWorker/>} />
-        <Route path = "/admin/profit" element={<StatsProfitCard/>} />
+        <Route path="/admin/manageworker" element={<ManageWorkerPage/>} />
+        <Route path="/admin/profitpage" element={<ProfitPage/>} />
+        <Route path="/admin/stockpage" element={<StockPage/>} />
 
 
-
-        {/* <Route path = '/admin/stock' element={<StockTable data ={[ {name : "asdasdasd",email : "adadada" , company : "adasdasdad"}]}/>}/> */}
-
-        <Route path = '/admin/workertable' element={<WorkerTable data = {[{name : "Vinnath", nic : "200126302350" ,email :"vinnath19@gmail.com",gender:"Male", address: "warawala",phone:"0711461016"}]}/>}/>
-
+        
+        
         <Route path="/worker" element={<WorkerOwnerPrivateRoute />}>
           <Route path="/worker/managestock" element={<WorkerDashboard />} />
           <Route

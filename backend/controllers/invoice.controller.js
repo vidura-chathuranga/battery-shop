@@ -1,5 +1,5 @@
 import Invoice from "../models/invoice.model.js";
-
+import renderInvoice from '../Invoice/renderPdf.js';
 //generate Invoice Id
 const generateInvoiceId = async () => {
   //get last stock object, if there is a battery, then return that battery object, otherwise return empty array
@@ -64,5 +64,22 @@ export const getAllInvocies = async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ error: error, message: "Invoice fetching error" });
+  }
+};
+
+export const generateInvoice = async (req, res) => {
+  try {
+    const pdfBlob = await renderInvoice();
+
+    console.log(pdfBlob.size);
+    console.log(pdfBlob.type);
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", 'attachment; filename="invoice.pdf"');
+
+    res.send(pdfBlob);
+
+  } catch (error) {
+    res.status(500).json({ error: error });
   }
 };

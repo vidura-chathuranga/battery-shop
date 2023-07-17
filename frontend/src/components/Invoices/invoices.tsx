@@ -14,12 +14,9 @@ import {
 import { keys } from "@mantine/utils";
 import { IconDownload, IconSearch, IconX } from "@tabler/icons-react";
 import { useState } from "react";
-
-import { useForm } from "@mantine/form";
 import { showNotification, updateNotification } from "@mantine/notifications";
 import InvoiceAPI from "../../API/InvoiceAPI/Invoice.api";
 import { useQuery } from "@tanstack/react-query";
-import { Tex } from "tabler-icons-react";
 import { IconEye } from "@tabler/icons-react";
 
 const useStyles = createStyles((theme) => ({
@@ -195,6 +192,30 @@ const Invoices = () => {
     }
   };
 
+  // get pdf details
+  const generatePdf = () => {
+    InvoiceAPI.generatePdf().then((response) => {
+      // console.log(response.data);
+      // Handle the response
+
+      console.log(response.data.size);
+      console.log(response.data.type);
+      
+      const pdfBlob = new Blob([response.data], { type: "application/pdf" });
+
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+
+      // Open the PDF in a new window or tab
+      window.open(pdfUrl);
+
+      const downloadLink = document.createElement("a");
+      downloadLink.href = response.data;
+      downloadLink.download = "invoice.pdf";
+      downloadLink.click();
+    }).catch((error)=>{
+      console.log(error);
+    });
+  };
   // rows map
   const rows = data?.map((row: any) => (
     <tr key={row._id}>
@@ -246,7 +267,13 @@ const Invoices = () => {
           </Tooltip>
 
           <Tooltip label="download Invoice">
-            <ActionIcon color="blue" size={"sm"}>
+            <ActionIcon
+              color="blue"
+              size={"sm"}
+              onClick={() => {
+                generatePdf();
+              }}
+            >
               <IconDownload />
             </ActionIcon>
           </Tooltip>
@@ -274,9 +301,9 @@ const Invoices = () => {
     <tr id={item._id}>
       <td>{item.brand}</td>
       <td>{item.warranty}</td>
-      <td>{item.price}</td>
+      <td>{rupee.format(item.price)}</td>
       <td>{item.quantity}</td>
-      <td>{item.totalPrice}</td>
+      <td>{rupee.format(item.totalPrice)}</td>
     </tr>
   ));
 
@@ -285,7 +312,7 @@ const Invoices = () => {
     <div>
       {/* more Information Modal */}
       <Modal
-      size={"80%"}
+        size={"80%"}
         opened={openedMoreInfo}
         onClose={() => {
           setOpenedMoreInfo(false);
@@ -323,13 +350,17 @@ const Invoices = () => {
         <Text weight={600} size={"lg"} align="center">
           {`${row.invoice_id} (Items)`}
         </Text>
-        <Table highlightOnHover
+        <Table
+          highlightOnHover
           horizontalSpacing={100}
           verticalSpacing="md"
           mt={10}
           miw={700}
-          sx={{ tableLayout: "fixed" }}>
-          <thead className={cx(classes.header, { [classes.scrolled]: scrolled })}>
+          sx={{ tableLayout: "fixed" }}
+        >
+          <thead
+            className={cx(classes.header, { [classes.scrolled]: scrolled })}
+          >
             <tr>
               <th>Brand</th>
               <th>Warranty</th>
@@ -338,9 +369,7 @@ const Invoices = () => {
               <th>Total Price</th>
             </tr>
           </thead>
-          <tbody>
-            {moreInfoRows}
-          </tbody>
+          <tbody>{moreInfoRows}</tbody>
         </Table>
       </Modal>
       {/* search bar */}

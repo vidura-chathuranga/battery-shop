@@ -34,6 +34,11 @@ const batterySchema = mongoose.Schema({
         type : String,
         required : true
     },
+    status : {
+        type : String,
+        required : true,
+        default : "REQUESTED"
+    },
     isDeleted : {
         count : {
             type : Number,

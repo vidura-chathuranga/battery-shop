@@ -16,8 +16,6 @@ import ProfitPage from "../pages/ProfitPage";
 import StockPage from "../pages/StockPage";
 
 
-
-
 const AllRoutes = () => {
   const client = new QueryClient();//config query client
   return (
@@ -28,9 +26,6 @@ const AllRoutes = () => {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login/admin" element={<AdminLoginPage />} />
         <Route path="/login/worker" element={<WorkerLoginPage />} />
-
-        {/* <Route path="/login/register" element={<Workerregister />} /> */}
-        <Route path="/login/adminDashboard" element={<AdminDashboardHeader />} />
 
         <Route path="/admin/logout" element={<Adminlogout />} />
 

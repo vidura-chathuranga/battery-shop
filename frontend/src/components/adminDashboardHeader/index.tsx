@@ -111,7 +111,9 @@ const links = [
   { link: "/admin/profitpage", label: "Profit", icon: IconReceipt2 },
   { link: "/admin/stockpage", label: "Stock", icon: IconDatabaseImport },
   { link: "", label: "Delete Stock", icon: IconTrash },
+  { link: "", label: "Stock Recycle Bin", icon: IconTrash },
   { link: "", label: "Notifications", icon: IconNotification },
+  
 
 ];
 

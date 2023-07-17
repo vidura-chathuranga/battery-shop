@@ -14,7 +14,7 @@ interface TableSelectionProps {
   data: {  name: string; item: string; description: string; id: string }[];
 }
 
-export function deletedTable({ data }: TableSelectionProps) {
+ export function DeletedTable({ data }: TableSelectionProps) {
   const { classes, cx } = useStyles();
   const [selection, setSelection] = useState(['1']);
   const toggleRow = (id: string) =>
@@ -56,3 +56,5 @@ export function deletedTable({ data }: TableSelectionProps) {
     </ScrollArea>
   );
 }
+
+export default DeletedTable;

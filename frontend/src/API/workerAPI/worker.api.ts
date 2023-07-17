@@ -17,9 +17,32 @@ class WorkerAPI {
     
    //get all Worker Details
    static getAllWorkerDetails= () => {
-    console.log("Hello");
     return axios.get(`${BASE_URL}/worker/getworker`,{withCredentials:true});
 
+};
+
+static deleteWorker = (values : {_id : string}) => {
+    return axios.delete(`${BASE_URL}/worker/delete/${values._id}`,{withCredentials:true});
+};
+
+ //update battery details
+ static updateWorker = (values: {
+    _id: string;
+    worker_id :string;
+    name: string;
+    email: string;
+    password: string;
+    phone: string;
+    nic: string;
+    address: string;
+    gender: string;
+}) => {
+
+    console.log(values);
+    return axios.put(`${BASE_URL}/worker/update/${values._id}`,
+        values,
+        {withCredentials:true}
+    );
 };
 
 

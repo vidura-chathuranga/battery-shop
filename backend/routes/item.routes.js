@@ -11,10 +11,3 @@ router.delete("/delete/:id/:reason",validateWorkerAndAdmin,deleteBattery)
 
 export default router;
 
-// const Routes = (app) => {
-
-//     app.post("/batteries", validateWorkerAndAdmin,batteriesController.addBatteries);
-
-// };
-
-// module.exports = Routes;

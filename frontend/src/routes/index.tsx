@@ -6,6 +6,7 @@ import WorkerLoginPage from "../pages/Login/workerLogin";
 import WorkerOwnerPrivateRoute from "./workerOwnerPrivateRoute";
 import WorkerDashboard from "../pages/WorkerDashboard";
 import Logout from "../components/logout/logout";
+import Adminlogout from "../components/adminLogout";
 import WorkerNotifications from "../pages/WorkerNotifications";
 import StockTable from "../components/stock";
 import {QueryClient,QueryClientProvider} from '@tanstack/react-query';
@@ -13,8 +14,6 @@ import GenerateInvoicePage from "../pages/GenerateInvoice";
 import ManageWorkerPage from "../pages/ManageWorker";
 import ProfitPage from "../pages/ProfitPage";
 import StockPage from "../pages/StockPage";
-
-
 
 
 const AllRoutes = () => {
@@ -27,6 +26,8 @@ const AllRoutes = () => {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login/admin" element={<AdminLoginPage />} />
         <Route path="/login/worker" element={<WorkerLoginPage />} />
+
+        <Route path="/admin/logout" element={<Adminlogout />} />
 
         <Route path="/admin/manageworker" element={<ManageWorkerPage/>} />
         <Route path="/admin/profitpage" element={<ProfitPage/>} />
@@ -43,6 +44,7 @@ const AllRoutes = () => {
           />
           <Route path="/worker/invoice" element={<GenerateInvoicePage/>}/>
           <Route path="/worker/logout" element={<Logout />} />
+          
         </Route>
       </Routes>
     </Router>

@@ -27,7 +27,10 @@ import profitBoard from "../ProfitDashboard/index";
 import logo from "../../assets/shopLogo.png";
 import StockTable from "../stock";
 
+
 const adminDashboard = createStyles((theme) => ({
+
+
   header: {
     paddingBottom: theme.spacing.md,
     marginBottom: `calc(${theme.spacing.md} * 1.5)`,
@@ -108,11 +111,17 @@ const links = [
   { link: "/admin/profitpage", label: "Profit", icon: IconReceipt2 },
   { link: "/admin/stockpage", label: "Stock", icon: IconDatabaseImport },
   { link: "", label: "Delete Stock", icon: IconTrash },
+  { link: "", label: "Stock Recycle Bin", icon: IconTrash },
   { link: "", label: "Notifications", icon: IconNotification },
+  
 
 ];
 
 const AdminDashboardHeader = ({link_id} : any) => {
+
+  const user = JSON.parse(localStorage.getItem('user-worker-session')!!);
+
+ 
     
   const [active, setActive] = useState(links[link_id].link);
   const { classes, cx } = adminDashboard();
@@ -149,7 +158,7 @@ const AdminDashboardHeader = ({link_id} : any) => {
 
           <Navbar.Section className={classes.footer}>
             <a
-              href="#"
+              href="/admin/logout"
               className={classes.link}
               onClick={(event) => event.preventDefault()}
             >

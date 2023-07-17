@@ -1,14 +1,14 @@
 import { Navigate } from "react-router-dom";
-import WorkerAPI from "../../API/workerAPI/worker.api";
+import AdminAPI from "../../API/adminAPI/admin.api";
 import { showNotification } from "@mantine/notifications";
 import { IconX } from "@tabler/icons-react";
 
-const logout = async () => {
+const adminlogout = async () => {
   // remove the local storage data in current user
   localStorage.removeItem("user-worker-session");
 
   // clear the accessToken
-  WorkerAPI.logout().then((res) => {
+  AdminAPI.logout().then((res) => {
     // navigate to the landing page
     window.location.href = 'http://localhost:3000/';
     
@@ -25,9 +25,9 @@ const logout = async () => {
   
 };
 
-const Logout = () => {
-  logout();
+const Adminlogout = () => {
+    adminlogout();
 
   return <div />;
 };
-export default Logout;
+export default Adminlogout;

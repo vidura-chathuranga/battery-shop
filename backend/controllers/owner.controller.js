@@ -115,3 +115,5 @@ export const registerWorker = async (req, res) => {
     res.status(500).json({ message: "Failed to register worker", error });
   }
 };
+
+

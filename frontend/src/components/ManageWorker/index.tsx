@@ -13,6 +13,7 @@ import {
   Grid,
   PasswordInput,
   Select,
+  
 } from "@mantine/core";
 import { keys } from "@mantine/utils";
 import {
@@ -23,12 +24,19 @@ import {
   IconPlus,
   IconEdit,
   IconTrash,
+  IconCheck,
+  IconX,
 } from "@tabler/icons-react";
 import { useState } from "react";
+import { showNotification,updateNotification } from "@mantine/notifications";
+
 import { useDisclosure } from '@mantine/hooks';
 import { Modal, Group, Button } from '@mantine/core';
+import WorkerAPI from "../../API/workerAPI/worker.api";
+import { useQuery } from '@tanstack/react-query';
+
 import { useForm } from "@mantine/form";
-import { showNotification, updateNotification } from "@mantine/notifications";
+
 import AdminAPI from "../../API/adminAPI/admin.api";
 
 
@@ -104,12 +112,15 @@ const ManageWorker = () => {
   const [search, setSearch] = useState("");
   const { classes, cx } = useStyles();
   const [scrolled, setScrolled] = useState(false);
-  // const [showRegistrationForm, setShowRegistrationForm] = useState(false);
+  const [showRegistrationForm, setShowRegistrationForm] = useState(false);
   const [opened, setOpened] = useState(false);
-  const [adata, setData] = useState<Data[]>([]);
 
-  
+   // use react query and fetch data
+     const { data } = useQuery(["workerData"], () => {
+      return WorkerAPI.getAllWorkerDetails().then((res) => res.data)
+    });
 
+    
   const registerForm = useForm({
     validateInputOnChange: true,
 
@@ -183,7 +194,7 @@ const ManageWorker = () => {
           color: "teal",
           title: "Adding Worker record",
           message: "Please wait while we add Worker record..",
-          //icon: <IconCheck />,
+          icon: <IconCheck />,
           autoClose: 5000,
         });
 
@@ -204,45 +215,85 @@ const ManageWorker = () => {
             gender: values.gender,
           },
         ];
-        setData(newData);
+      //  setData(newData);
       })
       .catch((error) => {
         updateNotification({
           id: "Add Worker",
-          color: "red",
-          title: "Adding Worker record Failed",
-          message: "We were unable to add Worker",
-          // icon: <IconAlertTriangle />,
+          color: "teal",
+          title: "Adding Worker record",
+          message: "Please wait while we add Worker record..",
+          icon: <IconCheck />,
           autoClose: 5000,
         });
       });
   };
   
 
-  const data = [
-    {
-      worker_id: "asdadada",
-      name: "asdadada",
-      email: "asdadada",
-      phone: "asdadada",
-     nic: "asdadada",
-      address: "asdadada",
-      gender: "asdadada",
-    },
-    {
-      worker_id: "asdadada",
-      name: "asdadada",
-      email: "asdadada",
-      phone: "asdadada",
-     nic: "asdadada",
-      address: "asdadada",
-      gender: "asdadada",
-    },
-   
-  ];
+  const getWorkerDetails = async () => {
+    showNotification({
+      id: "get-worker-details",
+      loading: true,
+      title: "Fetching Worker Details",
+      message: "Please wait while we fetch worker details..",
+      autoClose: false,
+    });
+  
+    try {
+      const workerDetails = await WorkerAPI.getAllWorkerDetails();
+  
+      updateNotification({
+        id: "get-worker-details",
+        color: "teal",
+        icon: <IconCheck />,
+        title: "Worker Details Fetched",
+        message: "Successfully fetched worker details.",
+        autoClose: 5000,
+      });
+  
+      return workerDetails;
+    } catch (error) {
+      updateNotification({
+        id: "get-worker-details",
+        color: "red",
+        icon: <IconX />,
+        title: "Failed to Fetch Worker Details",
+        message: "We were unable to fetch worker details.",
+        autoClose: 5000,
+      });
+  
+      throw error;
+    }
+  };
 
+  // const data =[
+  //   {
+  //     worker_id : 1,
+  //     name : "vidura",
+  //     email : "vidurachatrhuranga@gmail.com",
+  //     phone : '0712906815',
+  //     address : "colombo,Ruwanwella",
+  //     gender : "male"
+  //   },
+  //   {
+  //     worker_id : 2,
+  //     name : "vidura",
+  //     email : "vidurachatrhuranga@gmail.com",
+  //     phone : '0712906815',
+  //     address : "colombo,Ruwanwella",
+  //     gender : "male"
+  //   },
+  //   {
+  //     worker_id : 3,
+  //     name : "vidura",
+  //     email : "vidurachatrhuranga@gmail.com",
+  //     phone : '0712906815',
+  //     address : "colombo,Ruwanwella",
+  //     gender : "male"
+  //   }
+  // ]
 
-  const rows = data?.map((row) => (
+  const rows = data?.map((row:any) => (
     <tr key={row.worker_id}>
       <td>
         <Text size={15}>{row.name}</Text>
@@ -297,10 +348,9 @@ const ManageWorker = () => {
       {/* {showRegistrationForm && <WorkerRegister />} */}
       
 
-
-    <Button leftIcon={<IconPlus size={20}/>} style={{position:"fixed",left:1200}} onClick={() => setOpened(true)}>
-      Add New Worker
-    </Button>
+    <div>
+   
+    </div>
 
     <Modal
           opened={opened}
@@ -391,16 +441,21 @@ const ManageWorker = () => {
     
 
   {/* search bar */}
+  <div style={{ alignItems: "center" }}>
   <TextInput
     placeholder="Search by any field"
     mt={50}
-    mb={50}
+    mb={20}
     icon={<IconSearch size="0.9rem" stroke={1.5} />}
     // value={search}
     // onChange={handleSearchChange}
-    w={800}
-    style={{ position: "relative", left: "50%", translate: "-50%" }}
+    w={500}
+    style={{ position: "relative", left: "25%", translate: "-50%" }}
   />
+   <Button leftIcon={<IconPlus size={20}/>} style={{position:"relative",left:1000}} onClick={() => setOpened(true)}>
+      Add New Worker
+    </Button>
+  </div>
 
   <ScrollArea
     w={"100mw"}
@@ -426,7 +481,7 @@ const ManageWorker = () => {
           <th>Gender</th>
         </tr>
       </thead>
-      <tbody>
+      {/* <tbody>
         {rows.length > 0 ? (
           rows
         ) : (
@@ -438,7 +493,7 @@ const ManageWorker = () => {
             </td>
           </tr>
         )}
-      </tbody>
+      </tbody> */}
     </Table>
   </ScrollArea>
 </div> 

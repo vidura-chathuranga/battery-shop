@@ -3,6 +3,10 @@ import "dotenv/config";
 import User from "../models/users.model.js";
 import jwt from "jsonwebtoken";
 
+
+
+
+
 export const workerLogin = async (req, res) => {
   // get details from the request body
   const NIC = req.body.nic;
@@ -61,3 +65,30 @@ export const logout = (req,res) =>{
   res.cookie('accessToken','',{maxAge : 1});
   res.status(200).json({});
 }
+
+export const getAllWorkers = async (req, res) => {
+  try {
+    const workers = await User.find({ role: "WORKER" });
+
+    if (workers.length === 0) {
+      // If no workers found, send a 404 status code with a message
+      return res.status(404).json({ message: "No workers found" });
+    }
+
+    // Extract only the necessary details from the workers
+    const workerDetails = workers.map((worker) => ({
+      _id: worker._id,
+      name: worker.name,
+      email: worker.email,
+      phone: worker.phone,
+      address: worker.address,
+      nic : worker.nic,
+      gender : worker.gender,
+    }));
+
+    res.status(200).json(workerDetails); // Send the worker details as the response
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch workers", error });
+  }
+};
+

@@ -3,6 +3,10 @@ import "dotenv/config";
 import User from "../models/users.model.js";
 import jwt from "jsonwebtoken";
 
+
+
+
+
 export const workerLogin = async (req, res) => {
   // get details from the request body
   const NIC = req.body.nic;

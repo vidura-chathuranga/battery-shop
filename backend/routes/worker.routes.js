@@ -8,7 +8,7 @@ router.post("/login", workerLogin);
 
 router.get(`/logout`,validateWorkerAndAdmin,logout);
 
-router.get("/workers",getAllWorkers);
+router.get("/",getAllWorkers);
 
 
 export default router;

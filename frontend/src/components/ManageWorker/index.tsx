@@ -13,6 +13,7 @@ import {
   Grid,
   PasswordInput,
   Select,
+  
 } from "@mantine/core";
 import { keys } from "@mantine/utils";
 import {
@@ -111,12 +112,15 @@ const ManageWorker = () => {
   const [search, setSearch] = useState("");
   const { classes, cx } = useStyles();
   const [scrolled, setScrolled] = useState(false);
-  // const [showRegistrationForm, setShowRegistrationForm] = useState(false);
+  const [showRegistrationForm, setShowRegistrationForm] = useState(false);
   const [opened, setOpened] = useState(false);
-  const [adata, setData] = useState<Data[]>([]);
 
-  
+   // use react query and fetch data
+     const { data } = useQuery(["workerData"], () => {
+      return WorkerAPI.getAllWorkerDetails().then((res) => res.data)
+    });
 
+    
   const registerForm = useForm({
     validateInputOnChange: true,
 
@@ -190,7 +194,7 @@ const ManageWorker = () => {
           color: "teal",
           title: "Adding Worker record",
           message: "Please wait while we add Worker record..",
-          //icon: <IconCheck />,
+          icon: <IconCheck />,
           autoClose: 5000,
         });
 
@@ -211,47 +215,20 @@ const ManageWorker = () => {
             gender: values.gender,
           },
         ];
-        setData(newData);
+      //  setData(newData);
       })
       .catch((error) => {
         updateNotification({
           id: "Add Worker",
-          color: "red",
-          title: "Adding Worker record Failed",
-          message: "We were unable to add Worker",
-          // icon: <IconAlertTriangle />,
+          color: "teal",
+          title: "Adding Worker record",
+          message: "Please wait while we add Worker record..",
+          icon: <IconCheck />,
           autoClose: 5000,
         });
       });
   };
   
-
-  // const data = [
-  //   {
-  //     worker_id: "asdadada",
-  //     name: "asdadada",
-  //     email: "asdadada",
-  //     phone: "asdadada",
-  //    nic: "asdadada",
-  //     address: "asdadada",
-  //     gender: "asdadada",
-  //   },
-  //   {
-  //     worker_id: "asdadada",
-  //     name: "asdadada",
-  //     email: "asdadada",
-  //     phone: "asdadada",
-  //    nic: "asdadada",
-  //     address: "asdadada",
-  //     gender: "asdadada",
-  //   },
-   
-  // ];
-
-   // use react query and fetch data
-   const { data, isLoading, isError, refetch } = useQuery(["stockData"], () => {
-    return WorkerAPI.getAllWorkerDetails().then((res) => res.data)
-  })
 
   const getWorkerDetails = async () => {
     showNotification({
@@ -289,6 +266,32 @@ const ManageWorker = () => {
     }
   };
 
+  // const data =[
+  //   {
+  //     worker_id : 1,
+  //     name : "vidura",
+  //     email : "vidurachatrhuranga@gmail.com",
+  //     phone : '0712906815',
+  //     address : "colombo,Ruwanwella",
+  //     gender : "male"
+  //   },
+  //   {
+  //     worker_id : 2,
+  //     name : "vidura",
+  //     email : "vidurachatrhuranga@gmail.com",
+  //     phone : '0712906815',
+  //     address : "colombo,Ruwanwella",
+  //     gender : "male"
+  //   },
+  //   {
+  //     worker_id : 3,
+  //     name : "vidura",
+  //     email : "vidurachatrhuranga@gmail.com",
+  //     phone : '0712906815',
+  //     address : "colombo,Ruwanwella",
+  //     gender : "male"
+  //   }
+  // ]
 
   const rows = data?.map((row:any) => (
     <tr key={row.worker_id}>
@@ -345,10 +348,9 @@ const ManageWorker = () => {
       {/* {showRegistrationForm && <WorkerRegister />} */}
       
 
-
-    <Button leftIcon={<IconPlus size={20}/>} style={{position:"fixed",left:1200}} onClick={() => setOpened(true)}>
-      Add New Worker
-    </Button>
+    <div>
+   
+    </div>
 
     <Modal
           opened={opened}
@@ -439,16 +441,21 @@ const ManageWorker = () => {
     
 
   {/* search bar */}
+  <div style={{ alignItems: "center" }}>
   <TextInput
     placeholder="Search by any field"
     mt={50}
-    mb={50}
+    mb={20}
     icon={<IconSearch size="0.9rem" stroke={1.5} />}
     // value={search}
     // onChange={handleSearchChange}
-    w={800}
-    style={{ position: "relative", left: "50%", translate: "-50%" }}
+    w={500}
+    style={{ position: "relative", left: "25%", translate: "-50%" }}
   />
+   <Button leftIcon={<IconPlus size={20}/>} style={{position:"relative",left:1000}} onClick={() => setOpened(true)}>
+      Add New Worker
+    </Button>
+  </div>
 
   <ScrollArea
     w={"100mw"}

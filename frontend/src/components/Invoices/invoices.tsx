@@ -135,7 +135,7 @@ const Invoices = () => {
   const [sortedData, setSortedData] = useState<Data[]>([]);
 
   // use react query and fetch data
-  const { data, isLoading, isError, refetch } = useQuery(
+  const { data, isLoading, isError } = useQuery(
     ["invoiceData"],
     () => {
       return InvoiceAPI.getAllInvoice().then((res) => res.data);
@@ -155,6 +155,7 @@ const Invoices = () => {
   // invoice modal
   const[opnedInvoiceModal,setOpenedInvoiceModal] = useState(false);
 
+  const[invoiceData,setInvoiceData] = useState();
   
   // store row information
   const [row, setRow] = useState<moreInfo>({
@@ -196,6 +197,7 @@ const Invoices = () => {
       setSortedData([]);
     }
   };
+  
 
   // rows map
   const rows = data?.map((row: any) => (
@@ -253,6 +255,7 @@ const Invoices = () => {
               size={"sm"}
               onClick={() => {
                 setOpenedInvoiceModal(true);
+                setInvoiceData(row);
               }}
             >
               <IconDownload />
@@ -293,8 +296,8 @@ const Invoices = () => {
     <div>
 
       {/* invoice moda */}
-      <Modal onClose={()=>{setOpenedInvoiceModal(false)}} opened={opnedInvoiceModal} size={"lg"}>
-        <InvoiceTemplate/>
+      <Modal onClose={()=>{setOpenedInvoiceModal(false);}} opened={opnedInvoiceModal} size={"50%"}>
+        <InvoiceTemplate data={invoiceData}/>
       </Modal>
 
       {/* more Information Modal */}

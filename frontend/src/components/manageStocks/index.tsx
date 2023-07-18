@@ -397,21 +397,12 @@ const ManageStocks = () => {
       confirmProps: { color: "teal" },
       onCancel: () => modals.close,
       onConfirm: async () => {
-        try {
-          saveInvoice(values);
-          setOpenedCutomerDetails(false);
-          customerForm.reset();
-          setCartOpened(false);
-          setCartData([]);
-
-          // Run the InvoiceRender component here
-          const invoiceComponent = <InvoiceRender />;
-          ReactDOM.render(invoiceComponent, document.getElementById("invoice-container"));
-
-        } catch (error) {
-          console.error(error);
-          // Handle error if saveInvoice() or other operations fail
-        }
+        saveInvoice(values);
+        setOpenedCutomerDetails(false);
+        customerForm.reset();
+        setCartOpened(false);
+        setCartData([]);
+        setCartDiscount(0);
       },
     });
 

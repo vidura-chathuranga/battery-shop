@@ -1,4 +1,4 @@
-import { createStyles, Text, Card, RingProgress, Group, rem, Image, Badge, Button, LoadingOverlay } from '@mantine/core';
+import { createStyles, Text, Card, RingProgress, Group, rem, Image, Badge, Button, LoadingOverlay, Modal } from '@mantine/core';
 import AdminDashboardHeader from '../adminDashboardHeader';
 import InvoiceAPI from "../../API/InvoiceAPI/Invoice.api"
 import { useQuery } from "@tanstack/react-query";
@@ -80,7 +80,7 @@ export function StatsProfitCard() {
     data?.map((item: any) => {
       const issuedDate = new Date(item.issuedDate)
 
-      if(issuedDate.getDate() === date.getDate() && issuedDate.getMonth() === date.getMonth() ){
+      if (issuedDate.getDate() === date.getDate() && issuedDate.getMonth() === date.getMonth()) {
 
         const calcProfit = (item.totalSoldPrice - item.totalActualPrice)
 
@@ -89,11 +89,12 @@ export function StatsProfitCard() {
         setProfit(prev => prev + item.totalSoldPrice - item.totalActualPrice);
       }
     });
-    
+
   };
   return (
 
     <>
+
       <DateInput
         placeholder="Choose Date"
         label="Choose Date to view profit"
@@ -105,16 +106,14 @@ export function StatsProfitCard() {
 
       <Card shadow="sm" padding="lg" radius="md" withBorder>
         <Group position="apart" mt="md" mb="xs">
-          <Text weight={500}>The profit</Text>
+          <Text weight={500} size={30}>The profit</Text>
         </Group>
 
-        <Text size="sm" color="dimmed">
+        <Text size={20} color="dimmed">
           Rs.{profit}
         </Text>
 
-        <Button variant="light" color="blue" fullWidth mt="md" radius="md">
-          See Sold Items Count
-        </Button>
+
       </Card>
     </>
   );

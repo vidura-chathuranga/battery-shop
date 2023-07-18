@@ -114,7 +114,7 @@ const links = [
 
   { link: "/admin/manageworker", label: "Manage Worker", icon: IconAdjustmentsHeart },
   { link: "/admin/profitpage", label: "Profit", icon: IconReceipt2 },
-  { link: "/admin/stockpage", label: "Stock", icon: IconDatabaseImport },
+  { link: "/admin/stockpage", label: "Pending Stock", icon: IconDatabaseImport },
   { link: "/admin/deletedtable", label: "Delete Stock", icon: IconTrash },
   // { link: "", label: "Notifications", icon: IconNotification },
   

@@ -46,7 +46,8 @@ import { modals } from "@mantine/modals";
 import InvoiceAPI from "../../API/InvoiceAPI/Invoice.api";
 import InvoiceRender from "../Invoices/renderInvoice";
 import ReactDOM from 'react-dom';
-
+import { StockPDF } from "../PDFRender/stockPDF";
+import { PDFDownloadLink } from "@react-pdf/renderer";
 
 // styles
 const useStyles = createStyles((theme) => ({
@@ -88,8 +89,8 @@ const useStyles = createStyles((theme) => ({
       right: 0,
       bottom: 0,
       borderBottom: `${rem(1)} solid ${theme.colorScheme === "dark"
-          ? theme.colors.dark[3]
-          : theme.colors.gray[2]
+        ? theme.colors.dark[3]
+        : theme.colors.gray[2]
         }`,
     },
   },
@@ -402,11 +403,11 @@ const ManageStocks = () => {
           customerForm.reset();
           setCartOpened(false);
           setCartData([]);
-  
-           // Run the InvoiceRender component here
-        const invoiceComponent = <InvoiceRender />;
-        ReactDOM.render(invoiceComponent, document.getElementById("invoice-container"));
-        
+
+          // Run the InvoiceRender component here
+          const invoiceComponent = <InvoiceRender />;
+          ReactDOM.render(invoiceComponent, document.getElementById("invoice-container"));
+
         } catch (error) {
           console.error(error);
           // Handle error if saveInvoice() or other operations fail
@@ -1327,14 +1328,19 @@ const ManageStocks = () => {
             >
               New Stock
             </Button>
-            <Button
-              variant="gradient"
-              gradient={{ from: "orange", to: "red" }}
-              leftIcon={<IconFileBarcode size={20} />}
-              onClick={() => setOpened(true)}
+
+            <PDFDownloadLink
+              document={<StockPDF data={data} />}
+              fileName={`STOCKDETAILS`}
             >
-              Generate Report
-            </Button>
+              <Button
+                variant="gradient"
+                gradient={{ from: "orange", to: "red" }}
+                leftIcon={<IconFileBarcode size={20} />}
+              >
+                Generate Report
+              </Button>
+            </PDFDownloadLink>
             <Tooltip label="Cart">
               <Indicator
                 color="red"

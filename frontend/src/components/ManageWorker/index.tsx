@@ -120,7 +120,7 @@ const ManageWorker = () => {
     () => {
       return WorkerAPI.getAllWorkerDetails().then((res) => res.data);
     },
-    { initialData: [], retry: false }
+    { initialData: []}
   );
 
   const registerForm = useForm({
@@ -342,11 +342,6 @@ const ManageWorker = () => {
           autoClose: 5000,
         });
 
-        // editForm.reset();
-        // setEditOpened(false);
-
-        // //getting updated worker from database
-        // refetch();
       });
   };
 

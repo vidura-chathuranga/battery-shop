@@ -1,8 +1,8 @@
-import { createStyles, Text, Card, RingProgress, Group, rem, Image, Badge, Button, LoadingOverlay } from '@mantine/core';
+import { createStyles, Text, Card, RingProgress, Group, rem, Image, Badge, Button, LoadingOverlay, Modal } from '@mantine/core';
 import AdminDashboardHeader from '../adminDashboardHeader';
 import InvoiceAPI from "../../API/InvoiceAPI/Invoice.api"
 import { useQuery } from "@tanstack/react-query";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { DateInput } from '@mantine/dates';
 import { useForm } from "@mantine/form";
 import { showNotification } from '@mantine/notifications';
@@ -51,6 +51,7 @@ const useStyles = createStyles((theme) => ({
 // title, completed, total, stats
 export function StatsProfitCard() {
   const [profit, setProfit] = useState(0);
+  const [itemCount, setItemCount] = useState(0);
 
   // use react query and fetch data
   const { data, isLoading, isError } = useQuery(["invoiceData"], () => {
@@ -76,24 +77,27 @@ export function StatsProfitCard() {
   //calculate profit function
   const calculateProfit = (date: Date) => {
     setProfit(0);
+    setItemCount(0);
 
-    data?.map((item: any) => {
-      const issuedDate = new Date(item.issuedDate)
+    data?.map((invoice: any) => {
+      const issuedDate = new Date(invoice.issuedDate)
 
-      if(issuedDate.getDate() === date.getDate() && issuedDate.getMonth() === date.getMonth() ){
+      if (issuedDate.getDate() === date.getDate() && issuedDate.getMonth() === date.getMonth()) {
+        setProfit(prev => prev + invoice.totalSoldPrice - invoice.totalActualPrice);
+        
+        invoice?.items.map((items:any)=>{
+          setItemCount(prev=> prev + items.quantity)
+        })
 
-        const calcProfit = (item.totalSoldPrice - item.totalActualPrice)
-
-        console.log(calcProfit)
-
-        setProfit(prev => prev + item.totalSoldPrice - item.totalActualPrice);
       }
     });
-    
+
   };
+
   return (
 
     <>
+
       <DateInput
         placeholder="Choose Date"
         label="Choose Date to view profit"
@@ -103,19 +107,21 @@ export function StatsProfitCard() {
 
       />
 
-      <Card shadow="sm" padding="lg" radius="md" withBorder>
-        <Group position="apart" mt="md" mb="xs">
-          <Text weight={500}>The profit</Text>
-        </Group>
+      <Group position="apart" mt="md" mb="xs">
+        <Card shadow="sm" padding="lg" radius="md" withBorder>
+          <Text weight={500} size={30}>The profit</Text>
+          <Text size={20} color="dimmed">
+            Rs.{profit}
+          </Text>
+        </Card>
 
-        <Text size="sm" color="dimmed">
-          Rs.{profit}
-        </Text>
-
-        <Button variant="light" color="blue" fullWidth mt="md" radius="md">
-          See Sold Items Count
-        </Button>
-      </Card>
+        <Card shadow="sm" padding="lg" radius="md" withBorder>
+          <Text weight={500} size={30}>The Sold Items Count</Text>
+          <Text size={20} color="dimmed">
+            {itemCount}
+          </Text>
+        </Card>
+      </Group>
     </>
   );
 }

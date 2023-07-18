@@ -3,6 +3,30 @@ import "dotenv/config";
 import User from "../models/users.model.js";
 import jwt from "jsonwebtoken";
 
+//generate Worker Id
+const generateWorkerId = async () => {
+  //get last Worker object, if there is a worker, then return that worker object, otherwise return empty array
+  const lastWorkerDetails = await User.find({role:"WORKER"}).sort({ _id: -1 }).limit(1);
+
+  //check if the result array is empty or not, if its empty then return first stock ID
+  if (lastWorkerDetails.length == 0) {
+    return "WRK-1";
+  }
+
+  //if array is not null, last get last Worker Id
+  const workerId = lastWorkerDetails.map((data) => {
+    return data.id;
+  });
+
+
+  //then we get the Integer value from the last part of the ID
+  const oldWorkerId = parseInt(workerId[0].split("-")[1]);
+
+  const newWorkerId = oldWorkerId + 1; //then we add 1 to the past value
+
+  return  `WRK-${newWorkerId}`;//return new Worker Id
+};
+
 
 export const workerLogin = async (req, res) => {
   // get details from the request body
@@ -64,19 +88,20 @@ export const logout = (req,res) =>{
 }
 
 export const getAllWorkers = async (req, res) => {
-  console.log("workers");
+
   try {
     const workers = await User.find({ role: "WORKER" });
-    console.log(workers);
+    
     if (workers.length === 0) {
 
       // If no workers found, send a 404 status code with a message
-      return res.status(404).json({ message: "No workers found" });
+      return res.status(204).json({message:"workers not found"});
     }
 
     // Extract only the necessary details from the workers
     const workerDetails = workers.map((worker) => ({
       _id: worker._id,
+      worker_id : worker.id,
       name: worker.name,
       email: worker.email,
       phone: worker.phone,
@@ -115,28 +140,62 @@ export const updateWorker = async (req, res) => {
 
   const updateFields = {
    name : req.body.name,
-   email :req.body.id,
+   email :req.body.email,
    phone :  req.body.phone,
    address : req.body.address,
    nic : req.body.nic,
    gender : req.body.gender,
   }
   
-console.log(updateFields);
-  // try {
-  //   const updatedWorker = await User.findByIdAndUpdate(_id, updateFields, {
-  //     new: true,
-  //   });
+  try {
+    const updatedWorker = await User.findByIdAndUpdate(_id, updateFields, {
+      new: true,
+    });
 
-  //   if (!updatedWorker) {
-  //     // If the worker is not found, send a 404 status code with a message
-  //     return res.status(404).json({ message: "Worker not found" });
-  //   }
+    if (!updatedWorker) {
+      // If the worker is not found, send a 404 status code with a message
+      return res.status(404).json({ message: "Worker not found" });
+    }
 
-  //   res.status(200).json(updatedWorker); // Send the updated worker as the response
-  // } catch (error) {
-  //   res.status(500).json({ message: "Failed to update worker", error });
-  // }
+    res.status(200).json(updatedWorker); // Send the updated worker as the response
+  } catch (error) {
+    res.status(500).json({ message: "Failed to update worker", error });
+  }
 };
 
 
+export const registerWorker = async (req, res) => {
+
+  try {
+    const existingWorker = await User.findOne({nic:req.body.nic });
+  if (existingWorker) {
+    console.log("user exist");
+    return res.status(409).json({ message: "Worker already exists" });
+  }
+
+  // generating the custom ID
+  const customId = await generateWorkerId();
+
+
+  // hashing the password
+  const salt =  await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(req.body.password, salt);
+
+  const newWorker = new User({  
+    id : customId,
+    name: req.body.name,
+    email: req.body.email,
+    nic:req.body.nic,
+    password: hashedPassword,
+    phone: req.body.phone,
+    role:"WORKER",
+    address: req.body.address,
+    gender: req.body.gender,
+  });
+
+  const savedWorker = await newWorker.save();
+  res.status(201).json(savedWorker);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to register worker", error });
+  }
+};

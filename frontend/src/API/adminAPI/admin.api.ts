@@ -13,9 +13,9 @@ class AdminAPI {
         return axios.get(`${BASE_URL}/worker/logout`,{withCredentials:true});
     }
 
-    static workerRegister (values : {worker_id:string ,name : string, email : string,password : string, phone : string,nic:string,address:string,gender:string}) {
-        
-        return axios.post(`${BASE_URL}/admin/register`,values,{withCredentials:true});
+    static workerRegister (values : {name : string, email : string,password : string, phone : string,nic:string,address:string,gender:string}) {
+        console.log(values);
+        return axios.post(`${BASE_URL}/worker/register`,values,{withCredentials:true});
     }
     
 };

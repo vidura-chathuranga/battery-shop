@@ -15,6 +15,7 @@ import {
   Select,
   Box,
   Textarea,
+  LoadingOverlay,
 } from "@mantine/core";
 import { keys } from "@mantine/utils";
 import {
@@ -29,17 +30,14 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import { useState } from "react";
-import { showNotification,updateNotification } from "@mantine/notifications";
+import { showNotification, updateNotification } from "@mantine/notifications";
 
-import { useDisclosure } from '@mantine/hooks';
-import { Modal, Group, Button } from '@mantine/core';
+import { useDisclosure } from "@mantine/hooks";
+import { Modal, Group, Button } from "@mantine/core";
 import WorkerAPI from "../../API/workerAPI/worker.api";
-import { useQuery } from '@tanstack/react-query';
+import { useQuery } from "@tanstack/react-query";
 import { useForm } from "@mantine/form";
 import AdminAPI from "../../API/adminAPI/admin.api";
-
-
-
 
 const useStyles = createStyles((theme) => ({
   th: {
@@ -91,7 +89,7 @@ const useStyles = createStyles((theme) => ({
 }));
 
 interface Data {
-  _id:string;
+  _id: string;
   worker_id: string;
   name: string;
   email: string;
@@ -109,7 +107,6 @@ function filterData(data: Data[], search: string) {
 }
 
 const ManageWorker = () => {
-
   const [search, setSearch] = useState("");
   const { classes, cx } = useStyles();
   const [scrolled, setScrolled] = useState(false);
@@ -118,19 +115,18 @@ const ManageWorker = () => {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [editOpened, setEditOpened] = useState(false);
 
- 
+  const { data = [], isError, isLoading, refetch } = useQuery(
+    ["workerData"],
+    () => {
+      return WorkerAPI.getAllWorkerDetails().then((res) => res.data);
+    },
+    { initialData: []}
+  );
 
-     // use react query and fetch data
-  const { data, isLoading, isError, refetch } = useQuery(["stockData"], () => {
-    return WorkerAPI.getAllWorkerDetails().then((res) => res.data);
-  });
-
-    
   const registerForm = useForm({
     validateInputOnChange: true,
 
     initialValues: {
-      worker_id: "",
       name: "",
       email: "",
       password: "",
@@ -140,9 +136,9 @@ const ManageWorker = () => {
       gender: "",
     },
 
-     // Validate Data in real time
+    // Validate Data in real time
 
-     validate: {
+    validate: {
       name: (value) =>
         value.length < 2 ? "Name must have at least 2 letters" : null,
       email: (value) =>
@@ -174,13 +170,12 @@ const ManageWorker = () => {
 
   //declare edit form
   const editForm = useForm({
-    validateInputOnChange:true,
-    initialValues:{
-      _id : "",
-       worker_id: "",
+    validateInputOnChange: true,
+    initialValues: {
+      _id: "",
+      worker_id: "",
       name: "",
       email: "",
-      password: "",
       phone: "",
       nic: "",
       address: "",
@@ -190,37 +185,36 @@ const ManageWorker = () => {
     // Validate Data in real time
 
     validate: {
-     name: (value) =>
-       value.length < 2 ? "Name must have at least 2 letters" : null,
-     email: (value) =>
-       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
-         value
-       )
-         ? null
-         : "Invalid email",
+      name: (value) =>
+        value.length < 2 ? "Name must have at least 2 letters" : null,
+      email: (value) =>
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+          value
+        )
+          ? null
+          : "Invalid email",
 
-     phone: (value) =>
-       /^\d{10}$/.test(value)
-         ? null
-         : "Phone number must be 10 digits long number",
+      phone: (value) =>
+        /^\d{10}$/.test(value)
+          ? null
+          : "Phone number must be 10 digits long number",
 
-     nic: (value) => {
-       if (!value) {
-         return "This field is Required";
-       }
-       if (
-         !/^\S+@\S+$/.test(value) &&
-         !/^([0-9]{9}[v|V]|[0-9]{12})$/.test(value)
-       ) {
-         return "Invalid email or NIC";
-       }
-       return null;
-     },
-   },
- });
+      nic: (value) => {
+        if (!value) {
+          return "This field is Required";
+        }
+        if (
+          !/^\S+@\S+$/.test(value) &&
+          !/^([0-9]{9}[v|V]|[0-9]{12})$/.test(value)
+        ) {
+          return "Invalid email or NIC";
+        }
+        return null;
+      },
+    },
+  });
 
   const registerWorker = async (values: {
-    worker_id: string;
     name: string;
     email: string;
     password: string;
@@ -245,40 +239,26 @@ const ManageWorker = () => {
           title: "Adding Worker record",
           message: "Please wait while we add Worker record..",
           icon: <IconCheck />,
-          autoClose: 5000,
+          autoClose: 2500,
         });
 
         registerForm.reset();
         setOpened(false);
 
-        const newData = [
-          ...data,
-          {
-            _id: Response.data._id,
-            worker_id: Response.data.worker_id,
-            name: values.name,
-            email: values.email,
-            password: values.password,
-            phone: values.phone,
-            nic: values.nic,
-            address: values.address,
-            gender: values.gender,
-          },
-        ];
-      //  setData(newData);
+        // getting updated details from the DB
+        refetch();
       })
       .catch((error) => {
         updateNotification({
           id: "Add Worker",
-          color: "teal",
-          title: "Adding Worker record",
-          message: "Please wait while we add Worker record..",
-          icon: <IconCheck />,
-          autoClose: 5000,
+          color: "red",
+          title: "Something went wrong!",
+          message: "There is a problem when adding worker",
+          icon: <IconX />,
+          autoClose: 2500,
         });
       });
   };
-  
 
   const getWorkerDetails = async () => {
     showNotification({
@@ -288,10 +268,10 @@ const ManageWorker = () => {
       message: "Please wait while we fetch worker details..",
       autoClose: false,
     });
-  
+
     try {
       const workerDetails = await WorkerAPI.getAllWorkerDetails();
-  
+
       updateNotification({
         id: "get-worker-details",
         color: "teal",
@@ -300,7 +280,7 @@ const ManageWorker = () => {
         message: "Successfully fetched worker details.",
         autoClose: 5000,
       });
-  
+
       return workerDetails;
     } catch (error) {
       updateNotification({
@@ -311,73 +291,62 @@ const ManageWorker = () => {
         message: "We were unable to fetch worker details.",
         autoClose: 5000,
       });
-  
+
       throw error;
     }
   };
 
-    //update Item  function
-    const updateWorker = async (values: {
-      _id: string;
-      worker_id: string;
-      name: string;
-      email: string;
-      password: string;
-      phone: string;
-      nic: string;
-      address: string;
-      gender: string;
-    }) => {
-      showNotification({
-        id: "update-worker",
-        loading: true,
-        title: "Updating Worker record",
-        message: "Please wait while we update Worker record..",
-        autoClose: false,
-      });
-      WorkerAPI.updateWorker(values)
-        .then((response) => {
-          updateNotification({
-            id: "update-worker",
-            color: "teal",
-            icon: <IconCheck />,
-            title: "Worker updated successfully",
-            message: "Worker data updated successfully.",
-            //icon: <IconCheck />,
-            autoClose: 5000,
-          });
-          editForm.reset();
-          setEditOpened(false);
-  
-          //getting updated items from database
-          refetch();
-        })
-        .catch((error) => {
-          updateNotification({
-            id: "update-worker",
-            color: "red",
-            title: "Worker updating failed",
-            icon: <IconX />,
-            message: "We were unable to update the Worker",
-            // icon: <IconAlertTriangle />,
-            autoClose: 5000,
-          });
+  //update Item  function
+  const updateWorker = async (values: {
+    _id: string;
+    worker_id: string;
+    name: string;
+    email: string;
+    phone: string;
+    nic: string;
+    address: string;
+    gender: string;
+  }) => {
+    showNotification({
+      id: "update-worker",
+      loading: true,
+      title: "Updating Worker record",
+      message: "Please wait while we update Worker record..",
+      autoClose: false,
+    });
+    WorkerAPI.updateWorker(values)
+      .then((response) => {
+        updateNotification({
+          id: "update-worker",
+          color: "teal",
+          icon: <IconCheck />,
+          title: "Worker updated successfully",
+          message: "Worker data updated successfully.",
+          //icon: <IconCheck />,
+          autoClose: 5000,
+        });
+        editForm.reset();
+        setEditOpened(false);
 
-        // editForm.reset();
-        // setEditOpened(false);
-
-        // //getting updated worker from database
-        // refetch();
+        //getting updated items from database
+        refetch();
       })
-     
+      .catch((error) => {
+        updateNotification({
+          id: "update-worker",
+          color: "red",
+          title: "Worker updating failed",
+          icon: <IconX />,
+          message: "We were unable to update the Worker",
+          // icon: <IconAlertTriangle />,
+          autoClose: 5000,
+        });
+
+      });
   };
 
   //Delete Worker function
-  const workerDelete = (values: {
-    _id: string;
-   nic: string;
-   name: string;
-  }) => {
+  const workerDelete = (values: { _id: string; nic: string; name: string }) => {
     WorkerAPI.deleteWorker(values)
       .then((res) => {
         showNotification({
@@ -414,17 +383,14 @@ const ManageWorker = () => {
 
     initialValues: {
       _id: "",
-      nic:"",
-      name:"",
+      nic: "",
+      name: "",
     },
-
-    
   });
 
-
-
-  const rows = data?.map((row:any) => (
-    <tr key={row.worker_id}>
+  console.log(data);
+  const rows = Array.isArray(data) ? data?.map((row: any) => (
+    <tr key={row._id}>
       <td>
         <Text size={15}>{row.name}</Text>
       </td>
@@ -434,7 +400,7 @@ const ManageWorker = () => {
       <td>
         <Text size={15}>{row.phone}</Text>
       </td>
-     
+
       <td>
         <Text size={15}>{row.address}</Text>
       </td>
@@ -450,33 +416,35 @@ const ManageWorker = () => {
             <Group spacing={"sm"}>
               {/* edit button */}
               <Tooltip label="Edit worker">
-                <ActionIcon color="teal"
-                onClick={() => {
-                  editForm.setValues({
-                    worker_id: row.worker_id,
-                    name: row.name,
-                    email: row.email,
-                    password: row.password,
-                    phone: row.phone,
-                    nic: row.nic,
-                    address: row.address,
-                    gender: row.gender,
-                  });
-                  setEditOpened(true);
-                }}
-              >
+                <ActionIcon
+                  color="teal"
+                  onClick={() => {
+                    editForm.setValues({
+                      _id: row._id,
+                      worker_id: row.worker_id,
+                      name: row.name,
+                      email: row.email,
+                      phone: row.phone,
+                      nic: row.nic,
+                      address: row.address,
+                      gender: row.gender,
+                    });
+                    setEditOpened(true);
+                  }}
+                >
                   <IconEdit size={30} />
                 </ActionIcon>
               </Tooltip>
 
               {/* delete button */}
               <Tooltip label="Delete worker">
-                <ActionIcon color="red"
-                  onClick={() =>{
+                <ActionIcon
+                  color="red"
+                  onClick={() => {
                     deleteForm.setValues({
-                      _id:row._id,
+                      _id: row._id,
                       nic: row.nic,
-                      name:row.name,
+                      name: row.name,
                     });
                     setDeleteOpen(true);
                   }}
@@ -489,21 +457,26 @@ const ManageWorker = () => {
         }
       </td>
     </tr>
-  ));
+  )) : null;
 
+  if (isLoading) {
+    return <LoadingOverlay visible={isLoading} overlayBlur={2} />;
+  }
 
-  return(
+  if (isError) {
+    showNotification({
+      title: "Something went wrong!",
+      message: "There was an error while fetching data",
+      autoClose: 1500,
+      color: "red",
+      icon: <IconX />,
+    });
+  }
 
+  return (
     <div>
-      {/* {showRegistrationForm && <WorkerRegister />} */}
-      
-
-    <div>
-   
-    </div>
-
-    {/*Worker update model */}
-    <Modal
+      {/*Worker update model */}
+      <Modal
         opened={editOpened}
         onClose={() => {
           editForm.reset();
@@ -512,7 +485,6 @@ const ManageWorker = () => {
         title="Update Worker Record"
       >
         <form onSubmit={editForm.onSubmit((values) => updateWorker(values))}>
-        
           <TextInput
             label="Worker Name"
             placeholder="Enter Worker name"
@@ -537,30 +509,24 @@ const ManageWorker = () => {
             {...editForm.getInputProps("address")}
             required
           />
-            <TextInput
-            label="Password"
-            placeholder="Enter Password"
-            {...editForm.getInputProps("password")}
-            required
-          />
           <TextInput
             label="NIC"
             placeholder="Enter Worker NIC number"
             {...editForm.getInputProps("nic")}
             required
           />
-        
-        <Select
-              name="gender"
-              label="Gender"
-              placeholder="Select gender"
-              required
-              data={[
-                { value: "male", label: "Male" },
-                { value: "female", label: "Female" },
-              ]}
-              {...editForm.getInputProps("gender")}
-            />
+
+          <Select
+            name="gender"
+            label="Gender"
+            placeholder="Select gender"
+            required
+            data={[
+              { value: "male", label: "Male" },
+              { value: "female", label: "Female" },
+            ]}
+            {...editForm.getInputProps("gender")}
+          />
           <Button
             color="blue"
             sx={{ marginTop: "10px", width: "100%" }}
@@ -571,13 +537,12 @@ const ManageWorker = () => {
         </form>
       </Modal>
 
-
-     {/* // delete modal */}
-     <Modal
+      {/* // delete modal */}
+      <Modal
         opened={deleteOpen}
         centered
         onClose={() => {
-          registerForm.reset();
+          deleteForm.reset();
           setDeleteOpen(false);
         }}
         title="Delete Worker"
@@ -600,7 +565,6 @@ const ManageWorker = () => {
               {...deleteForm.getInputProps("name")}
               mb={10}
             />
-         
 
             <Group position="right" spacing={"md"} mt={20}>
               <Button
@@ -624,152 +588,148 @@ const ManageWorker = () => {
           </form>
         </Box>
       </Modal>
-
-    <Modal
-          opened={opened}
-          onClose={() => {
-            registerForm.reset();
-            setOpened(false);
-          }}
-          title="Add Worker Record"
-        >
-          <form
-            onSubmit={registerForm.onSubmit((values) => registerWorker(values))}
-          >
-            <TextInput
-              label="ID"
-              placeholder="Enter ID"
-              name="worker_id"
-              required
-              {...registerForm.getInputProps("worker_id")}
-            />
-            <TextInput
-              label="Name"
-              placeholder="Enter name"
-              name="name"
-              required
-              {...registerForm.getInputProps("name")}
-            />
-            <TextInput
-              label="Email"
-              placeholder="you@mantine.dev"
-              name="email"
-              required
-              {...registerForm.getInputProps("email")}
-            />
-            <PasswordInput
-              name="password"
-              label="Password"
-              placeholder="Your password"
-              required
-              mt="md"
-              {...registerForm.getInputProps("password")}
-            />
-
-            <TextInput
-              label="Phone"
-              placeholder="Enter phone"
-              name="phone"
-              required
-              mt="md"
-              {...registerForm.getInputProps("phone")}
-            />
-
-            <TextInput
-              label="NIC"
-              placeholder="Enter NIC"
-              name="nic"
-              required
-              mt="md"
-              {...registerForm.getInputProps("nic")}
-            />
-
-            <TextInput
-              name="address"
-              label="Address"
-              placeholder="Enter address"
-              required
-              mt="md"
-              {...registerForm.getInputProps("address")}
-            />
-
-            <Select
-              name="gender"
-              label="Gender"
-              placeholder="Select gender"
-              required
-              data={[
-                { value: "male", label: "Male" },
-                { value: "female", label: "Female" },
-              ]}
-              {...registerForm.getInputProps("gender")}
-            />
-
-            <Button fullWidth mt="xl" type="submit">
-              Add Worker
-            </Button>
-          </form>
-        </Modal>
-
-    
-
-  {/* search bar */}
-  <div style={{ alignItems: "center" }}>
-  <TextInput
-    placeholder="Search by any field"
-    mt={50}
-    mb={20}
-    icon={<IconSearch size="0.9rem" stroke={1.5} />}
-    // value={search}
-    // onChange={handleSearchChange}
-    w={500}
-    style={{ position: "relative", left: "25%", translate: "-50%" }}
-  />
-   <Button leftIcon={<IconPlus size={20}/>} style={{position:"relative",left:1000}} onClick={() => setOpened(true)}>
-      Add New Worker
-    </Button>
-  </div>
-
-  <ScrollArea
-    w={"100mw"}
-    h={600}
-    onScrollPositionChange={({ y }) => setScrolled(y !== 0)}
-  >
-    <Table
-      highlightOnHover
-      horizontalSpacing={70}
-      verticalSpacing="lg"
-      miw={700}
-      sx={{ tableLayout: "fixed" }}
-    >
-      <thead
-        className={cx(classes.header, { [classes.scrolled]: scrolled })}
+      <Modal
+        opened={opened}
+        onClose={() => {
+          registerForm.reset();
+          setOpened(false);
+        }}
+        title="Add Items Record"
       >
-        <tr>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Phone</th>
-          <th>Address</th>
-          <th>NIC</th>
-          <th>Gender</th>
-        </tr>
-      </thead>
-      {/* <tbody>
-            {rows.length > 0 ? (
+        <form
+          onSubmit={registerForm.onSubmit((values) => registerWorker(values))}
+        >
+          <TextInput
+            label="Name"
+            placeholder="Enter name"
+            name="name"
+            required
+            {...registerForm.getInputProps("name")}
+          />
+          <TextInput
+            label="Email"
+            placeholder="you@mantine.dev"
+            name="email"
+            required
+            {...registerForm.getInputProps("email")}
+          />
+          <PasswordInput
+            name="password"
+            label="Password"
+            placeholder="Your password"
+            required
+            mt="md"
+            {...registerForm.getInputProps("password")}
+          />
+
+          <TextInput
+            label="Phone"
+            placeholder="Enter phone"
+            name="phone"
+            required
+            mt="md"
+            {...registerForm.getInputProps("phone")}
+          />
+
+          <TextInput
+            label="NIC"
+            placeholder="Enter NIC"
+            name="nic"
+            required
+            mt="md"
+            {...registerForm.getInputProps("nic")}
+          />
+
+          <TextInput
+            name="address"
+            label="Address"
+            placeholder="Enter address"
+            required
+            mt="md"
+            {...registerForm.getInputProps("address")}
+          />
+
+          <Select
+            name="gender"
+            label="Gender"
+            placeholder="Select gender"
+            required
+            data={[
+              { value: "male", label: "Male" },
+              { value: "female", label: "Female" },
+            ]}
+            {...registerForm.getInputProps("gender")}
+          />
+
+          <Button fullWidth mt="xl" type="submit">
+            Add Worker
+          </Button>
+        </form>
+      </Modal>
+
+      {/* search bar */}
+      <div style={{ alignItems: "center" }}>
+        <TextInput
+          placeholder="Search by any field"
+          mt={50}
+          mb={20}
+          icon={<IconSearch size="0.9rem" stroke={1.5} />}
+          // value={search}
+          // onChange={handleSearchChange}
+          w={500}
+          style={{ position: "relative", left: "25%", translate: "-50%" }}
+        />
+        <Button
+          leftIcon={<IconPlus size={20} />}
+          style={{ position: "relative", left: 1000 }}
+          onClick={() => setOpened(true)}
+        >
+          Add New Worker
+        </Button>
+      </div>
+
+      <ScrollArea
+        w={"100mw"}
+        h={600}
+        onScrollPositionChange={({ y }) => setScrolled(y !== 0)}
+      >
+        <Table
+          highlightOnHover
+          horizontalSpacing={30}
+          verticalSpacing="lg"
+          miw={700}
+          sx={{ tableLayout: "fixed" }}
+        >
+          <thead
+            className={cx(classes.header, { [classes.scrolled]: scrolled })}
+          >
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Address</th>
+              <th>NIC</th>
+              <th>Gender</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows !== null ? rows.length > 0 ? (
               rows
             ) : (
               <tr>
-                <td colSpan={Object.keys(data[0]).length}>
+                <td>
                   <Text weight={500} align="center">
                     Nothing found
                   </Text>
                 </td>
               </tr>
-            )}
-          </tbody> */}
-    </Table>
-  </ScrollArea>
-</div> 
+
+            ):null}
+          </tbody>
+        </Table>
+      </ScrollArea>
+    </div>
+
   );
 };
 

@@ -138,11 +138,12 @@ const Invoices = () => {
   const [sortedData, setSortedData] = useState<Data[]>([]);
 
   // use react query and fetch data
-  const { data, isLoading, isError } = useQuery(
+  const { data = [], isLoading, isError } = useQuery(
     ["invoiceData"],
     () => {
       return InvoiceAPI.getAllInvoice().then((res) => res.data);
-    }
+    },
+    { initialData: []}
   );
 
   // Format the prices
@@ -205,7 +206,7 @@ const Invoices = () => {
 
 
   // rows map
-  const rows = data?.map((row: any) => (
+  const rows = Array.isArray(data) ? data?.map((row: any) => (
     <tr key={row._id}>
       <td>
         <Text size={15}>{row.invoice_id}</Text>
@@ -269,7 +270,7 @@ const Invoices = () => {
         </Group>
       </td>
     </tr>
-  ));
+  )):null;
 
   // if data is fetching this overalay will be shows to the user
   if (isLoading) {
@@ -381,7 +382,7 @@ const Invoices = () => {
 
       <ScrollArea
         w={"100mw"}
-        h={800}
+        h={600}
         onScrollPositionChange={({ y }) => setScrolled(y !== 0)}
       >
         <Table
@@ -406,17 +407,17 @@ const Invoices = () => {
             </tr>
           </thead>
           <tbody>
-            {rows.length > 0 ? (
+            {rows !== null ? rows.length > 0 ? (
               rows
             ) : (
               <tr>
-                <td colSpan={Object.keys(data[0]).length}>
+                <td>
                   <Text weight={500} align="center">
                     Nothing found
                   </Text>
                 </td>
               </tr>
-            )}
+            ):null}
           </tbody>
         </Table>
       </ScrollArea>

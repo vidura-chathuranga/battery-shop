@@ -159,9 +159,9 @@ const WorkerDashboardHeader = ({link_id} : any) => {
               
               <Menu.Item icon={<IconLogout size={14} stroke={1.5} />} >
               <a
-              href="/admin/logout"
+              href="/worker/logout"
               className={classes.link}
-              onClick={(event) => event.preventDefault()}
+              onClick={(event) => {event.preventDefault(); window.location.href = '/worker/logout'}}
             >
                   Logout
                 </a>

@@ -629,7 +629,7 @@ const ManageWorker = () => {
             registerForm.reset();
             setOpened(false);
           }}
-          title="Add Items Record"
+          title="Add Worker Record"
         >
           <form
             onSubmit={registerForm.onSubmit((values) => registerWorker(values))}
@@ -752,7 +752,7 @@ const ManageWorker = () => {
           <th>Gender</th>
         </tr>
       </thead>
-      <tbody>
+      {/* <tbody>
             {rows.length > 0 ? (
               rows
             ) : (
@@ -764,7 +764,7 @@ const ManageWorker = () => {
                 </td>
               </tr>
             )}
-          </tbody>
+          </tbody> */}
     </Table>
   </ScrollArea>
 </div> 

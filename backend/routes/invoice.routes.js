@@ -8,5 +8,4 @@ const router = express.Router();
 router.get('/',validateWorkerAndAdmin,getAllInvocies);
 router.post('/add',validateWorkerAndAdmin,addInvoice);
 
-
 export default router;

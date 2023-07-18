@@ -1,5 +1,14 @@
-import { createStyles, Text, Card, RingProgress, Group, rem } from '@mantine/core';
+import { createStyles, Text, Card, RingProgress, Group, rem, Image, Badge, Button, LoadingOverlay, Modal } from '@mantine/core';
 import AdminDashboardHeader from '../adminDashboardHeader';
+import InvoiceAPI from "../../API/InvoiceAPI/Invoice.api"
+import { useQuery } from "@tanstack/react-query";
+import { useState } from 'react';
+import { DateInput } from '@mantine/dates';
+import { useForm } from "@mantine/form";
+import { showNotification } from '@mantine/notifications';
+import { IconX } from '@tabler/icons-react';
+
+
 
 const useStyles = createStyles((theme) => ({
   card: {
@@ -39,70 +48,73 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-interface StatsProfitCard {
-  title: string;
-  completed: number;
-  total: number;
-  stats: {
-    value: number;
-    label: string;
-  }[];
-}
-
 // title, completed, total, stats
+export function StatsProfitCard() {
+  const [profit, setProfit] = useState(0);
 
-export function StatsProfitCard({ title, completed, total, stats }: StatsProfitCard) { 
-  const { classes, theme } = useStyles();
-//   const items = stats.map((stat) => (
-//     <div key={stat.label}>
-//       <Text className={classes.label}>{stat.value}</Text>
-//       <Text size="xs" color="dimmed">
-//         {stat.label}
-//       </Text>
-//     </div>
+  // use react query and fetch data
+  const { data, isLoading, isError } = useQuery(["invoiceData"], () => {
+    return InvoiceAPI.getAllInvoice().then((res) => res.data);
+  }
+  );
 
-// ));
+  // if data is fetching this overalay will be shows to the user
+  if (isLoading) {
+    return <LoadingOverlay visible={isLoading} overlayBlur={2} />;
+  }
 
+  if (isError) {
+    showNotification({
+      title: "Cannot fetching Profit Data",
+      message: "check internet connection",
+      color: "red",
+      icon: <IconX />,
+      autoClose: 1500,
+    });
+  }
+
+  //calculate profit function
+  const calculateProfit = (date: Date) => {
+    setProfit(0);
+
+    data?.map((item: any) => {
+      const issuedDate = new Date(item.issuedDate)
+
+      if (issuedDate.getDate() === date.getDate() && issuedDate.getMonth() === date.getMonth()) {
+
+        const calcProfit = (item.totalSoldPrice - item.totalActualPrice)
+
+        console.log(calcProfit)
+
+        setProfit(prev => prev + item.totalSoldPrice - item.totalActualPrice);
+      }
+    });
+
+  };
   return (
-    <>
-   
-    <Card withBorder p="xl" radius="md" className={classes.card}>
-      <div className={classes.inner}>
-        <div>
-          <Text fz="xl" className={classes.label}>
-            {title}
-          </Text>
-          <div>
-            <Text className={classes.lead} mt={30}>
-              {completed}
-            </Text>
-            <Text fz="xs" color="dimmed">
-              Completed
-            </Text>
-          </div>
-          {/* <Group mt="lg">{items}</Group> */}
-        </div>
 
-        <div className={classes.ring}>
-          <RingProgress
-            roundCaps
-            thickness={6}
-            size={150}
-            sections={[{ value: (completed / total) * 100, color: theme.primaryColor }]}
-            label={
-              <div>
-                <Text ta="center" fz="lg" className={classes.label}>
-                  {((completed / total) * 100).toFixed(0)}%
-                </Text>
-                <Text ta="center" fz="xs" c="dimmed">
-                  Completed
-                </Text>
-              </div>
-            }
-          />
-        </div>
-      </div>
-    </Card>
+    <>
+
+      <DateInput
+        placeholder="Choose Date"
+        label="Choose Date to view profit"
+        valueFormat="YYYY MMM DD"
+        withAsterisk
+        onChange={calculateProfit}
+
+      />
+
+      <Card shadow="sm" padding="lg" radius="md" withBorder>
+        <Group position="apart" mt="md" mb="xs">
+          <Text weight={500} size={30}>The profit</Text>
+        </Group>
+
+        <Text size={20} color="dimmed">
+          Rs.{profit}
+        </Text>
+
+
+      </Card>
     </>
   );
 }

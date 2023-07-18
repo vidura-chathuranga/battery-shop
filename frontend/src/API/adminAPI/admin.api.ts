@@ -9,7 +9,7 @@ class AdminAPI {
     }
 
     static logout(){
-        return axios.get(`${BASE_URL}/admin/logout`,{withCredentials:true});
+        return axios.get(`${BASE_URL}/worker/logout`,{withCredentials:true});
     }
 
     static workerRegister (values : {worker_id:string ,name : string, email : string,password : string, phone : string,nic:string,address:string,gender:string}) {

@@ -136,8 +136,7 @@ const StockTable = () => {
       Battery_description: "",
     },
   });
-
-
+  
 
      //add Items
   const addItems = async (values: {
@@ -444,9 +443,7 @@ const StockTable = () => {
         </Box>
       </Modal>
 
-        {/* <Button leftIcon={<IconPlus size={20}/>} style={{position:"fixed",left:1400}}>
-          Add new Stock
-        </Button> */}
+     
 
       {/* search bar */}
       <TextInput

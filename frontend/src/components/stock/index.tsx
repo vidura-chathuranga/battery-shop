@@ -41,6 +41,7 @@ import BatteryAPI from "../../API/batteryAPI/battery.api";
 import { useQuery } from '@tanstack/react-query';
 import { DateInput } from '@mantine/dates';
 import AdminDashboardHeader from "../adminDashboardHeader";
+import { modals } from "@mantine/modals";
 
 const useStyles = createStyles((theme) => ({
   th: {
@@ -119,100 +120,30 @@ const StockTable = () => {
 
 
     // use react query and fetch data
-    const { data, isLoading, isError, refetch } = useQuery(["stockData"], () => {
-      return BatteryAPI.getAllItems().then((res) => res.data)
-    })
+    const { data = [], isLoading, isError, refetch } = useQuery(["stockData"], () => {
+      return BatteryAPI.getRequestedStocks().then((res) => res.data)
+    },{initialData : []})
 
-     //declare add form
-  const addForm = useForm({
-    validateInputOnChange: true,
-    initialValues: {
-      quantity: "",
-      added_date: "",
-      warnty_priod: "",
-      sellingPrice: "",
-      actualPrice: "",
-      batry_brand: "",
-      Battery_description: "",
-    },
-  });
-  
 
-     //add Items
-  const addItems = async (values: {
-    quantity: string;
-    added_date: string;
-    warnty_priod: String;
-    sellingPrice: string;
-    actualPrice: string;
-    batry_brand: string;
-    Battery_description: string;
-  }) => {
-    showNotification({
-      id: "add-items",
-      loading: true,
-      title: "Adding Items record",
-      message: "Please wait while we add Items record..",
-      autoClose: false,
-    });
-    BatteryAPI.addBattery(values)
-      .then((response) => {
-        updateNotification({
-          id: "add-items",
-          color: "teal",
-          icon: <IconCheck />,
-          title: "Items added successfully",
-          message: "Items data added successfully.",
-          //icon: <IconCheck />,
-          autoClose: 5000,
-        });
-        addForm.reset();
-        setOpened(false);
-
-        // refetch data from the database
-        refetch();
-      })
-      .catch((error) => {
-        updateNotification({
-          id: "add-items",
-          color: "red",
-          title: "Items Adding failed",
-          icon: <IconX />,
-          message: "We were unable to add the Items",
-          // icon: <IconAlertTriangle />,
-          autoClose: 5000,
-        });
-      });
-  };
-
-    // delete Stock function
-    const deleteSpecificStock = (values: {
-      _id: string;
-      stock_id: string;
-    }) => {
-      BatteryAPI.rejectBattery(values)
+    // accept Stock function
+    const acceptStock = (stockId : string) => {
+      BatteryAPI.acceptStock(stockId)
         .then((res) => {
           showNotification({
-            title: `${values.stock_id} was deleted`,
-            message: "Stock was deleted successfully",
+            title: `Stock was accepted`,
+            message: "Stock was accepted successfully",
             autoClose: 1500,
             icon: <IconCheck />,
             color: "teal",
           });
   
-          // after successing the deletion refetch the data from the database
+          // after successing the accepting, refetch the data from the database
           refetch();
-  
-          // clear all the fields
-          deleteForm.reset();
-  
-          // then close the delete modal
-          setDeleteOpen(false);
         })
         .catch((err) => {
           showNotification({
-            title: `${values.stock_id} was not deleted`,
-            message: "Stock was not deleted",
+            title: `stock was not accepted`,
+            message: "Stock was not accpeted",
             autoClose: 1500,
             icon: <IconX />,
             color: "red",
@@ -220,68 +151,68 @@ const StockTable = () => {
         });
     };
 
+
+
+        // delete Stock function
+        const deleteSpecificStock = (stockId : string) => {
+          BatteryAPI.rejectBattery(stockId)
+            .then((res) => {
+              showNotification({
+                title: `Stock was deleted`,
+                message: "Stock was deleted successfully",
+                autoClose: 1500,
+                icon: <IconCheck />,
+                color: "teal",
+              });
+      
+              // after successing the deletion refetch the data from the database
+              refetch();
+      
+            })
+            .catch((err) => {
+              showNotification({
+                title: `stock was not deleted`,
+                message: "Stock was not deleted",
+                autoClose: 1500,
+                icon: <IconX />,
+                color: "red",
+              });
+            });
+        };
     
- 
-  // const [data, setData] = useState<Data[]>([]);
-
-  // const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //     const { value } = event.currentTarget;
-  //     setSearch(value);
-  //     filterData(data,search);
-  //   };
-
-
-
-  const getBatteryDetails = async () => {
-    showNotification({
-      id: "get-battery-details",
-      loading: true,
-      title: "Fetching Battery Details",
-      message: "Please wait while we fetch battery details..",
-      autoClose: false,
+    // reject confirmation modal
+    const openDeleteModal = (stockId:string) =>
+    modals.openConfirmModal({
+      title: 'Delete your profile',
+      centered: true,
+      children: (
+        <Text size="sm">
+          Are you sure you want to reject this stock? This action cannot be undone later.
+        </Text>
+      ),
+      labels: { confirm: 'Reject stock', cancel: "No don't reject it" },
+      confirmProps: { color: 'red' },
+      onCancel: () => modals.close,
+      onConfirm: () => deleteSpecificStock(stockId),
     });
-  
-    try {
-      const batteryDetails = await BatteryAPI.getBatteryDetails();
-  
-      updateNotification({
-        id: "get-battery-details",
-        color: "teal",
-        icon: <IconCheck />,
-        title: "Battery Details Fetched",
-        message: "Successfully fetched battery details.",
-        autoClose: 5000,
-      });
-  
-      return batteryDetails;
-    } catch (error) {
-      updateNotification({
-        id: "get-battery-details",
-        color: "red",
-        icon: <IconX />,
-        title: "Failed to Fetch Battery Details",
-        message: "We were unable to fetch battery details.",
-        autoClose: 5000,
-      });
-  
-      throw error;
-    }
-  };
 
-    // form for deletion
-    const deleteForm = useForm({
-      validateInputOnChange: true,
-  
-      initialValues: {
-        stock_id: "",
-        _id: "",
-      },
-  
+
+    // accept modal
+    const openAcceptModal = (stockId : string) => modals.openConfirmModal({
+      title: 'Please confirm your action',
+      children: (
+        <Text size="sm">
+          Are you sure you want to accept this stock? This stcok will be added to the stock.
+        </Text>
+      ),
+      labels: { confirm: 'Accept', cancel: 'Cancel' },
+      confirmProps:{color:"teal"},
+      onCancel: () => modals.close,
+      onConfirm: () => acceptStock(stockId),
     });
-  
 
   // rows map
-  const rows = data?.map((row:any) => (
+  const rows = Array.isArray(data)? data?.map((row:any) => (
     <tr key={row._id}>
       <td>
         <Text size={15}>{row.stock_id}</Text>
@@ -309,32 +240,17 @@ const StockTable = () => {
           <>
             <Group spacing={"sm"}>
               {/* Accept button */}
-              <Button type="submit"   style={{ width: "90px"}}  onClick={() => {
-                    addForm.setValues({
-                    //   _id: row._id,
-                    //   stock_id: row.stock_id,
-                    //   Battery_description: row.batteryDescription,
-                    //   batry_brand : row.batteryBrand,
-                    //   actualPrice: row.actualPrice,
-                    //   sellingPrice: row.sellingPrice,
-                    //   quantity: row.quantity,
-                    //  // added_date: new Date(row.added_date),
-                    //   warnty_priod: row.warranty,
-                    });
-                    setOpened(true);
+              <Button type="submit" onClick={() => {
+                  openAcceptModal(row._id)
                   }}
                >
                    Accept
                 </Button>
 
               {/* Reject Button */}
-               <Button type="submit" color="red" style={{ width: "90px" }}
+               <Button type="submit" color="red"
                 onClick={() => {
-                  deleteForm.setValues({
-                   _id:row._id,
-                   stock_id: row.stock_id,
-                  });
-                  setDeleteOpen(true);
+                  openDeleteModal(row._id);
                 }} 
                 >
                
@@ -347,7 +263,7 @@ const StockTable = () => {
       </td>
    
     </tr>
-  ));
+  )):null;
 
     // if data is fetching this overalay will be shows to the user
     if (isLoading) {
@@ -364,87 +280,11 @@ const StockTable = () => {
       });
     }
 
+
   // table
   return (
     <div>
-       {/* stock add Modal */}
-       <Modal
-        opened={opened}
-        onClose={() => {
-         // addForm.reset();
-          setOpened(false);
-        }}
-        title="Accept Battery Stocks"
-      >
-        <form onSubmit={addForm.onSubmit((values) => addItems(values))}>
-      <Paper withBorder p="lg" radius="md" shadow="md">
-
-     
-      <Group position="center" mt="md">
-        <Button variant="outline" size="xs" color="red">
-          Cancel
-        </Button>
-        <Button variant="outline" size="xs">
-          Accept all
-        </Button>
-      </Group>
-    </Paper>
-    </form>
-      </Modal>
-
-
-
-      {/* // delete modal */}
-      <Modal
-        opened={deleteOpen}
-        centered
-        onClose={() => {
-          //addForm.reset();
-          setDeleteOpen(false);
-        }}
-        title="Reject Stock"
-      >
-        <Box>
-          <Text size={"sm"} mb={10}>
-            Are you sure you want to Reject this stock? This action cannot be
-            undone!
-          </Text>
-          <form
-            onSubmit={deleteForm.onSubmit((values) => {
-              deleteSpecificStock(values)
-            })}
-          >
-            <TextInput
-              withAsterisk
-              label="Stock ID"
-              required
-              disabled
-              {...deleteForm.getInputProps("stock_id")}
-              mb={10}
-            />
-            
-
-            <Group position="right" spacing={"md"} mt={20}>
-              <Button
-                color="gray"
-                variant="outline"
-                onClick={() => {
-                  deleteForm.reset();
-                  setDeleteOpen(false);
-                }}
-              >
-                No I don't Reject it
-              </Button>
-              <Button color="red" type="submit" leftIcon={<IconTrash size={16} />}>
-                Reject it
-              </Button>
-            </Group>
-          </form>
-        </Box>
-      </Modal>
-
-     
-
+      
       {/* search bar */}
       <TextInput
         placeholder="Search by any field"
@@ -484,17 +324,17 @@ const StockTable = () => {
             </tr>
           </thead>
           <tbody>
-            {rows.length > 0 ? (
+            {rows !== null ? rows.length > 0 ? (
               rows
             ) : (
               <tr>
-                <td colSpan={Object.keys(data[0]).length}>
+                <td>
                   <Text weight={500} align="center">
                     Nothing found
                   </Text>
                 </td>
               </tr>
-            )}
+            ):null}
           </tbody>
         </Table>
       </ScrollArea>

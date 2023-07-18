@@ -121,7 +121,7 @@ const ManageWorker = () => {
  
 
      // use react query and fetch data
-  const { data, isLoading, isError, refetch } = useQuery(["stockData"], () => {
+  const { data, isLoading, isError, refetch } = useQuery(["workerData"], () => {
     return WorkerAPI.getAllWorkerDetails().then((res) => res.data);
   });
 

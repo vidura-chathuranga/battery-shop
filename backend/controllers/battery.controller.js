@@ -26,7 +26,7 @@ const generateStockId = async () => {
 //get all added data
 export const getAllItems = async (req, res) => {
   try {
-    const batteries = await Battery.find({ "isDeleted.count": 0 }); // Retrieve all battery (not deleted by worker or admin) documents from the database
+    const batteries = await Battery.find({ "isDeleted.count": 0,status:"ACCEPTED" }); // Retrieve all battery (not deleted by worker or admin) documents from the database
 
     res.status(200).json(batteries); // Send the batteries as the response
   } catch (error) {
@@ -147,4 +147,32 @@ export const rejectStock = async (req, res) => {
   }
 };
 
+
+export const getRequestedStocks = async (req,res) =>{
+
+  try{
+    const requestedStocks = await Battery.find({status : "REQUESTED"});
+
+    // sends requested stocks to the frontend
+    res.status(200).json(requestedStocks);
+  }catch(error){
+    res.status(500).json({error:error,message:"Error while getting requested stocks"})
+  }
+};
+
+export const acceptStocks = async(req,res) =>{
+  const _id = req.body.stockId;
+  try{
+
+  //updated stock status 
+  const acceptedStock = await Battery.findByIdAndUpdate(_id,{status:"ACCEPTED"},{new:true});
+
+  //send the success status
+  res.status(200).json(acceptedStock);
+
+}catch(error){
+  res.status(500).json({error:error,message:"Error while updating the stock status"})
+}
+
+}
 

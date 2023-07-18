@@ -388,7 +388,7 @@ const ManageWorker = () => {
     },
   });
 
-  console.log(data);
+
   const rows = Array.isArray(data) ? data?.map((row: any) => (
     <tr key={row._id}>
       <td>

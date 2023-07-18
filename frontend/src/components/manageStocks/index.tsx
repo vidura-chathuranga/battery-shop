@@ -468,6 +468,72 @@ const ManageStocks = () => {
     },
   });
 
+  const updateCartData = (row: any) => {
+    let updateExist = false;
+
+    if (cartData.length === 0) {
+      // create object for storing the cart
+      const newCartData = {
+        _id: row._id,
+        brand: row.batteryBrand,
+        quantity: parseInt(qvalue.toString()),
+        price: row.sellingPrice,
+        warranty: row.warranty,
+        actualTotal: parseFloat(row.actualPrice) * parseInt(qvalue.toString()),
+        totalPrice: parseFloat(row.sellingPrice) * parseInt(qvalue.toString()),
+      };
+      //save the cart details in the state
+      setCartData((current) => [...current, newCartData]);
+    } else {
+      const modifiedCart = cartData.map((item) => {
+        if (item._id === row._id) {
+          updateExist = true;
+
+          return {
+            _id: item._id,
+            brand: item.brand,
+            quantity: item.quantity + parseInt(qvalue.toString()),
+            price: item.price,
+            warranty: item.warranty,
+            actualTotal: (item.quantity + parseInt(qvalue.toString())) * row.actualPrice,
+            totalPrice: (item.quantity + parseInt(qvalue.toString())) * row.sellingPrice,
+          };
+        } else {
+          return item;
+        }
+      });
+
+      if (updateExist) {
+        setCartData( [...modifiedCart]);
+      } else {
+        // create object for storing the cart
+        const newCartData = {
+          _id: row._id,
+          brand: row.batteryBrand,
+          quantity: parseInt(qvalue.toString()),
+          price: row.sellingPrice,
+          warranty: row.warranty,
+          actualTotal:
+            parseFloat(row.actualPrice) * parseInt(qvalue.toString()),
+          totalPrice:
+            parseFloat(row.sellingPrice) * parseInt(qvalue.toString()),
+        };
+        //save the cart details in the state
+        setCartData((current) => [...current, newCartData]);
+      }
+    }
+
+
+    // shows the confirmation notification
+    showNotification({
+      title: "Item added to the cart",
+      message: "Item added to the cart successfully",
+      autoClose: 1000,
+      color: "teal",
+      icon: <IconCheck />,
+    });
+  };
+
   //declare the rows variable and based on the filtered data or row data, it will print the table data!
   let rows = [];
 
@@ -511,7 +577,6 @@ const ManageStocks = () => {
             <>
               <Group spacing={"sm"}>
                 {/* add to cart */}
-                <Tooltip label="Add to cart">
                   <Popover
                     trapFocus
                     position="bottom"
@@ -578,31 +643,7 @@ const ManageStocks = () => {
                           mt={10}
                           leftIcon={<IconShoppingCartPlus size={15} />}
                           onClick={() => {
-                            // create object for storing the cart
-                            const newCartData = {
-                              _id: row._id,
-                              brand: row.batteryBrand,
-                              quantity: parseInt(qvalue.toString()),
-                              price: row.sellingPrice,
-                              warranty: row.warranty,
-                              actualTotal:
-                                parseFloat(row.actualPrice) *
-                                parseInt(qvalue.toString()),
-                              totalPrice:
-                                parseFloat(row.sellingPrice) *
-                                parseInt(qvalue.toString()),
-                            };
-                            //save the cart details in the state
-                            setCartData((current) => [...current, newCartData]);
-
-                            // shows the confirmation notification
-                            showNotification({
-                              title: "Item added to the cart",
-                              message: "Item added to the cart successfully",
-                              autoClose: 1000,
-                              color: "teal",
-                              icon: <IconCheck />,
-                            });
+                            updateCartData(row);
                           }}
                         >
                           Add to cart
@@ -610,8 +651,6 @@ const ManageStocks = () => {
                       </Group>
                     </Popover.Dropdown>
                   </Popover>
-                </Tooltip>
-
                 {/* edit button */}
                 <Tooltip label="Edit stock">
                   <ActionIcon
@@ -695,7 +734,6 @@ const ManageStocks = () => {
             <>
               <Group spacing={"xs"}>
                 {/* add to cart */}
-                <Tooltip label="Add to cart">
                   <Popover
                     trapFocus
                     position="bottom"
@@ -762,31 +800,7 @@ const ManageStocks = () => {
                           mt={10}
                           leftIcon={<IconShoppingCartPlus size={15} />}
                           onClick={() => {
-                            // create object for storing the cart
-                            const newCartData = {
-                              _id: row._id,
-                              brand: row.batteryBrand,
-                              quantity: parseInt(qvalue.toString()),
-                              actualTotal:
-                                parseFloat(row.actualPrice) *
-                                parseInt(qvalue.toString()),
-                              price: row.sellingPrice,
-                              warranty: row.warranty,
-                              totalPrice:
-                                parseFloat(row.sellingPrice) *
-                                parseInt(qvalue.toString()),
-                            };
-                            //save the cart details in the state
-                            setCartData((current) => [...current, newCartData]);
-
-                            // shows the confirmation notification
-                            showNotification({
-                              title: "Item added to the cart",
-                              message: "Item added to the cart successfully",
-                              autoClose: 1000,
-                              color: "teal",
-                              icon: <IconCheck />,
-                            });
+                            updateCartData(row);
                           }}
                         >
                           Add to cart
@@ -794,7 +808,6 @@ const ManageStocks = () => {
                       </Group>
                     </Popover.Dropdown>
                   </Popover>
-                </Tooltip>
 
                 {/* edit button */}
                 <Tooltip label="Edit stock">
@@ -844,7 +857,7 @@ const ManageStocks = () => {
 
   // cart rowws
   const cartRows = cartData.map((item: any, index: any) => (
-    <tr id={item._id}>
+    <tr key={index}>
       <td>{index + 1}</td>
       <td>{item.brand}</td>
       <td>{item.warranty}</td>

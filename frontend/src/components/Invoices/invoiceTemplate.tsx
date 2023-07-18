@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { useReactToPrint } from "react-to-print";
+import {useReactToPrint} from "react-to-print";
 import { Box, Group, Text, Button, Table, Image } from "@mantine/core";
 import logo from "../../assets/shopLogo.png";
 

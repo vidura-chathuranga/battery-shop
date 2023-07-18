@@ -15,6 +15,38 @@ class WorkerAPI {
         return axios.delete(`${BASE_URL}/stock/delete/${batteryId}`,{withCredentials : true});
     }
     
+   //get all Worker Details
+   static getAllWorkerDetails= () => {
+    return axios.get(`${BASE_URL}/worker/getworker`,{withCredentials:true});
+
+};
+
+static deleteWorker = (values : {_id : string}) => {
+    return axios.delete(`${BASE_URL}/worker/delete/${values._id}`,{withCredentials:true});
+};
+
+ //update battery details
+ static updateWorker = (values: {
+    _id: string;
+    worker_id :string;
+    name: string;
+    email: string;
+    password: string;
+    phone: string;
+    nic: string;
+    address: string;
+    gender: string;
+}) => {
+
+    console.log(values);
+    return axios.put(`${BASE_URL}/worker/update/${values._id}`,
+        values,
+        {withCredentials:true}
+    );
+};
+
+
+    
 };
 
 export default WorkerAPI;

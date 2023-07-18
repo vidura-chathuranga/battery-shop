@@ -65,7 +65,7 @@ export function StatsProfitCard({ title, completed, total, stats }: StatsProfitC
 
   return (
     <>
-    <AdminDashboardHeader/>
+   
     <Card withBorder p="xl" radius="md" className={classes.card}>
       <div className={classes.inner}>
         <div>

@@ -396,22 +396,14 @@ const ManageStocks = () => {
       labels: { confirm: "Checkout", cancel: "Cancel" },
       confirmProps: { color: "teal" },
       onCancel: () => modals.close,
-      onConfirm: async () => {
-        try {
-          saveInvoice(values);
-          setOpenedCutomerDetails(false);
-          customerForm.reset();
-          setCartOpened(false);
-          setCartData([]);
 
-          // Run the InvoiceRender component here
-          const invoiceComponent = <InvoiceRender />;
-          ReactDOM.render(invoiceComponent, document.getElementById("invoice-container"));
-
-        } catch (error) {
-          console.error(error);
-          // Handle error if saveInvoice() or other operations fail
-        }
+      onConfirm: () => {
+        saveInvoice(values);
+        setOpenedCutomerDetails(false);
+        customerForm.reset();
+        setCartOpened(false);
+        setCartData([]);
+        setCartDiscount(0);
       },
     });
 

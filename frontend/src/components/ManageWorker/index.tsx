@@ -219,8 +219,6 @@ const ManageWorker = () => {
    },
  });
 
-  
-
   const registerWorker = async (values: {
     worker_id: string;
     name: string;

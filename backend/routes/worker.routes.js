@@ -14,6 +14,10 @@ router.delete("/delete/:id",validateAdmin,deleteWorker);
 
 router.put("/update/:id",validateAdmin,updateWorker );
 
+router.get(`/logout`,validateAdmin,logout);
+
+
+
 
 
 

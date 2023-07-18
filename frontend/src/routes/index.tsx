@@ -36,6 +36,9 @@ const AllRoutes = () => {
 
         <Route path = '/admin/deletedtable' element={<DeletedStockPage/>} />
 
+        <Route path = '/admin/logout' element={<Logout/>} />
+      
+
 
         
         

@@ -158,13 +158,11 @@ const WorkerDashboardHeader = ({link_id} : any) => {
               <Menu.Label>{user.role === 'ADMIN'? 'Administrator' : "Worker"}</Menu.Label>
               
               <Menu.Item icon={<IconLogout size={14} stroke={1.5} />} >
-                <a
-                  href="/worker/logout"
-                  style={{
-                    color: "inherit",
-                    textDecoration: "inherit",
-                  }}
-                >
+              <a
+              href="/admin/logout"
+              className={classes.link}
+              onClick={(event) => event.preventDefault()}
+            >
                   Logout
                 </a>
               </Menu.Item>

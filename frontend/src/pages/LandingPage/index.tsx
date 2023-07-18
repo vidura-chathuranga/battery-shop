@@ -10,7 +10,7 @@ import LoginPage from "../Login";
 
 const useStyles = createStyles((theme) => ({
   root: {
-    height : "100vh",
+    height: "100vh",
     backgroundColor: "#11284b",
     backgroundSize: "cover",
     backgroundPosition: "center",
@@ -87,17 +87,19 @@ const LandingPage = () => {
 
   return (
     <>
-      <div className={classes.root}>
+      <div className={classes.root} style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh" }}>
         <Container size="lg">
           <div className={classes.inner}>
             <div className={classes.content}>
               <Title className={classes.title}>Battery Shop Name</Title>
 
               <Text className={classes.description} mt={30}>
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quos
-                possimus est eum totam eius quisquam magni harum quis mollitia
-                corrupti esse iure architecto id in eligendi distinctio,
-                molestiae autem. Autem?
+                A vehicle battery shop is a specialized retail store that offers a wide selection of batteries
+                for cars, trucks, motorcycles, and other vehicles.
+                They provide expert advice, services like battery testing and installation,
+                and carry accessories for battery maintenance.
+                These shops are a convenient one-stop solution for all vehicle battery needs,
+                ensuring optimal performance and reliability for vehicles.
               </Text>
 
               <Button
@@ -113,8 +115,11 @@ const LandingPage = () => {
           </div>
         </Container>
       </div>
+
       {/* // connect Login Page */}
-      <LoginPage />
+      
+        <LoginPage />
+
     </>
   );
 };

@@ -674,25 +674,25 @@ const ManageWorker = () => {
       </Modal>
 
       {/* search bar */}
-      <div style={{ alignItems: "center" }}>
-        <TextInput
-          placeholder="Search by any field"
-          mt={50}
-          mb={20}
-          icon={<IconSearch size="0.9rem" stroke={1.5} />}
-          // value={search}
-          // onChange={handleSearchChange}
-          w={500}
-          style={{ position: "relative", left: "25%", translate: "-50%" }}
-        />
-        <Button
-          leftIcon={<IconPlus size={20} />}
-          style={{ position: "relative", left: 1000 }}
-          onClick={() => setOpened(true)}
-        >
-          Add New Worker
-        </Button>
-      </div>
+      <div style={{ display: "flex", alignItems: "center" }}>
+  <TextInput
+    placeholder="Search by any field"
+    mt={50}
+    mb={50}
+    icon={<IconSearch size="0.9rem" stroke={1.5} />}
+    // value={search}
+    // onChange={handleSearchChange}
+    w={800}
+  />
+  <Button
+    leftIcon={<IconPlus size={20} />}
+    ml={10}
+    onClick={() => setOpened(true)}
+  >
+    Add New Worker
+  </Button>
+</div>
+
 
       <ScrollArea
         w={"100mw"}

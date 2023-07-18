@@ -116,7 +116,7 @@ export function StatsProfitCard() {
         </Card>
 
         <Card shadow="sm" padding="lg" radius="md" withBorder>
-          <Text weight={500} size={30}>The profit</Text>
+          <Text weight={500} size={30}>The Sold Items Count</Text>
           <Text size={20} color="dimmed">
             {itemCount}
           </Text>

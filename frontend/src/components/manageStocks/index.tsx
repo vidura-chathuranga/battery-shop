@@ -86,11 +86,10 @@ const useStyles = createStyles((theme) => ({
       left: 0,
       right: 0,
       bottom: 0,
-      borderBottom: `${rem(1)} solid ${
-        theme.colorScheme === "dark"
-          ? theme.colors.dark[3]
-          : theme.colors.gray[2]
-      }`,
+      borderBottom: `${rem(1)} solid ${theme.colorScheme === "dark"
+        ? theme.colors.dark[3]
+        : theme.colors.gray[2]
+        }`,
     },
   },
 
@@ -150,9 +149,11 @@ const ManageStocks = () => {
   const [cartOpened, setCartOpened] = useState(false);
 
   // use react query and fetch data
-  const { data, isLoading, isError, refetch } = useQuery(["stockData"], () => {
+  const { data = [], isLoading, isError, refetch } = useQuery(["stockData"], () => {
     return BatteryAPI.getAllItems().then((res) => res.data);
-  });
+  },
+    { initialData: [] }
+  );
 
   // Format the prices
   // format number to SL rupee
@@ -504,7 +505,7 @@ const ManageStocks = () => {
       });
 
       if (updateExist) {
-        setCartData( [...modifiedCart]);
+        setCartData([...modifiedCart]);
       } else {
         // create object for storing the cart
         const newCartData = {
@@ -577,80 +578,80 @@ const ManageStocks = () => {
             <>
               <Group spacing={"sm"}>
                 {/* add to cart */}
-                  <Popover
-                    trapFocus
-                    position="bottom"
-                    withArrow
-                    shadow="md"
-                    onClose={() => {
-                      setQValue(0);
-                    }}
-                    disabled={row.quantity === 0 ? true : false}
-                  >
-                    <Popover.Target>
-                      <ActionIcon color={row.quantity === 0 ? "gray" : "blue"}>
-                        <IconShoppingCartPlus />
-                      </ActionIcon>
-                    </Popover.Target>
-                    <Popover.Dropdown>
-                      {/* text of the selection */}
-                      <Text
-                        mb={10}
-                        style={{ textAlign: "center" }}
-                        weight={500}
+                <Popover
+                  trapFocus
+                  position="bottom"
+                  withArrow
+                  shadow="md"
+                  onClose={() => {
+                    setQValue(0);
+                  }}
+                  disabled={row.quantity === 0 ? true : false}
+                >
+                  <Popover.Target>
+                    <ActionIcon color={row.quantity === 0 ? "gray" : "blue"}>
+                      <IconShoppingCartPlus />
+                    </ActionIcon>
+                  </Popover.Target>
+                  <Popover.Dropdown>
+                    {/* text of the selection */}
+                    <Text
+                      mb={10}
+                      style={{ textAlign: "center" }}
+                      weight={500}
+                    >
+                      Select quantity
+                    </Text>
+                    <Group spacing={5} position="center">
+                      <ActionIcon
+                        size={42}
+                        variant="default"
+                        onClick={() => handlers.current?.decrement()}
                       >
-                        Select quantity
-                      </Text>
-                      <Group spacing={5} position="center">
-                        <ActionIcon
-                          size={42}
-                          variant="default"
-                          onClick={() => handlers.current?.decrement()}
-                        >
-                          –
-                        </ActionIcon>
+                        –
+                      </ActionIcon>
 
-                        <NumberInput
-                          hideControls
-                          value={qvalue}
-                          onChange={(val) => setQValue(val)}
-                          handlersRef={handlers}
-                          max={row.quantity}
-                          min={0}
-                          step={1}
-                          styles={{
-                            input: { width: rem(54), textAlign: "center" },
-                          }}
-                        />
+                      <NumberInput
+                        hideControls
+                        value={qvalue}
+                        onChange={(val) => setQValue(val)}
+                        handlersRef={handlers}
+                        max={row.quantity}
+                        min={0}
+                        step={1}
+                        styles={{
+                          input: { width: rem(54), textAlign: "center" },
+                        }}
+                      />
 
-                        <ActionIcon
-                          size={42}
-                          variant="default"
-                          onClick={() => handlers.current?.increment()}
-                        >
-                          +
-                        </ActionIcon>
-                      </Group>
+                      <ActionIcon
+                        size={42}
+                        variant="default"
+                        onClick={() => handlers.current?.increment()}
+                      >
+                        +
+                      </ActionIcon>
+                    </Group>
 
-                      <Text
-                        size={"xs"}
-                        color={"red"}
+                    <Text
+                      size={"xs"}
+                      color={"red"}
+                      mt={10}
+                    >{`*Note that, you can select maximum ${row.quantity} items only.`}</Text>
+                    <Group position="center" grow>
+                      <Button
+                        size="xs"
                         mt={10}
-                      >{`*Note that, you can select maximum ${row.quantity} items only.`}</Text>
-                      <Group position="center" grow>
-                        <Button
-                          size="xs"
-                          mt={10}
-                          leftIcon={<IconShoppingCartPlus size={15} />}
-                          onClick={() => {
-                            updateCartData(row);
-                          }}
-                        >
-                          Add to cart
-                        </Button>
-                      </Group>
-                    </Popover.Dropdown>
-                  </Popover>
+                        leftIcon={<IconShoppingCartPlus size={15} />}
+                        onClick={() => {
+                          updateCartData(row);
+                        }}
+                      >
+                        Add to cart
+                      </Button>
+                    </Group>
+                  </Popover.Dropdown>
+                </Popover>
                 {/* edit button */}
                 <Tooltip label="Edit stock">
                   <ActionIcon
@@ -734,80 +735,80 @@ const ManageStocks = () => {
             <>
               <Group spacing={"xs"}>
                 {/* add to cart */}
-                  <Popover
-                    trapFocus
-                    position="bottom"
-                    withArrow
-                    shadow="md"
-                    onClose={() => {
-                      setQValue(0);
-                    }}
-                    disabled={row.quantity === 0 ? true : false}
-                  >
-                    <Popover.Target>
-                      <ActionIcon color={row.quantity === 0 ? "gray" : "blue"}>
-                        <IconShoppingCartPlus />
-                      </ActionIcon>
-                    </Popover.Target>
-                    <Popover.Dropdown>
-                      {/* text of the selection */}
-                      <Text
-                        mb={10}
-                        style={{ textAlign: "center" }}
-                        weight={500}
+                <Popover
+                  trapFocus
+                  position="bottom"
+                  withArrow
+                  shadow="md"
+                  onClose={() => {
+                    setQValue(0);
+                  }}
+                  disabled={row.quantity === 0 ? true : false}
+                >
+                  <Popover.Target>
+                    <ActionIcon color={row.quantity === 0 ? "gray" : "blue"}>
+                      <IconShoppingCartPlus />
+                    </ActionIcon>
+                  </Popover.Target>
+                  <Popover.Dropdown>
+                    {/* text of the selection */}
+                    <Text
+                      mb={10}
+                      style={{ textAlign: "center" }}
+                      weight={500}
+                    >
+                      Select quantity
+                    </Text>
+                    <Group spacing={5} position="center">
+                      <ActionIcon
+                        size={42}
+                        variant="default"
+                        onClick={() => handlers.current?.decrement()}
                       >
-                        Select quantity
-                      </Text>
-                      <Group spacing={5} position="center">
-                        <ActionIcon
-                          size={42}
-                          variant="default"
-                          onClick={() => handlers.current?.decrement()}
-                        >
-                          –
-                        </ActionIcon>
+                        –
+                      </ActionIcon>
 
-                        <NumberInput
-                          hideControls
-                          value={qvalue}
-                          onChange={(val) => setQValue(val)}
-                          handlersRef={handlers}
-                          max={row.quantity}
-                          min={0}
-                          step={1}
-                          styles={{
-                            input: { width: rem(54), textAlign: "center" },
-                          }}
-                        />
+                      <NumberInput
+                        hideControls
+                        value={qvalue}
+                        onChange={(val) => setQValue(val)}
+                        handlersRef={handlers}
+                        max={row.quantity}
+                        min={0}
+                        step={1}
+                        styles={{
+                          input: { width: rem(54), textAlign: "center" },
+                        }}
+                      />
 
-                        <ActionIcon
-                          size={42}
-                          variant="default"
-                          onClick={() => handlers.current?.increment()}
-                        >
-                          +
-                        </ActionIcon>
-                      </Group>
+                      <ActionIcon
+                        size={42}
+                        variant="default"
+                        onClick={() => handlers.current?.increment()}
+                      >
+                        +
+                      </ActionIcon>
+                    </Group>
 
-                      <Text
-                        size={"xs"}
-                        color={"red"}
+                    <Text
+                      size={"xs"}
+                      color={"red"}
+                      mt={10}
+                    >{`*Note that, you can select maximum ${row.quantity} items only.`}</Text>
+                    <Group position="center" grow>
+                      <Button
+                        size="xs"
                         mt={10}
-                      >{`*Note that, you can select maximum ${row.quantity} items only.`}</Text>
-                      <Group position="center" grow>
-                        <Button
-                          size="xs"
-                          mt={10}
-                          leftIcon={<IconShoppingCartPlus size={15} />}
-                          onClick={() => {
-                            updateCartData(row);
-                          }}
-                        >
-                          Add to cart
-                        </Button>
-                      </Group>
-                    </Popover.Dropdown>
-                  </Popover>
+                        leftIcon={<IconShoppingCartPlus size={15} />}
+                        onClick={() => {
+                          updateCartData(row);
+                        }}
+                      >
+                        Add to cart
+                      </Button>
+                    </Group>
+                  </Popover.Dropdown>
+                </Popover>
 
                 {/* edit button */}
                 <Tooltip label="Edit stock">

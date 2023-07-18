@@ -14,6 +14,7 @@ import {
 import { keys } from "@mantine/utils";
 import { IconDownload, IconSearch, IconX } from "@tabler/icons-react";
 import { useState } from "react";
+
 import { showNotification, updateNotification } from "@mantine/notifications";
 import InvoiceAPI from "../../API/InvoiceAPI/Invoice.api";
 import { useQuery } from "@tanstack/react-query";
@@ -84,11 +85,14 @@ interface Data {
 }
 
 function filterData(data: Data[], search: string) {
-  const query = search.toLowerCase().trim();
-  return data.filter((item) =>
-    keys(data[0]).some((key) => item[key].toLowerCase().includes(query))
-  );
-}
+    const query = search.toString().toLowerCase().trim();
+  
+    return data.filter((item) =>
+      keys(data[0]).some((key) =>
+        item[key].toString().toLowerCase().includes(query)
+      )
+    );
+  }
 
 interface ItemData {
   _id: string;
@@ -182,6 +186,7 @@ const Invoices = () => {
     discount: 0,
   });
 
+  
   // search filter
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.currentTarget;
@@ -190,7 +195,7 @@ const Invoices = () => {
     if (sortedData.length === data.length) {
       setSortedData([]);
     }
-  };
+  }
 
   // get pdf details
   const generatePdf = () => {
@@ -379,7 +384,7 @@ const Invoices = () => {
         mb={50}
         icon={<IconSearch size="0.9rem" stroke={1.5} />}
         value={search}
-        // onChange={handleSearchChange}
+        onChange={handleSearchChange}
         w={800}
         style={{ position: "relative", left: "50%", translate: "-50%" }}
       />

@@ -44,6 +44,10 @@ import { IconFileBarcode } from "@tabler/icons-react";
 import { IconArrowNarrowRight } from "@tabler/icons-react";
 import { modals } from "@mantine/modals";
 import InvoiceAPI from "../../API/InvoiceAPI/Invoice.api";
+import InvoiceRender from "../Invoices/renderInvoice";
+import ReactDOM from 'react-dom';
+import { StockPDF } from "../PDFRender/stockPDF";
+import { PDFDownloadLink } from "@react-pdf/renderer";
 
 // styles
 const useStyles = createStyles((theme) => ({
@@ -84,11 +88,10 @@ const useStyles = createStyles((theme) => ({
       left: 0,
       right: 0,
       bottom: 0,
-      borderBottom: `${rem(1)} solid ${
-        theme.colorScheme === "dark"
-          ? theme.colors.dark[3]
-          : theme.colors.gray[2]
-      }`,
+      borderBottom: `${rem(1)} solid ${theme.colorScheme === "dark"
+        ? theme.colors.dark[3]
+        : theme.colors.gray[2]
+        }`,
     },
   },
 
@@ -167,7 +170,7 @@ const ManageStocks = () => {
   const [openedCustomerDetails, setOpenedCutomerDetails] = useState(false);
 
   // show the loading overlay when adding invoice to the database
-  const[invoiceOverlay,setInvoiceOverlay] = useState(false);
+  const [invoiceOverlay, setInvoiceOverlay] = useState(false);
 
   // search filter
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -354,13 +357,13 @@ const ManageStocks = () => {
 
       // also show the notification
       showNotification({
-        title : "Invoice Saved Successful",
-        message : "Invoice data saved successfully",
-        autoClose : 2500,
-        color : "teal",
-        icon : <IconCheck/>
+        title: "Invoice Saved Successful",
+        message: "Invoice data saved successfully",
+        autoClose: 2500,
+        color: "teal",
+        icon: <IconCheck />
       });
-    }).catch((error)=>{
+    }).catch((error) => {
       // if error happens,
 
       // 1. overlay will be disappeared
@@ -368,11 +371,11 @@ const ManageStocks = () => {
 
       // then show the error notification
       showNotification({
-        title : "Saving invoice failed",
-        message : "Something went wrong while saving invoice data",
-        autoClose : 2500,
-        color : "red",
-        icon : <IconX/>
+        title: "Saving invoice failed",
+        message: "Something went wrong while saving invoice data",
+        autoClose: 2500,
+        color: "red",
+        icon: <IconX />
       });
     });
   };
@@ -393,6 +396,7 @@ const ManageStocks = () => {
       labels: { confirm: "Checkout", cancel: "Cancel" },
       confirmProps: { color: "teal" },
       onCancel: () => modals.close,
+
       onConfirm: () => {
         saveInvoice(values);
         setOpenedCutomerDetails(false);
@@ -1316,14 +1320,19 @@ const ManageStocks = () => {
             >
               New Stock
             </Button>
-            <Button
-              variant="gradient"
-              gradient={{ from: "orange", to: "red" }}
-              leftIcon={<IconFileBarcode size={20} />}
-              onClick={() => setOpened(true)}
+
+            <PDFDownloadLink
+              document={<StockPDF data={data} />}
+              fileName={`STOCKDETAILS`}
             >
-              Generate Report
-            </Button>
+              <Button
+                variant="gradient"
+                gradient={{ from: "orange", to: "red" }}
+                leftIcon={<IconFileBarcode size={20} />}
+              >
+                Generate Report
+              </Button>
+            </PDFDownloadLink>
             <Tooltip label="Cart">
               <Indicator
                 color="red"

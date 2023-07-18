@@ -95,7 +95,7 @@ const useStyles = createStyles((theme) => ({
 
 const links = [
   { label: "Manage Stock", link: "/worker/manageStock" },
-  { label: "Notification", link: "/worker/notifications" },
+  { label: "Pending Stocks", link: "/worker/notifications" },
   { label: "Invoices", link: "/worker/invoice" },
 ];
 

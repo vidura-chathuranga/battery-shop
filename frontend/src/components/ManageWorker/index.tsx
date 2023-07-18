@@ -588,7 +588,6 @@ const ManageWorker = () => {
           </form>
         </Box>
       </Modal>
-
       <Modal
         opened={opened}
         onClose={() => {
@@ -724,11 +723,13 @@ const ManageWorker = () => {
                   </Text>
                 </td>
               </tr>
+
             ):null}
           </tbody>
         </Table>
       </ScrollArea>
     </div>
+
   );
 };
 

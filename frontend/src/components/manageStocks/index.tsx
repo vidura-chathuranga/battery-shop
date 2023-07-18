@@ -37,17 +37,13 @@ import { useRef, useState } from "react";
 import { useForm } from "@mantine/form";
 import { showNotification, updateNotification } from "@mantine/notifications";
 import { DateInput } from "@mantine/dates";
-
 import BatteryAPI from "../../API/batteryAPI/battery.api";
 import { useQuery } from "@tanstack/react-query";
 import { IconFileBarcode } from "@tabler/icons-react";
 import { IconArrowNarrowRight } from "@tabler/icons-react";
 import { modals } from "@mantine/modals";
 import InvoiceAPI from "../../API/InvoiceAPI/Invoice.api";
-
 import InvoiceTemplate from "../Invoices/invoiceTemplate";
-import { StockPDF } from "../PDFRender/stockPDF";
-import { PDFDownloadLink } from "@react-pdf/renderer";
 
 // styles
 const useStyles = createStyles((theme) => ({
@@ -88,10 +84,11 @@ const useStyles = createStyles((theme) => ({
       left: 0,
       right: 0,
       bottom: 0,
-      borderBottom: `${rem(1)} solid ${theme.colorScheme === "dark"
-        ? theme.colors.dark[3]
-        : theme.colors.gray[2]
-        }`,
+      borderBottom: `${rem(1)} solid ${
+        theme.colorScheme === "dark"
+          ? theme.colors.dark[3]
+          : theme.colors.gray[2]
+      }`,
     },
   },
 
@@ -339,6 +336,8 @@ const ManageStocks = () => {
 
   // save invoice data in the database
   const saveInvoice = (values: any) => {
+
+
     // set invoice overlay visible
     setInvoiceOverlay(true);
 
@@ -354,14 +353,13 @@ const ManageStocks = () => {
       totalActualPrice: calculateActualTotal(),
     };
 
-    // invoice modal open
-    setInvoiceData(invoice);
+        // invoice modal open
+        setInvoiceData(invoice);
 
-    // open invoice modal
-    setOpenedInvoiceModal(true);
+        // open invoice modal
+        setOpenedInvoiceModal(true);
 
     // call to the API and send back to the backend
-
     InvoiceAPI.submitInvoice(invoice)
       .then((res) => {
         // after successing the invoice saving set to overlay disappear
@@ -390,7 +388,8 @@ const ManageStocks = () => {
           color: "red",
           icon: <IconX />,
         });
-
+      });
+  };
 
   // Cart Confirmation Modal
 
@@ -408,7 +407,6 @@ const ManageStocks = () => {
       labels: { confirm: "Checkout", cancel: "Cancel" },
       confirmProps: { color: "teal" },
       onCancel: () => modals.close,
-
       onConfirm: () => {
         saveInvoice(values);
         setOpenedCutomerDetails(false);
@@ -1343,19 +1341,14 @@ const ManageStocks = () => {
             >
               New Stock
             </Button>
-
-            <PDFDownloadLink
-              document={<StockPDF data={data} />}
-              fileName={`STOCKDETAILS`}
+            <Button
+              variant="gradient"
+              gradient={{ from: "orange", to: "red" }}
+              leftIcon={<IconFileBarcode size={20} />}
+              onClick={() => setOpened(true)}
             >
-              <Button
-                variant="gradient"
-                gradient={{ from: "orange", to: "red" }}
-                leftIcon={<IconFileBarcode size={20} />}
-              >
-                Generate Report
-              </Button>
-            </PDFDownloadLink>
+              Generate Report
+            </Button>
             <Tooltip label="Cart">
               <Indicator
                 color="red"

@@ -756,7 +756,7 @@ const ManageWorker = () => {
           <th>Gender</th>
         </tr>
       </thead>
-      <tbody>
+      {/* <tbody>
             {rows.length > 0 ? (
               rows
             ) : (
@@ -768,7 +768,7 @@ const ManageWorker = () => {
                 </td>
               </tr>
             )}
-          </tbody>
+          </tbody> */}
     </Table>
   </ScrollArea>
 </div> 

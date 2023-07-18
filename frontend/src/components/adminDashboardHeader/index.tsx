@@ -26,6 +26,8 @@ import {
 import profitBoard from "../ProfitDashboard/index";
 import logo from "../../assets/shopLogo.png";
 import StockTable from "../stock";
+import { Menu } from "@mantine/core";
+
 
 
 const adminDashboard = createStyles((theme) => ({
@@ -155,14 +157,15 @@ const AdminDashboardHeader = ({link_id} : any) => {
             {items}
           </Navbar.Section>
 
-          <Navbar.Section className={classes.footer}>
+          <Navbar.Section className={classes.footer} >
             <a
+            
               href="/admin/logout"
               className={classes.link}
-              onClick={(event) => event.preventDefault()}
+              // onClick={(event) => event.preventDefault()}
             >
               <IconLogout className={classes.linkIcon} stroke={1.5} />
-              <span>Logout</span>
+              <span >Logout</span>
             </a>
           </Navbar.Section>
         </Navbar>

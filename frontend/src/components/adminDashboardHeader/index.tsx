@@ -147,7 +147,7 @@ const AdminDashboardHeader = ({link_id} : any) => {
     </a>
   ));
   return (
-    <div  style={{ display: "grid", gridTemplateColumns: "300px 1fr" }}>
+    <div  style={{ display: "grid", gridTemplateColumns: "250px 1fr" }}>
       <div>
       <Navbar  height={950} width={{ sm: 250 }} p="md" style={{ backgroundColor: "lightblue" }}>
           <Navbar.Section grow>

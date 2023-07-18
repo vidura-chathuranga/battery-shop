@@ -253,9 +253,7 @@ const StockTable = () => {
                   openDeleteModal(row._id);
                 }} 
                 >
-               
                    Reject
-               
                 </Button>
             </Group>
           </>

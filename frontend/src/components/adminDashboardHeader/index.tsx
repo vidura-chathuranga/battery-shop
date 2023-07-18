@@ -7,6 +7,7 @@ import {
   getStylesRef,
   rem,
   Image,
+  Avatar,
 } from "@mantine/core";
 import {
   IconBellRinging,
@@ -60,6 +61,7 @@ const adminDashboard = createStyles((theme) => ({
     ...theme.fn.focusStyles(),
     display: "flex",
     alignItems: "center",
+    marginBottom : 20,
     textDecoration: "none",
     fontSize: theme.fontSizes.sm,
     color:
@@ -114,7 +116,7 @@ const links = [
   { link: "/admin/profitpage", label: "Profit", icon: IconReceipt2 },
   { link: "/admin/stockpage", label: "Pending Stock", icon: IconDatabaseImport },
   { link: "/admin/deletedtable", label: "Delete Stock", icon: IconTrash },
-  { link: "", label: "Notifications", icon: IconNotification },
+  // { link: "", label: "Notifications", icon: IconNotification },
   
 
 ];
@@ -149,10 +151,9 @@ const AdminDashboardHeader = ({link_id} : any) => {
   return (
     <div  style={{ display: "grid", gridTemplateColumns: "250px 1fr" }}>
       <div>
-      <Navbar  height={950} width={{ sm: 250 }} p="md" style={{ backgroundColor: "lightblue" }}>
+      <Navbar  height={"100vh"} width={{ sm: 250 }} p="md" style={{ backgroundColor: "lightblue" }}>
           <Navbar.Section grow>
             <Group className={classes.header} position="apart">
-              {/* <MantineLogo size={28} /> */}
               <Image width={200} height={50} src={logo} mt={5} />
             </Group>
             {items}

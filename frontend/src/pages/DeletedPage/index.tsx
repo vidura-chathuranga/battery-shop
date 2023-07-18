@@ -12,7 +12,7 @@ const DeletedStockPage = () =>{
 
 
          <Grid.Col span={"auto"}>
-         <DeletedTable data = {[{name : "Vinnath", item : "Apple" , description: "out ofstock" ,id:"w1"}]}/>
+         <DeletedTable />
          </Grid.Col>
 
          </Grid>

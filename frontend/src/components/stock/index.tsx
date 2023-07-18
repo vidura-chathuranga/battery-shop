@@ -2,45 +2,24 @@ import {
   createStyles,
   Table,
   ScrollArea,
-  UnstyledButton,
   Group,
   Text,
-  Center,
   TextInput,
   rem,
-  Modal,
-  ActionIcon,
-  Tooltip,
   Button,
-  Container,
-  Grid,
-  Box,
   LoadingOverlay,
-  Textarea,
-  CloseButton,
-  Paper,
 } from "@mantine/core";
 import AdminAPI from '../../API/adminAPI/admin.api';
 import { keys } from "@mantine/utils";
 import {
-  IconSelector,
-  IconChevronDown,
-  IconChevronUp,
   IconSearch,
-  IconPlus,
-  IconEdit,
-  IconTrash,
   IconCheck,
   IconX,
 } from "@tabler/icons-react";
 import { useState } from "react";
-
-import { useForm } from "@mantine/form";
 import { showNotification,updateNotification } from "@mantine/notifications";
 import BatteryAPI from "../../API/batteryAPI/battery.api";
 import { useQuery } from '@tanstack/react-query';
-import { DateInput } from '@mantine/dates';
-import AdminDashboardHeader from "../adminDashboardHeader";
 import { modals } from "@mantine/modals";
 
 const useStyles = createStyles((theme) => ({

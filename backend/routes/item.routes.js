@@ -11,6 +11,7 @@ import {
   rejectStock,
   getRequestedStocks,
   acceptStocks,
+  getDeletedBatteries,
 } from "../controllers/battery.controller.js";
 
 const router = express.Router();
@@ -22,4 +23,6 @@ router.delete("/delete/:id/:reason", validateWorkerAndAdmin, deleteBattery);
 router.delete("/reject/:id", validateAdmin, rejectStock);
 router.get("/stocks/requested", validateAdmin, getRequestedStocks);
 router.put("/stock/accept", validateAdmin, acceptStocks);
+router.get('/stocks/deleted',validateAdmin,getDeletedBatteries);
+
 export default router;

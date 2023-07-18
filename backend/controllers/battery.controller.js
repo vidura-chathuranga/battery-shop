@@ -171,8 +171,27 @@ export const acceptStocks = async(req,res) =>{
   res.status(200).json(acceptedStock);
 
 }catch(error){
-  res.status(500).json({error:error,message:"Error while updating the stock status"})
+  res.status(500).json({error:error,message:"Error while updating the stock status"});
 }
 
+}
+
+export const getDeletedBatteries = async(req,res) =>{
+
+  // get batteries
+  try{
+
+    const deletedStocks = await Battery.find({"isDeleted.count":1});
+
+    if(deletedStocks.length === 0){
+      res.status(204).json(deletedStocks);
+    }
+
+    // sends the deleted batteries 
+    res.status(200).json(deletedStocks);
+
+  }catch(error){
+    res.status(500).json({error: error,meesage:"Error while getting deleted stocks details"})
+  }
 }
 

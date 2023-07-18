@@ -12,7 +12,7 @@ const ProfitPage = () => {
 
         <Grid.Col span={"auto"}>
           <center>
-            <h1>Profit of the day</h1>
+            <h1>PROFIT OF THE DAY</h1>
           </center>
             <StatsProfitCard />
         </Grid.Col>

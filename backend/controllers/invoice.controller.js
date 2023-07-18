@@ -1,3 +1,4 @@
+import Battery from "../models/battery.model.js";
 import Invoice from "../models/invoice.model.js";
 //generate Invoice Id
 const generateInvoiceId = async () => {
@@ -38,9 +39,19 @@ export const addInvoice = async (req, res) => {
       totalActualPrice: req.body.totalActualPrice,
       totalSoldPrice: req.body.totalSoldPrice,
     });
-
+    
     // store the invoice Object in the datasase
     const savedInvoice = await invoice.save();
+
+    // reduce the quantities 
+    const items = req.body.items;
+    
+    //updating stocks
+    const updatedStocks = items.map((item) =>{
+      Battery.findById({_id : item._id}).then((data)=>{
+        return Battery.findByIdAndUpdate({_id : data._id},{quantity : data.quantity - parseInt(item.quantity)},{new : true});
+      })
+    });
 
     // send The success status to the frontend
     res.status(201).json(savedInvoice);

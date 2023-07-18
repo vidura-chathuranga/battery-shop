@@ -86,10 +86,11 @@ const useStyles = createStyles((theme) => ({
       left: 0,
       right: 0,
       bottom: 0,
-      borderBottom: `${rem(1)} solid ${theme.colorScheme === "dark"
-        ? theme.colors.dark[3]
-        : theme.colors.gray[2]
-        }`,
+      borderBottom: `${rem(1)} solid ${
+        theme.colorScheme === "dark"
+          ? theme.colors.dark[3]
+          : theme.colors.gray[2]
+      }`,
     },
   },
 
@@ -337,8 +338,6 @@ const ManageStocks = () => {
 
   // save invoice data in the database
   const saveInvoice = (values: any) => {
-
-
     // set invoice overlay visible
     setInvoiceOverlay(true);
 
@@ -896,6 +895,8 @@ const ManageStocks = () => {
       {/* invoice moda */}
       <Modal
         onClose={() => {
+          // refetch the stocks data
+          refetch();
           setOpenedInvoiceModal(false);
         }}
         opened={openedInvoiceModal}

@@ -24,7 +24,8 @@ import {
 } from "@tabler/icons-react";
 // import { MantineLogo } from "@mantine/ds";
 import profitBoard from "../ProfitDashboard/index";
-import logo from "../../assets/shopLogo.png";
+// import logo from "../../assets/shopLogo.png";
+import logo from "../../assets/shopLogonew.png";
 import StockTable from "../stock";
 import { Menu } from "@mantine/core";
 
@@ -131,7 +132,7 @@ const AdminDashboardHeader = ({link_id} : any) => {
   const items = links.map((link,index) => (
     <a
       className={cx(classes.link, {
-        [classes.linkActive]: link.label === active,
+        [classes.linkActive]: active=== link.link,
       })}
       href={link.link}
       key={link.label}

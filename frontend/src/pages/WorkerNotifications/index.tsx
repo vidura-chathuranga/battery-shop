@@ -1,9 +1,13 @@
 import WorkerDashboardHeader from "../../components/workerDashboardHeader";
+import PendingStocks from "../../components/stocksPending";
 
+const WorkerNotifications = () => {
+    return (
 
-const WorkerNotifications = () =>{
-    return(
-        <WorkerDashboardHeader link_id={1}/>
+        <div>
+            <WorkerDashboardHeader link_id={1} />
+            <PendingStocks/>
+        </div>
     )
 }
 

@@ -176,10 +176,14 @@ export const registerWorker = async (req, res) => {
   // generating the custom ID
   const customId = await generateWorkerId();
 
+  console.log(customId);
 
   // hashing the password
   const salt =  await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(req.body.password, salt);
+
+
+  console.log(hashedPassword);
 
   const newWorker = new User({  
     id : customId,
@@ -193,9 +197,12 @@ export const registerWorker = async (req, res) => {
     gender: req.body.gender,
   });
 
+  console.log(newWorker);
+
   const savedWorker = await newWorker.save();
   res.status(201).json(savedWorker);
   } catch (error) {
-    res.status(500).json({ message: "Failed to register worker", error });
+    console.log(error)
+    // res.status(500).json({ message: "Failed to register worker", error });
   }
 };

@@ -1,12 +1,14 @@
 import { Button, Card, Group, Image, Text } from "@mantine/core";
-import User from '../../assets/userPhoto.jpg';
+import User from '../../assets/userlogo.png';
+import Admin from "../../assets/admin.png";
+
 
 const WorkerLogin = () =>{
     return(
-        <Card shadow="lg" withBorder padding={"lg"} radius="md" w={300}>
+      <Card shadow="lg" withBorder radius="md" p="md" w={300} >
         <Card.Section withBorder>
-          <Group position="center" m={10}>
-            <Image src={User} alt="Admin photo" height={100} width={100} />
+          <Group position="center" m={50}>
+            <Image src={Admin} alt="Admin photo" height={100} width={100} />
           </Group>
         </Card.Section>
         <Card.Section inheritPadding>
@@ -19,7 +21,8 @@ const WorkerLogin = () =>{
         </Card.Section>
         <Card.Section>
           <Group position="center" grow m={10}>
-            <Button color="blue" p={10} component="a" href="/login/worker">
+            {/* <Button color="blue" p={10} component="a" href="/login/worker"> */}
+            <Button variant="gradient" component="a" href="/login/worker" gradient={{ from: 'indigo', to: 'cyan' }}>
               Worker Login
             </Button>
           </Group>

@@ -115,12 +115,17 @@ const ManageWorker = () => {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [editOpened, setEditOpened] = useState(false);
 
-  const { data = [], isError, isLoading, refetch } = useQuery(
+  const {
+    data = [],
+    isError,
+    isLoading,
+    refetch,
+  } = useQuery(
     ["workerData"],
     () => {
       return WorkerAPI.getAllWorkerDetails().then((res) => res.data);
     },
-    { initialData: []}
+    { initialData: [] }
   );
 
   const registerForm = useForm({
@@ -341,7 +346,6 @@ const ManageWorker = () => {
           // icon: <IconAlertTriangle />,
           autoClose: 5000,
         });
-
       });
   };
 
@@ -388,76 +392,77 @@ const ManageWorker = () => {
     },
   });
 
+  const rows = Array.isArray(data)
+    ? data?.map((row: any) => (
+        <tr key={row._id}>
+          <td>
+            <Text size={15}>{row.name}</Text>
+          </td>
+          <td>
+            <Text size={15}>{row.email}</Text>
+          </td>
+          <td>
+            <Text size={15}>{row.phone}</Text>
+          </td>
 
-  const rows = Array.isArray(data) ? data?.map((row: any) => (
-    <tr key={row._id}>
-      <td>
-        <Text size={15}>{row.name}</Text>
-      </td>
-      <td>
-        <Text size={15}>{row.email}</Text>
-      </td>
-      <td>
-        <Text size={15}>{row.phone}</Text>
-      </td>
+          <td>
+            <Text size={15}>{row.address}</Text>
+          </td>
+          <td>
+            <Text size={15}>{row.nic}</Text>
+          </td>
+          <td>
+            <Text size={15}>{row.gender}</Text>
+          </td>
+          <td>
+            {
+              <>
+                <Group spacing={"sm"}>
+                  {/* edit button */}
+                  <Tooltip label="Edit worker">
+                    <ActionIcon
+                      color="teal"
+                      onClick={() => {
+                        editForm.setValues({
+                          _id: row._id,
+                          worker_id: row.worker_id,
+                          name: row.name,
+                          email: row.email,
+                          phone: row.phone,
+                          nic: row.nic,
+                          address: row.address,
+                          gender: row.gender,
+                        });
+                        setEditOpened(true);
+                      }}
+                    >
+                      <IconEdit size={30} />
+                    </ActionIcon>
+                  </Tooltip>
 
-      <td>
-        <Text size={15}>{row.address}</Text>
-      </td>
-      <td>
-        <Text size={15}>{row.nic}</Text>
-      </td>
-      <td>
-        <Text size={15}>{row.gender}</Text>
-      </td>
-      <td>
-        {
-          <>
-            <Group spacing={"sm"}>
-              {/* edit button */}
-              <Tooltip label="Edit worker">
-                <ActionIcon
-                  color="teal"
-                  onClick={() => {
-                    editForm.setValues({
-                      _id: row._id,
-                      worker_id: row.worker_id,
-                      name: row.name,
-                      email: row.email,
-                      phone: row.phone,
-                      nic: row.nic,
-                      address: row.address,
-                      gender: row.gender,
-                    });
-                    setEditOpened(true);
-                  }}
-                >
-                  <IconEdit size={30} />
-                </ActionIcon>
-              </Tooltip>
-
-              {/* delete button */}
-              <Tooltip label="Delete worker">
-                <ActionIcon
-                  color="red"
-                  onClick={() => {
-                    deleteForm.setValues({
-                      _id: row._id,
-                      nic: row.nic,
-                      name: row.name,
-                    });
-                    setDeleteOpen(true);
-                  }}
-                >
-                  <IconTrash size={30} />
-                </ActionIcon>
-              </Tooltip>
-            </Group>
-          </>
-        }
-      </td>
-    </tr>
-  )) : null;
+                  {/* delete button */}
+                  <Tooltip label="Delete worker">
+                    <ActionIcon
+                      color="red"
+                      onClick={() => {
+                        deleteForm.setValues({
+                          _id: row._id,
+                          nic: row.nic,
+                          name: row.name,
+                        });
+                        setDeleteOpen(true);
+                      }}
+                    >
+                      <IconTrash size={30} />
+                    </ActionIcon>
+                  </Tooltip>
+                </Group>
+              </>
+            }
+          </td>
+        </tr>
+      ))
+    : null;
 
   if (isLoading) {
     return <LoadingOverlay visible={isLoading} overlayBlur={2} />;
@@ -714,17 +719,19 @@ const ManageWorker = () => {
             </tr>
           </thead>
           <tbody>
-            {rows !== null ? rows.length > 0 ? (
-              rows
-            ) : (
-              <tr>
-                <td>
-                  <Text weight={500} align="center">
-                    Nothing found
-                  </Text>
-                </td>
-              </tr>
-            ):null}
+            {rows !== null ? (
+              rows.length > 0 ? (
+                rows
+              ) : (
+                <tr>
+                  <td>
+                    <Text weight={500} align="center">
+                      Nothing found
+                    </Text>
+                  </td>
+                </tr>
+              )
+            ) : null}
           </tbody>
         </Table>
       </ScrollArea>

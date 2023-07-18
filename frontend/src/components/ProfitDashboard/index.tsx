@@ -13,7 +13,7 @@ function profitBoard() {
         </Grid.Col>
 
         <Grid.Col span={4}>
-        <center><h1>Profit of the day</h1></center>
+        <center><h1>PROFIT OF THE DAY</h1></center>
         <StatsProfitCard/>
         </Grid.Col>
       </Grid>

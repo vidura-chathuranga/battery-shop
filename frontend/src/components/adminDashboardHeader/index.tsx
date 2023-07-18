@@ -24,7 +24,8 @@ import {
 } from "@tabler/icons-react";
 // import { MantineLogo } from "@mantine/ds";
 import profitBoard from "../ProfitDashboard/index";
-import logo from "../../assets/shopLogo.png";
+// import logo from "../../assets/shopLogo.png";
+import logo from "../../assets/shopLogonew.png";
 import StockTable from "../stock";
 import { Menu } from "@mantine/core";
 
@@ -146,9 +147,9 @@ const AdminDashboardHeader = ({link_id} : any) => {
     </a>
   ));
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "300px 1fr" }}>
+    <div  style={{ display: "grid", gridTemplateColumns: "300px 1fr" }}>
       <div>
-      <Navbar height={950} width={{ sm: 250 }} p="md" style={{ backgroundColor: "lightblue" }}>
+      <Navbar  height={950} width={{ sm: 250 }} p="md" style={{ backgroundColor: "lightblue" }}>
           <Navbar.Section grow>
             <Group className={classes.header} position="apart">
               {/* <MantineLogo size={28} /> */}

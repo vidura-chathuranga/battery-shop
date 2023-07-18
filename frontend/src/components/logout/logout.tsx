@@ -2,6 +2,7 @@ import { Navigate } from "react-router-dom";
 import WorkerAPI from "../../API/workerAPI/worker.api";
 import { showNotification } from "@mantine/notifications";
 import { IconX } from "@tabler/icons-react";
+import AdminAPI from "../../API/adminAPI/admin.api";
 
 const logout = async () => {
   // remove the local storage data in current user

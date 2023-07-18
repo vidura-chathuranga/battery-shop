@@ -378,12 +378,13 @@ const ManageWorker = () => {
   const workerDelete = (values: {
     _id: string;
    nic: string;
+   name: string;
   }) => {
     WorkerAPI.deleteWorker(values)
       .then((res) => {
         showNotification({
-          title: `${values.nic} was deleted`,
-          message: "Stock was deleted successfully",
+          title: `${values.name} was deleted`,
+          message: "Worker was deleted successfully",
           autoClose: 1500,
           icon: <IconCheck />,
           color: "teal",
@@ -400,8 +401,8 @@ const ManageWorker = () => {
       })
       .catch((err) => {
         showNotification({
-          title: `${values.nic} was not deleted`,
-          message: "Stock was not deleted",
+          title: `${values.name} was not deleted`,
+          message: "Worker was not deleted",
           autoClose: 1500,
           icon: <IconX />,
           color: "red",
@@ -416,6 +417,7 @@ const ManageWorker = () => {
     initialValues: {
       _id: "",
       nic:"",
+      name:"",
     },
 
     
@@ -434,6 +436,7 @@ const ManageWorker = () => {
       <td>
         <Text size={15}>{row.phone}</Text>
       </td>
+     
       <td>
         <Text size={15}>{row.address}</Text>
       </td>
@@ -475,6 +478,7 @@ const ManageWorker = () => {
                     deleteForm.setValues({
                       _id:row._id,
                       nic: row.nic,
+                      name:row.name,
                     });
                     setDeleteOpen(true);
                   }}
@@ -592,10 +596,10 @@ const ManageWorker = () => {
           >
             <TextInput
               withAsterisk
-              label="Worker ID"
+              label="Worker Name"
               required
               disabled
-              {...deleteForm.getInputProps("nic")}
+              {...deleteForm.getInputProps("name")}
               mb={10}
             />
          
@@ -768,10 +772,7 @@ const ManageWorker = () => {
     </Table>
   </ScrollArea>
 </div> 
-  )
-
-
-
-}
+  );
+};
 
 export default ManageWorker;

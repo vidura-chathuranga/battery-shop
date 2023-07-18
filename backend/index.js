@@ -23,7 +23,7 @@ app.use(cookieParser());
 app.use(express.json());
 
 // config the urlEncoded middleware
-app.use(express.urlencoded({limit:'10mb',extended : true}));
+app.use(express.urlencoded({extended : false}));
 
 
 app.use((req,res,next)=>{

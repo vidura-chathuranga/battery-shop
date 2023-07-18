@@ -44,7 +44,8 @@ import { IconFileBarcode } from "@tabler/icons-react";
 import { IconArrowNarrowRight } from "@tabler/icons-react";
 import { modals } from "@mantine/modals";
 import InvoiceAPI from "../../API/InvoiceAPI/Invoice.api";
-import ReactDOM from 'react-dom';
+
+import InvoiceTemplate from "../Invoices/invoiceTemplate";
 import { StockPDF } from "../PDFRender/stockPDF";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 
@@ -180,6 +181,11 @@ const ManageStocks = () => {
       setSortedData([]);
     }
   };
+
+  // open invoice modal
+  const [openedInvoiceModal, setOpenedInvoiceModal] = useState(false);
+
+  const [invoiceData, setInvoiceData] = useState({});
 
   //declare add form
   const addForm = useForm({
@@ -333,9 +339,8 @@ const ManageStocks = () => {
 
   // save invoice data in the database
   const saveInvoice = (values: any) => {
-
     // set invoice overlay visible
-    setInvoiceOverlay(true)
+    setInvoiceOverlay(true);
 
     // create invoice object
     const invoice = {
@@ -349,35 +354,43 @@ const ManageStocks = () => {
       totalActualPrice: calculateActualTotal(),
     };
 
+    // invoice modal open
+    setInvoiceData(invoice);
+
+    // open invoice modal
+    setOpenedInvoiceModal(true);
+
     // call to the API and send back to the backend
-    InvoiceAPI.submitInvoice(invoice).then((res) => {
-      // after successing the invoice saving set to overlay disappear
-      setInvoiceOverlay(false)
 
-      // also show the notification
-      showNotification({
-        title: "Invoice Saved Successful",
-        message: "Invoice data saved successfully",
-        autoClose: 2500,
-        color: "teal",
-        icon: <IconCheck />
-      });
-    }).catch((error) => {
-      // if error happens,
+    InvoiceAPI.submitInvoice(invoice)
+      .then((res) => {
+        // after successing the invoice saving set to overlay disappear
+        setInvoiceOverlay(false);
 
-      // 1. overlay will be disappeared
-      setInvoiceOverlay(false);
+        // also show the notification
+        showNotification({
+          title: "Invoice Saved Successful",
+          message: "Invoice data saved successfully",
+          autoClose: 2500,
+          color: "teal",
+          icon: <IconCheck />,
+        });
+      })
+      .catch((error) => {
+        // if error happens,
 
-      // then show the error notification
-      showNotification({
-        title: "Saving invoice failed",
-        message: "Something went wrong while saving invoice data",
-        autoClose: 2500,
-        color: "red",
-        icon: <IconX />
-      });
-    });
-  };
+        // 1. overlay will be disappeared
+        setInvoiceOverlay(false);
+
+        // then show the error notification
+        showNotification({
+          title: "Saving invoice failed",
+          message: "Something went wrong while saving invoice data",
+          autoClose: 2500,
+          color: "red",
+          icon: <IconX />,
+        });
+
 
   // Cart Confirmation Modal
 
@@ -881,6 +894,17 @@ const ManageStocks = () => {
       sx={{ display: "flex", justifyContent: "space-between" }}
       pos="relative"
     >
+      {/* invoice moda */}
+      <Modal
+        onClose={() => {
+          setOpenedInvoiceModal(false);
+        }}
+        opened={openedInvoiceModal}
+        size={"50%"}
+      >
+        <InvoiceTemplate data={invoiceData} />
+      </Modal>
+
       {/* loading overaly when creating the invoice */}
       <LoadingOverlay visible={invoiceOverlay} overlayBlur={2} />
       {/* Customer details getting */}

@@ -16,11 +16,6 @@ class Invoice{
 
     }
 
-    static generatePdf = () =>{
-        return axios.get(`${BASE_URL}/invoice/generate`,{responseType:'blob',withCredentials:true});
-    }
-
-
 };
 
 export default Invoice;

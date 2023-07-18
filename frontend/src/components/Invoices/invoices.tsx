@@ -13,12 +13,12 @@ import {
 } from "@mantine/core";
 import { keys } from "@mantine/utils";
 import { IconDownload, IconSearch, IconX } from "@tabler/icons-react";
-import { useState } from "react";
-
+import { useRef, useState } from "react";
 import { showNotification, updateNotification } from "@mantine/notifications";
 import InvoiceAPI from "../../API/InvoiceAPI/Invoice.api";
 import { useQuery } from "@tanstack/react-query";
 import { IconEye } from "@tabler/icons-react";
+import InvoiceTemplate from "./invoiceTemplate";
 
 const useStyles = createStyles((theme) => ({
   th: {
@@ -138,7 +138,7 @@ const Invoices = () => {
   const [sortedData, setSortedData] = useState<Data[]>([]);
 
   // use react query and fetch data
-  const { data, isLoading, isError, refetch } = useQuery(
+  const { data, isLoading, isError } = useQuery(
     ["invoiceData"],
     () => {
       return InvoiceAPI.getAllInvoice().then((res) => res.data);
@@ -155,6 +155,11 @@ const Invoices = () => {
   //   open more information modal
   const [openedMoreInfo, setOpenedMoreInfo] = useState(false);
 
+  // invoice modal
+  const[opnedInvoiceModal,setOpenedInvoiceModal] = useState(false);
+
+  const[invoiceData,setInvoiceData] = useState();
+  
   // store row information
   const [row, setRow] = useState<moreInfo>({
     _id: "",
@@ -195,32 +200,10 @@ const Invoices = () => {
     if (sortedData.length === data.length) {
       setSortedData([]);
     }
-  }
-
-  // get pdf details
-  const generatePdf = () => {
-    InvoiceAPI.generatePdf().then((response) => {
-      // console.log(response.data);
-      // Handle the response
-
-      console.log(response.data.size);
-      console.log(response.data.type);
-      
-      const pdfBlob = new Blob([response.data], { type: "application/pdf" });
-
-      const pdfUrl = URL.createObjectURL(pdfBlob);
-
-      // Open the PDF in a new window or tab
-      window.open(pdfUrl);
-
-      const downloadLink = document.createElement("a");
-      downloadLink.href = response.data;
-      downloadLink.download = "invoice.pdf";
-      downloadLink.click();
-    }).catch((error)=>{
-      console.log(error);
-    });
   };
+  
+
+
   // rows map
   const rows = data?.map((row: any) => (
     <tr key={row._id}>
@@ -276,7 +259,8 @@ const Invoices = () => {
               color="blue"
               size={"sm"}
               onClick={() => {
-                generatePdf();
+                setOpenedInvoiceModal(true);
+                setInvoiceData(row);
               }}
             >
               <IconDownload />
@@ -315,6 +299,12 @@ const Invoices = () => {
   // table
   return (
     <div>
+
+      {/* invoice moda */}
+      <Modal onClose={()=>{setOpenedInvoiceModal(false);}} opened={opnedInvoiceModal} size={"50%"}>
+        <InvoiceTemplate data={invoiceData}/>
+      </Modal>
+
       {/* more Information Modal */}
       <Modal
         size={"80%"}

@@ -132,7 +132,7 @@ const AdminDashboardHeader = ({link_id} : any) => {
   const items = links.map((link,index) => (
     <a
       className={cx(classes.link, {
-        [classes.linkActive]: link.label === active,
+        [classes.linkActive]: active=== link.link,
       })}
       href={link.link}
       key={link.label}

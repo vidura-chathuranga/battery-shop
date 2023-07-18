@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 import {
   createStyles,
   Table,
@@ -9,21 +9,36 @@ import {
   Center,
   TextInput,
   rem,
-} from '@mantine/core';
-import { keys } from '@mantine/utils';
-import { IconSelector, IconChevronDown, IconChevronUp, IconSearch } from '@tabler/icons-react';
+  LoadingOverlay,
+  Paper,
+  Box,
+} from "@mantine/core";
+import { keys } from "@mantine/utils";
+import {
+  IconSelector,
+  IconChevronDown,
+  IconChevronUp,
+  IconSearch,
+  IconX,
+} from "@tabler/icons-react";
+import { useQuery } from "@tanstack/react-query";
+import BatteryAPI from "../../API/batteryAPI/battery.api";
+import { showNotification } from "@mantine/notifications";
 
 const useStyles = createStyles((theme) => ({
   th: {
-    padding: '0 !important',
+    padding: "0 !important",
   },
 
   control: {
-    width: '100%',
+    width: "100%",
     padding: `${theme.spacing.xs} ${theme.spacing.md}`,
 
-    '&:hover': {
-      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
+    "&:hover": {
+      backgroundColor:
+        theme.colorScheme === "dark"
+          ? theme.colors.dark[6]
+          : theme.colors.gray[0],
     },
   },
 
@@ -38,7 +53,7 @@ interface RowData {
   name: string;
   item: string;
   description: string;
-  id: string
+  id: string;
 }
 
 interface TableSortProps {
@@ -54,7 +69,11 @@ interface ThProps {
 
 function Th({ children, reversed, sorted, onSort }: ThProps) {
   const { classes } = useStyles();
-  const Icon = sorted ? (reversed ? IconChevronUp : IconChevronDown) : IconSelector;
+  const Icon = sorted
+    ? reversed
+      ? IconChevronUp
+      : IconChevronDown
+    : IconSelector;
   return (
     <th className={classes.th}>
       <UnstyledButton onClick={onSort} className={classes.control}>
@@ -100,83 +119,77 @@ function sortData(
   );
 }
 
-export function DeletedTable({ data }: TableSortProps) {
-  const [search, setSearch] = useState('');
-  const [sortedData, setSortedData] = useState(data);
-  const [sortBy, setSortBy] = useState<keyof RowData | null>(null);
-  const [reverseSortDirection, setReverseSortDirection] = useState(false);
+export function DeletedTable() {
+    const {data = [],isError,isLoading} = useQuery(['deleteStocks'],()=>{
+      return BatteryAPI.getDeletedStocks().then((res) => res.data);
+    },{initialData : []})
 
-  const setSorting = (field: keyof RowData) => {
-    const reversed = field === sortBy ? !reverseSortDirection : false;
-    setReverseSortDirection(reversed);
-    setSortBy(field);
-    setSortedData(sortData(data, { sortBy: field, reversed, search }));
-  };
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.currentTarget;
-    setSearch(value);
-    setSortedData(sortData(data, { sortBy, reversed: reverseSortDirection, search: value }));
-  };
-
-  const rows = sortedData.map((row) => (
-    <tr key={row.name}>
-      <td>{row.name}</td>
-      <td>{row.item}</td>
-      <td>{row.description}</td>
+  const rows = Array.isArray(data) ? data?.map((row) => (
+    <tr key={row._id}>
+      <td>{row.stock_id}</td>
+      <td>{`${row.batteryBrand} ${row.batteryDescription}`}</td>
+      <td>{row.quantity === 0 ? <Text weight={500} color="red">OUT OF STOCK</Text> : row.quantity}</td>
+      <td>{new Date(row.added_date).toLocaleDateString("en-GB").split("T")[0]}</td>
+      <td>{<Box p={15} style={{border :"1px solid red"}}><Text weight={600} size={"md"} align="center">{row.isDeleted.description}</Text></Box>}</td>
     </tr>
-  ));
+  )): null;
+
+  if(isLoading){
+    return <LoadingOverlay visible={isLoading} overlayBlur={2} />;
+  }
+
+  if(isError){
+    showNotification({
+      title: "Cannot fetching Stock Data",
+      message: "check internet connection",
+      color: "red",
+      icon: <IconX />,
+      autoClose: 1500,
+    });
+  }
 
   return (
     <ScrollArea>
-       <Group spacing={35} mb={10} mt={50}>
-      <TextInput
-        placeholder="Search by any field"
-        mb="md"
-        w={800}
-        icon={<IconSearch size="0.9rem" stroke={1.5} />}
-        value={search}
-        onChange={handleSearchChange}
-      />
+      <Group spacing={35} mb={10} mt={50}>
+        <TextInput
+          placeholder="Search by any field"
+          mb="md"
+          w={800}
+          icon={<IconSearch size="0.9rem" stroke={1.5} />}
+          // value={search}
+          // onChange={handleSearchChange}
+        />
       </Group>
-      <Table horizontalSpacing="md" verticalSpacing="xs" miw={700} sx={{ tableLayout: 'fixed' }}>
+      <Table
+        // horizontalSpacing="md"
+        verticalSpacing={20}
+        miw={700}
+        sx={{ tableLayout: "fixed" }}
+      >
         <thead>
           <tr>
-            <Th
-              sorted={sortBy === 'name'}
-              reversed={reverseSortDirection}
-              onSort={() => setSorting('name')}
-            >
-              Name
-            </Th>
-            <Th
-              sorted={sortBy === 'item'}
-              reversed={reverseSortDirection}
-              onSort={() => setSorting('item')}
-            >
-              item
-            </Th>
-            <Th
-              sorted={sortBy === 'description'}
-              reversed={reverseSortDirection}
-              onSort={() => setSorting('description')}
-            >
-              Description
-            </Th>
+            <th>Stock ID</th>
+            <th>Brand</th>
+            <th>Quantity</th>
+            <th>Added Date</th>
+            <th>Reason</th>
           </tr>
         </thead>
         <tbody>
-          {rows.length > 0 ? (
-            rows
-          ) : (
-            <tr>
-              <td colSpan={Object.keys(data[0]).length}>
-                <Text weight={500} align="center">
-                  Nothing found
-                </Text>
-              </td>
-            </tr>
-          )}
+        {rows !== null ? (
+              rows.length > 0 ? (
+                rows
+              ) : (
+                <tr>
+                  <td>
+                    <Text weight={500} align="center">
+                      Nothing found
+                    </Text>
+                  </td>
+                </tr>
+              )
+            ) : null}
         </tbody>
       </Table>
     </ScrollArea>

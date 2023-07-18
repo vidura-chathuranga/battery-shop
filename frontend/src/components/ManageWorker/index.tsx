@@ -40,6 +40,12 @@ import { useForm } from "@mantine/form";
 import AdminAPI from "../../API/adminAPI/admin.api";
 
 const useStyles = createStyles((theme) => ({
+
+
+  tableHeader: {
+    backgroundColor: theme.colors.gray[2], // Change this color as per your preference
+  },
+
   th: {
     padding: "0 !important",
   },
@@ -706,9 +712,7 @@ const ManageWorker = () => {
           miw={700}
           sx={{ tableLayout: "fixed" }}
         >
-          <thead
-            className={cx(classes.header, { [classes.scrolled]: scrolled })}
-          >
+         <thead className={cx(classes.header, classes.tableHeader, { [classes.scrolled]: scrolled })}>
             <tr>
               <th>Name</th>
               <th>Email</th>
@@ -716,6 +720,7 @@ const ManageWorker = () => {
               <th>Address</th>
               <th>NIC</th>
               <th>Gender</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>

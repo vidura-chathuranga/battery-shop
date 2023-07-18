@@ -1,6 +1,7 @@
 import React from "react";
 import { Grid } from "@mantine/core";
 import StatsProfitCard from "../ProfitCard";
+import AdminDashboardHeader from "../adminDashboardHeader";
 
 function profitBoard() {
   return (

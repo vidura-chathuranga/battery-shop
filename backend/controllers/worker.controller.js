@@ -3,6 +3,7 @@ import "dotenv/config";
 import User from "../models/users.model.js";
 import jwt from "jsonwebtoken";
 
+
 export const workerLogin = async (req, res) => {
   // get details from the request body
   const NIC = req.body.nic;
@@ -61,3 +62,81 @@ export const logout = (req,res) =>{
   res.cookie('accessToken','',{maxAge : 1});
   res.status(200).json({});
 }
+
+export const getAllWorkers = async (req, res) => {
+  console.log("workers");
+  try {
+    const workers = await User.find({ role: "WORKER" });
+    console.log(workers);
+    if (workers.length === 0) {
+
+      // If no workers found, send a 404 status code with a message
+      return res.status(404).json({ message: "No workers found" });
+    }
+
+    // Extract only the necessary details from the workers
+    const workerDetails = workers.map((worker) => ({
+      _id: worker._id,
+      name: worker.name,
+      email: worker.email,
+      phone: worker.phone,
+      address: worker.address,
+      nic : worker.nic,
+      gender : worker.gender,
+
+    }));
+
+    res.status(200).json(workerDetails); // Send the worker details as the response
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch workers", error });
+  }
+};
+
+export const deleteWorker = async (req, res) => {
+  const _id = req.params.id;
+
+  try {
+    const deletedWorker = await User.findByIdAndDelete(_id);
+
+    if (!deletedWorker) {
+      // If the worker is not found, send a 404 status code with a message
+      return res.status(404).json({ message: "Worker not found" });
+    }
+
+    res.status(200).json({ message: "Worker deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to delete worker", error });
+  }
+};
+
+export const updateWorker = async (req, res) => {
+  
+  const _id = req.params.id;
+
+  const updateFields = {
+   name : req.body.name,
+   email :req.body.id,
+   phone :  req.body.phone,
+   address : req.body.address,
+   nic : req.body.nic,
+   gender : req.body.gender,
+  }
+  
+console.log(updateFields);
+  // try {
+  //   const updatedWorker = await User.findByIdAndUpdate(_id, updateFields, {
+  //     new: true,
+  //   });
+
+  //   if (!updatedWorker) {
+  //     // If the worker is not found, send a 404 status code with a message
+  //     return res.status(404).json({ message: "Worker not found" });
+  //   }
+
+  //   res.status(200).json(updatedWorker); // Send the updated worker as the response
+  // } catch (error) {
+  //   res.status(500).json({ message: "Failed to update worker", error });
+  // }
+};
+
+

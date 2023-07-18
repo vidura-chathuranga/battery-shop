@@ -44,7 +44,6 @@ import { IconFileBarcode } from "@tabler/icons-react";
 import { IconArrowNarrowRight } from "@tabler/icons-react";
 import { modals } from "@mantine/modals";
 import InvoiceAPI from "../../API/InvoiceAPI/Invoice.api";
-import InvoiceRender from "../Invoices/renderInvoice";
 import ReactDOM from 'react-dom';
 import { StockPDF } from "../PDFRender/stockPDF";
 import { PDFDownloadLink } from "@react-pdf/renderer";
@@ -396,7 +395,8 @@ const ManageStocks = () => {
       labels: { confirm: "Checkout", cancel: "Cancel" },
       confirmProps: { color: "teal" },
       onCancel: () => modals.close,
-      onConfirm: async () => {
+
+      onConfirm: () => {
         saveInvoice(values);
         setOpenedCutomerDetails(false);
         customerForm.reset();

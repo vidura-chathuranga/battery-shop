@@ -24,7 +24,8 @@ import {
 } from "@tabler/icons-react";
 // import { MantineLogo } from "@mantine/ds";
 import profitBoard from "../ProfitDashboard/index";
-import logo from "../../assets/shopLogo.png";
+// import logo from "../../assets/shopLogo.png";
+import logo from "../../assets/shopLogonew.png";
 import StockTable from "../stock";
 import { Menu } from "@mantine/core";
 

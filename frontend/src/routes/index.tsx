@@ -35,8 +35,6 @@ const AllRoutes = () => {
         <Route path="/admin/stockpage" element={<StockPage/>} />
 
         <Route path = '/admin/deletedtable' element={<DeletedStockPage/>} />
-
-        <Route path = '/admin/logout' element={<Logout/>} />
       
 
 

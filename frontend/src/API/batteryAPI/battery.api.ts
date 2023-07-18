@@ -84,6 +84,10 @@ class BatteryAPI {
     }
     return axios.put(`${BASE_URL}/batteries/stock/accept`,updateValues,{withCredentials:true});
   }
+
+  static getDeletedStocks = () =>{
+    return axios.get(`${BASE_URL}/batteries/stocks/deleted`,{withCredentials:true});
+  }
 }
 
 export default BatteryAPI;

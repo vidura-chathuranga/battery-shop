@@ -15,6 +15,7 @@ import ManageWorkerPage from "../pages/ManageWorker";
 import ProfitPage from "../pages/ProfitPage";
 import StockPage from "../pages/StockPage";
 import DeletedStockPage from "../pages/DeletedPage";
+import Error404 from "../pages/Error404";
 
 
 const AllRoutes = () => {
@@ -35,7 +36,6 @@ const AllRoutes = () => {
         <Route path="/admin/stockpage" element={<StockPage/>} />
 
         <Route path = '/admin/deletedtable' element={<DeletedStockPage/>} />
-      
 
 
         
@@ -50,6 +50,9 @@ const AllRoutes = () => {
           <Route path="/worker/logout" element={<Logout />} />
           
         </Route>
+
+
+        <Route path="*" element={<Error404/>}/>
       </Routes>
     </Router>
     </QueryClientProvider>

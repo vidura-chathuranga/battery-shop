@@ -8,7 +8,9 @@ import {
     Font,
 } from "@react-pdf/renderer";
 import { Fragment } from "react";
-import shopLogo from "../../assets/shopLogo.png"
+import logo from '../../assets/shopLogonew.png';
+
+
 Font.register({
     family: "Open Sans",
     fonts: [
@@ -21,10 +23,12 @@ Font.register({
         },
     ],
 });
+
+
 //create style classes for the class PDF
 const styles = StyleSheet.create({
     table: {
-        width: "auto",
+        width: "100%",
         borderStyle: "solid",
         borderWidth: 1,
         borderRightWidth: 0,
@@ -38,7 +42,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
     },
     tableCol: {
-        width: "10%",
+        width: "14.27%",
         borderStyle: "solid",
         borderWidth: 1,
         borderLeftWidth: 0,
@@ -57,7 +61,7 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
     },
     HeaderCol: {
-        width: "10%",
+        width: "14.27%",
         backgroundColor: "#eff5f5",
         borderStyle: "solid",
         borderWidth: 1,
@@ -67,8 +71,8 @@ const styles = StyleSheet.create({
     logo: {
         margin: "auto",
         marginBottom: "0px",
-        width: "75px",
-        height: "75px",
+        width: "200px",
+        height: "80px",
         marginTop: "20px",
     },
     title: {
@@ -105,7 +109,7 @@ const styles = StyleSheet.create({
         height: "98%",
         padding: "10px",
         margin: "5px"
-    }
+    },
 });
 
 
@@ -119,6 +123,7 @@ export const StockPDF = ({ data }: any) => {
             <Document>
                 <Page size="A4" orientation="landscape">
                     <View style={styles.border}>
+                    <Image src={logo} style={styles.logo} />
                         <Text style={styles.title}>Battery Shop</Text>
 
                         <View>

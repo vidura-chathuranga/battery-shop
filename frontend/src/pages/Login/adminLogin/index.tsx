@@ -31,7 +31,7 @@ import {
         theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.colors.gray[3]
       }`,
       minHeight: rem(450),
-      maxWidth: rem(600),
+      maxWidth: rem(900),
       paddingTop: rem(80),
   
       [theme.fn.smallerThan('sm')]: {
@@ -55,7 +55,7 @@ const AdminLoginPage = () =>{
         .then((response: any) => {
   
           // save user details in the local storage
-          localStorage.setItem("user-worker-session",JSON.stringify(response.data));
+          localStorage.setItem("user-admin-session",JSON.stringify(response.data));
   
           // navigate to the worker dashboard
           window.location.href = '/admin/manageworker';
@@ -87,7 +87,7 @@ const AdminLoginPage = () =>{
           return 'This field is required';
         }
         if (!/^\S+@\S+$/.test(value) && !/^([0-9]{9}[v|V]|[0-9]{12})$/.test(value)) {
-          return 'Invalid email or NIC';
+          return 'Invalid  NIC';
         }
         return null;
       },
@@ -112,8 +112,8 @@ const AdminLoginPage = () =>{
         >
 
       <TextInput 
-        label="Email address or NIC number"
-        placeholder="hello@gmail.com"
+        label=" NIC number"
+        placeholder="NIC"
         size="md"  
         {...loginForm.getInputProps("emailOrNic")}/>
 

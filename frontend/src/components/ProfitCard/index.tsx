@@ -27,7 +27,7 @@ const useStyles = createStyles((theme) => ({
   label: {
     fontFamily: `Greycliff CF, ${theme.fontFamily}`,
     fontWeight: 900,
-    lineHeight: 1,
+    lineHeight: 9,
     fontSize: rem(50), // Increase the font size of the label
   },
 
@@ -41,7 +41,7 @@ const useStyles = createStyles((theme) => ({
   customCard: {
     padding: theme.spacing.xl, // Adjust the padding as needed to increase the card size
     borderRadius: theme.radius.md,
-    width: '400px', // Set a fixed width for the cards or adjust as per your requirement
+    width: '500px', // Set a fixed width for the cards or adjust as per your requirement
   },
 
   dateInputContainer: {
@@ -170,7 +170,7 @@ export function StatsProfitCard() {
             <Text weight={500} size={30}>
               <center>Profit</center>
             </Text>
-            <Text size={20} color="dimmed">
+            <Text weight={600} size={20} color="blue">
              <center> Rs.{profit}</center>
             </Text>
           </Card>
@@ -189,7 +189,7 @@ export function StatsProfitCard() {
             <Text weight={500} size={30}>
               <center>Sold Items</center>
             </Text>
-            <Text size={20} color="dimmed">
+            <Text weight={600} size={20} color="blue">
             <center>{itemCount}</center>
             </Text>
           </Card>

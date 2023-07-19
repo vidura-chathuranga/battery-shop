@@ -1,10 +1,17 @@
 import { Button, Card, Group, Image, Text } from "@mantine/core";
 import Admin from "../../assets/admin.png";
 import User from '../../assets/userlogo.png';
-
+import AOS from 'aos';
+import 'aos/dist/aos.css';
+import { useEffect } from "react";
 const AdminLogin = () => {
+
+  useEffect(()=>{
+    AOS.init();
+},[]);
+
   return (
-    <Card shadow="lg" withBorder radius="md" p="md" w={300} >
+    <Card shadow="lg" withBorder radius="md" p="md" w={300} data-aos="fade-up" data-aos-delay="150" data-aos-easing="ease-in-sine">
       <Card.Section withBorder>
         <Group position="center" m={50}>
           <Image src={User} alt="Admin photo" height={100} width={100} />

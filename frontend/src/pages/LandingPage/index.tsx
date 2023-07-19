@@ -8,6 +8,7 @@ import {
   Group,
 } from "@mantine/core";
 import LoginPage from "../Login";
+import { RefObject, useRef } from "react";
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -88,6 +89,14 @@ const useStyles = createStyles((theme) => ({
 const LandingPage = () => {
   const { classes } = useStyles();
 
+  //ref the login
+  const login: RefObject<HTMLInputElement> = useRef(null);
+
+  //handle scroll
+  const handleScroll = (elmRef: any) => {
+    window.scrollTo({ top: elmRef.current.offsetTop, behavior: "smooth" })
+  }
+  
   return (
     <>
       {/* display: "flex", justifyContent: "center", alignItems: "center", */}
@@ -123,29 +132,16 @@ const LandingPage = () => {
             size="xl"
             className={classes.control}
             mt={40}
+            onClick={()=>handleScroll(login)}
           >
             Get started
           </Button>
         </Group>
-
-        {/* <Container size={800}>
-          <div className={classes.inner} style={{background:"red"}}>
-            <div className={classes.content} style={{background:"blue"}}>
-              
-
-
-
-
-                Get started
-              </Button>
-            </div>
-          </div>
-        </Container> */}
       </div>
 
       {/* // connect Login Page */}
 
-      <LoginPage />
+      <LoginPage ref={login}/>
     </>
   );
 };

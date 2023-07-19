@@ -55,7 +55,7 @@ const AdminLoginPage = () =>{
         .then((response: any) => {
   
           // save user details in the local storage
-          localStorage.setItem("user-worker-session",JSON.stringify(response.data));
+          localStorage.setItem("user-admin-session",JSON.stringify(response.data));
   
           // navigate to the worker dashboard
           window.location.href = '/admin/manageworker';

@@ -23,6 +23,11 @@ import { useQuery } from '@tanstack/react-query';
 import { modals } from "@mantine/modals";
 
 const useStyles = createStyles((theme) => ({
+
+  tableHeader: {
+    backgroundColor: theme.colors.gray[2], // Change this color as per your preference
+  },
+
   th: {
     padding: "0 !important",
   },
@@ -287,7 +292,7 @@ const StockTable = () => {
           sx={{ tableLayout: "fixed" }}
         >
           <thead
-            className={cx(classes.header, { [classes.scrolled]: scrolled })}
+           className={cx(classes.header, classes.tableHeader, { [classes.scrolled]: scrolled })}
           >
             <tr>
               <th>Stock_id</th>

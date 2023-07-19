@@ -21,6 +21,10 @@ import { useQuery } from '@tanstack/react-query';
 import { modals } from "@mantine/modals";
 
 const useStyles = createStyles((theme) => ({
+
+    tableHeadings: {
+        backgroundColor: theme.colors.gray[2], // Change this color as per your preference
+      },
     th: {
         padding: "0 !important",
     },
@@ -88,6 +92,7 @@ function filterData(data: Data[], search: string) {
 }
 
 const PendingStock = () => {
+    
     const [search, setSearch] = useState("");
     const { classes, cx } = useStyles();
     const [scrolled, setScrolled] = useState(false);
@@ -265,7 +270,7 @@ const PendingStock = () => {
                     sx={{ tableLayout: "fixed" }}
                 >
                     <thead
-                        className={cx(classes.header, { [classes.scrolled]: scrolled })}
+                        className={classes.tableHeadings}
                     >
                         <tr>
                             <th>Stock_id</th>

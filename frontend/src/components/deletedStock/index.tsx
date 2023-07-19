@@ -26,6 +26,11 @@ import BatteryAPI from "../../API/batteryAPI/battery.api";
 import { showNotification } from "@mantine/notifications";
 
 const useStyles = createStyles((theme) => ({
+
+  tableHeader: {
+    backgroundColor: theme.colors.gray[2], // Change this color as per your preference
+  },
+
   th: {
     padding: "0 !important",
   },
@@ -120,6 +125,7 @@ function sortData(
 }
 
 export function DeletedTable() {
+  const { classes, cx } = useStyles();
     const {data = [],isError,isLoading} = useQuery(['deleteStocks'],()=>{
       return BatteryAPI.getDeletedStocks().then((res) => res.data);
     },{initialData : []})
@@ -167,7 +173,7 @@ export function DeletedTable() {
         miw={700}
         sx={{ tableLayout: "fixed" }}
       >
-        <thead>
+        <thead className={classes.tableHeader} >
           <tr>
             <th>Stock ID</th>
             <th>Brand</th>

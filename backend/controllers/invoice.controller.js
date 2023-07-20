@@ -48,7 +48,7 @@ export const addInvoice = async (req, res) => {
 
 
     // after saving the invoice, send the invoice via email to the customer, if email mentioned
-    if(req.bodu.cusEmail.length > 0){
+    if(req.body.cusEmail.length > 0){
 
       // mentioned here your sending email function
     }

@@ -18,6 +18,8 @@ import {
   NumberInput,
   NumberInputHandlers,
   Select,
+  Autocomplete,
+  Loader,
 } from "@mantine/core";
 import { keys } from "@mantine/utils";
 import {
@@ -32,6 +34,7 @@ import {
   IconTrashX,
   IconDiscount2,
   IconDiscount2Off,
+  IconAt,
 } from "@tabler/icons-react";
 import { useRef, useState } from "react";
 import { useForm } from "@mantine/form";
@@ -86,10 +89,11 @@ const useStyles = createStyles((theme) => ({
       left: 0,
       right: 0,
       bottom: 0,
-      borderBottom: `${rem(1)} solid ${theme.colorScheme === "dark"
-        ? theme.colors.dark[3]
-        : theme.colors.gray[2]
-        }`,
+      borderBottom: `${rem(1)} solid ${
+        theme.colorScheme === "dark"
+          ? theme.colors.dark[3]
+          : theme.colors.gray[2]
+      }`,
     },
   },
 
@@ -149,9 +153,16 @@ const ManageStocks = () => {
   const [cartOpened, setCartOpened] = useState(false);
 
   // use react query and fetch data
-  const { data = [], isLoading, isError, refetch } = useQuery(["stockData"], () => {
-    return BatteryAPI.getAllItems().then((res) => res.data);
-  },
+  const {
+    data = [],
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery(
+    ["stockData"],
+    () => {
+      return BatteryAPI.getAllItems().then((res) => res.data);
+    },
     { initialData: [] }
   );
 
@@ -186,6 +197,14 @@ const ManageStocks = () => {
   const [openedInvoiceModal, setOpenedInvoiceModal] = useState(false);
 
   const [invoiceData, setInvoiceData] = useState({});
+
+
+  // customer email
+  const timeoutRef = useRef<number>(-1);
+  const[emailLoader,setEmailloader] = useState(false);
+  const[email,setEmail] = useState('');
+  const[emailData,setEmailData] = useState<string[]>([])
+
 
   //declare add form
   const addForm = useForm({
@@ -228,7 +247,7 @@ const ManageStocks = () => {
     validate: {
       name: (value) => (value.length < 2 ? "Please enter valid name" : null),
       phoneNumber: (value) =>
-        value.length < 10 ? "Please enter valid phone number" : null,
+        value.length !== 10 ? "Please enter valid phone number" : null,
     },
   });
 
@@ -347,6 +366,7 @@ const ManageStocks = () => {
       cusName: values.name,
       cusAddress: values.address,
       cusPhone: values.phoneNumber,
+      cusEmail : email,
       items: [...cartData],
       issuedDate: new Date(),
       discount: calculateDiscount(),
@@ -365,6 +385,7 @@ const ManageStocks = () => {
       .then((res) => {
         // after successing the invoice saving set to overlay disappear
         setInvoiceOverlay(false);
+
 
         // also show the notification
         showNotification({
@@ -496,8 +517,10 @@ const ManageStocks = () => {
             quantity: item.quantity + parseInt(qvalue.toString()),
             price: item.price,
             warranty: item.warranty,
-            actualTotal: (item.quantity + parseInt(qvalue.toString())) * row.actualPrice,
-            totalPrice: (item.quantity + parseInt(qvalue.toString())) * row.sellingPrice,
+            actualTotal:
+              (item.quantity + parseInt(qvalue.toString())) * row.actualPrice,
+            totalPrice:
+              (item.quantity + parseInt(qvalue.toString())) * row.sellingPrice,
           };
         } else {
           return item;
@@ -523,7 +546,6 @@ const ManageStocks = () => {
         setCartData((current) => [...current, newCartData]);
       }
     }
-
 
     // shows the confirmation notification
     showNotification({
@@ -595,11 +617,7 @@ const ManageStocks = () => {
                   </Popover.Target>
                   <Popover.Dropdown>
                     {/* text of the selection */}
-                    <Text
-                      mb={10}
-                      style={{ textAlign: "center" }}
-                      weight={500}
-                    >
+                    <Text mb={10} style={{ textAlign: "center" }} weight={500}>
                       Select quantity
                     </Text>
                     <Group spacing={5} position="center">
@@ -752,11 +770,7 @@ const ManageStocks = () => {
                   </Popover.Target>
                   <Popover.Dropdown>
                     {/* text of the selection */}
-                    <Text
-                      mb={10}
-                      style={{ textAlign: "center" }}
-                      weight={500}
-                    >
+                    <Text mb={10} style={{ textAlign: "center" }} weight={500}>
                       Select quantity
                     </Text>
                     <Group spacing={5} position="center">
@@ -900,6 +914,22 @@ const ManageStocks = () => {
     }
   };
 
+  const handleEmailChange = (val: string) => {
+    window.clearTimeout(timeoutRef.current);
+    setEmail(val);
+    setEmailData([]);
+
+    if (val.trim().length === 0 || val.includes('@')) {
+      setEmailloader(false);
+    } else {
+      setEmailloader(true);
+      timeoutRef.current = window.setTimeout(() => {
+        setEmailloader(false);
+        setEmailData(['gmail.com', 'outlook.com', 'yahoo.com'].map((provider) => `${val}@${provider}`));
+      }, 300);
+    }
+  };
+
   // table
   return (
     <Box
@@ -949,6 +979,16 @@ const ManageStocks = () => {
             required
             mb={10}
             {...customerForm.getInputProps("phoneNumber")}
+          />
+          <Autocomplete
+            label="Email"
+            value = {email}
+            data={emailData}
+            onChange={handleEmailChange}
+            rightSection={emailLoader ? <Loader size="1rem" /> : null}
+            placeholder="example@gmail.com"
+            mb={10}
+            icon={<IconAt size="0.8rem"/>}
           />
           <TextInput
             label="Address"

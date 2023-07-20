@@ -18,6 +18,9 @@ const invoiceSchema = new mongoose.Schema({
         type : String,
         required : true,
     },
+    cusEmail : {
+        type : String,
+    },
     issuedDate : {
         type : Date,
         required : true,

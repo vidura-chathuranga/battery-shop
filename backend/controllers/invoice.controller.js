@@ -26,6 +26,8 @@ const generateInvoiceId = async () => {
 export const addInvoice = async (req, res) => {
   // generate the custom Invoice Id
   const customInvoiceID = await generateInvoiceId();
+
+  console.log(req.body);
   try {
     // create the Invoice Object
     const invoice = new Invoice({
@@ -33,6 +35,7 @@ export const addInvoice = async (req, res) => {
       invoice_id: customInvoiceID,
       cusName: req.body.cusName,
       cusPhone: req.body.cusPhone,
+      cusEmail : req.body.cusEmail,
       cusAddress: req.body.cusAddress,
       items: req.body.items,
       discount: req.body.discount,
@@ -42,6 +45,13 @@ export const addInvoice = async (req, res) => {
     
     // store the invoice Object in the datasase
     const savedInvoice = await invoice.save();
+
+
+    // after saving the invoice, send the invoice via email to the customer, if email mentioned
+    if(req.bodu.cusEmail.length > 0){
+
+      // mentioned here your sending email function
+    }
 
     // reduce the quantities 
     const items = req.body.items;

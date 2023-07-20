@@ -215,7 +215,7 @@ const Invoices = () => {
         <Text size={15}>{row.cusName}</Text>
       </td>
       <td>
-        <Text size={15}>{row.cusAddress}</Text>
+        {row.cusAddress.length === 0 ? (<Text size={15} color={"red"}>N/A</Text>):<Text size={15}>{row.cusAddress}</Text>}
       </td>
       <td>
         <Text size={15}>{row.cusPhone}</Text>

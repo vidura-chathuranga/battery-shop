@@ -7,6 +7,7 @@ class Invoice{
 
 
     static submitInvoice = (values : any) =>{
+        console.log(values);
         return axios.post(`${BASE_URL}/invoice/add`,values,{withCredentials:true});
     }
 

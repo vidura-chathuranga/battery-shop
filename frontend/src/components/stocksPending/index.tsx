@@ -249,9 +249,9 @@ const PendingStock = () => {
             <TextInput
                 placeholder="Search by any field"
                 mt={50}
-                // mb={50}
+                mb={50}
                 icon={<IconSearch size="0.9rem" stroke={1.5} />}
-                // value={search}
+                 value={search}
                 // onChange={handleSearchChange}
                 w={800}
              style={{ position: "relative", left: "50%", translate: "-50%" }}

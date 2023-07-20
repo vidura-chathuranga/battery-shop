@@ -88,6 +88,25 @@ class BatteryAPI {
   static getDeletedStocks = () =>{
     return axios.get(`${BASE_URL}/batteries/stocks/deleted`,{withCredentials:true});
   }
+
+  //update battery details
+  static updateRequestedStocks = (values: {
+    _id: string;
+    stock_id: string;
+    quantity: string;
+    added_date: Date;
+    warnty_priod: String;
+    sellingPrice: string;
+    actualPrice: string;
+    batry_brand: string;
+    Battery_description: string;
+  }) => {
+
+    console.log(values);
+    return axios.put(`${BASE_URL}/batteries/requested/update/${values._id}`, values, {
+      withCredentials: true,
+    });
+  };
 }
 
 export default BatteryAPI;

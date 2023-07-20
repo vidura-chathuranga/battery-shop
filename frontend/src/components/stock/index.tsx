@@ -8,6 +8,7 @@ import {
   rem,
   Button,
   LoadingOverlay,
+  Modal,
 } from "@mantine/core";
 import AdminAPI from '../../API/adminAPI/admin.api';
 import { keys } from "@mantine/utils";
@@ -17,10 +18,12 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import { useState } from "react";
-import { showNotification,updateNotification } from "@mantine/notifications";
+import { showNotification, updateNotification } from "@mantine/notifications";
 import BatteryAPI from "../../API/batteryAPI/battery.api";
 import { useQuery } from '@tanstack/react-query';
 import { modals } from "@mantine/modals";
+import { useForm } from "@mantine/form";
+import { DateInput } from "@mantine/dates";
 
 const useStyles = createStyles((theme) => ({
 
@@ -63,11 +66,10 @@ const useStyles = createStyles((theme) => ({
       left: 0,
       right: 0,
       bottom: 0,
-      borderBottom: `${rem(1)} solid ${
-        theme.colorScheme === "dark"
-          ? theme.colors.dark[3]
-          : theme.colors.gray[2]
-      }`,
+      borderBottom: `${rem(1)} solid ${theme.colorScheme === "dark"
+        ? theme.colors.dark[3]
+        : theme.colors.gray[2]
+        }`,
     },
   },
 
@@ -100,72 +102,136 @@ const StockTable = () => {
   const { classes, cx } = useStyles();
   const [scrolled, setScrolled] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [opened, setOpened] = useState(false);
+  const [editOpened, setEditOpened] = useState(false);
 
 
-    // use react query and fetch data
-    const { data = [], isLoading, isError, refetch } = useQuery(["stockData"], () => {
-      return BatteryAPI.getRequestedStocks().then((res) => res.data)
-    },{initialData : []})
+  // use react query and fetch data
+  const { data = [], isLoading, isError, refetch } = useQuery(["stockData"], () => {
+    return BatteryAPI.getRequestedStocks().then((res) => res.data)
+  }, { initialData: [] })
 
+  //declare edit form
+  const editForm = useForm({
+    validateInputOnChange: true,
+    initialValues: {
+      _id: "",
+      stock_id: "",
+      quantity: "",
+      added_date: new Date(),
+      warnty_priod: "",
+      sellingPrice: "",
+      actualPrice: "",
+      batry_brand: "",
+      Battery_description: "",
+    },
+  });
 
-    // accept Stock function
-    const acceptStock = (stockId : string) => {
-      BatteryAPI.acceptStock(stockId)
-        .then((res) => {
-          showNotification({
-            title: `Stock was accepted`,
-            message: "Stock was accepted successfully",
-            autoClose: 1500,
-            icon: <IconCheck />,
-            color: "teal",
-          });
-  
-          // after successing the accepting, refetch the data from the database
-          refetch();
-        })
-        .catch((err) => {
-          showNotification({
-            title: `stock was not accepted`,
-            message: "Stock was not accpeted",
-            autoClose: 1500,
-            icon: <IconX />,
-            color: "red",
-          });
+  // accept Stock function
+  const acceptStock = (stockId: string) => {
+    BatteryAPI.acceptStock(stockId)
+      .then((res) => {
+        showNotification({
+          title: `Stock was accepted`,
+          message: "Stock was accepted successfully",
+          autoClose: 1500,
+          icon: <IconCheck />,
+          color: "teal",
         });
-    };
+
+        // after successing the accepting, refetch the data from the database
+        refetch();
+      })
+      .catch((err) => {
+        showNotification({
+          title: `stock was not accepted`,
+          message: "Stock was not accpeted",
+          autoClose: 1500,
+          icon: <IconX />,
+          color: "red",
+        });
+      });
+  };
 
 
 
-        // delete Stock function
-        const deleteSpecificStock = (stockId : string) => {
-          BatteryAPI.rejectBattery(stockId)
-            .then((res) => {
-              showNotification({
-                title: `Stock was deleted`,
-                message: "Stock was deleted successfully",
-                autoClose: 1500,
-                icon: <IconCheck />,
-                color: "teal",
-              });
-      
-              // after successing the deletion refetch the data from the database
-              refetch();
-      
-            })
-            .catch((err) => {
-              showNotification({
-                title: `stock was not deleted`,
-                message: "Stock was not deleted",
-                autoClose: 1500,
-                icon: <IconX />,
-                color: "red",
-              });
-            });
-        };
-    
-    // reject confirmation modal
-    const openDeleteModal = (stockId:string) =>
+  // delete Stock function
+  const deleteSpecificStock = (stockId: string) => {
+    BatteryAPI.rejectBattery(stockId)
+      .then((res) => {
+        showNotification({
+          title: `Stock was deleted`,
+          message: "Stock was deleted successfully",
+          autoClose: 1500,
+          icon: <IconCheck />,
+          color: "teal",
+        });
+
+        // after successing the deletion refetch the data from the database
+        refetch();
+
+      })
+      .catch((err) => {
+        showNotification({
+          title: `stock was not deleted`,
+          message: "Stock was not deleted",
+          autoClose: 1500,
+          icon: <IconX />,
+          color: "red",
+        });
+      });
+  };
+  //update Item  function
+  const updateRequestedStocks = async (values: {
+    _id: string;
+    stock_id: string;
+    quantity: string;
+    added_date: Date;
+    warnty_priod: String;
+    sellingPrice: string;
+    actualPrice: string;
+    batry_brand: string;
+    Battery_description: string;
+  }) => {
+    showNotification({
+      id: "update-items",
+      loading: true,
+      title: "Updating Items record",
+      message: "Please wait while we update Items record..",
+      autoClose: false,
+    });
+    console.log(values);
+    BatteryAPI.updateRequestedStocks(values)
+      .then((response) => {
+        updateNotification({
+          id: "update-items",
+          color: "teal",
+          icon: <IconCheck />,
+          title: "Items updated successfully",
+          message: "Items data updated successfully.",
+          //icon: <IconCheck />,
+          autoClose: 5000,
+        });
+        editForm.reset();
+        setEditOpened(false);
+
+        //getting updated items from database
+        refetch();
+      })
+      .catch((error) => {
+        updateNotification({
+          id: "update-items",
+          color: "red",
+          title: "Items updatimg failed",
+          icon: <IconX />,
+          message: "We were unable to update the Items",
+          // icon: <IconAlertTriangle />,
+          autoClose: 5000,
+        });
+      });
+  };
+
+  // reject confirmation modal
+  const openDeleteModal = (stockId: string) =>
     modals.openConfirmModal({
       title: 'Delete your profile',
       centered: true,
@@ -181,22 +247,24 @@ const StockTable = () => {
     });
 
 
-    // accept modal
-    const openAcceptModal = (stockId : string) => modals.openConfirmModal({
-      title: 'Please confirm your action',
-      children: (
-        <Text size="sm">
-          Are you sure you want to accept this stock? This stcok will be added to the stock.
-        </Text>
-      ),
-      labels: { confirm: 'Accept', cancel: 'Cancel' },
-      confirmProps:{color:"teal"},
-      onCancel: () => modals.close,
-      onConfirm: () => acceptStock(stockId),
-    });
+  // accept modal
+  const openAcceptModal = (stockId: string) => modals.openConfirmModal({
+    title: 'Please confirm your action',
+    children: (
+      <Text size="sm">
+        Are you sure you want to accept this stock? This stcok will be added to the stock.
+      </Text>
+    ),
+    labels: { confirm: 'Accept', cancel: 'Cancel' },
+    confirmProps: { color: "teal" },
+    onCancel: () => modals.close,
+    onConfirm: () => acceptStock(stockId),
+  });
+
+
 
   // rows map
-  const rows = Array.isArray(data)? data?.map((row:any) => (
+  const rows = Array.isArray(data) ? data?.map((row: any) => (
     <tr key={row._id}>
       <td>
         <Text size={15}>{row.stock_id}</Text>
@@ -209,6 +277,9 @@ const StockTable = () => {
       </td>
       <td>
         <Text size={15}>{row.quantity}</Text>
+      </td>
+      <td>
+        <Text size={15}>{row.actualPrice}</Text>
       </td>
       <td>
         <Text size={15}>{row.sellingPrice}</Text>
@@ -225,58 +296,147 @@ const StockTable = () => {
             <Group spacing={"sm"}>
               {/* Accept button */}
               <Button type="submit" onClick={() => {
-                  openAcceptModal(row._id)
-                  }}
-               >
-                   Accept
-                </Button>
+                openAcceptModal(row._id)
+              }}
+              >
+                Accept
+              </Button>
 
               {/* Reject Button */}
-               <Button type="submit" color="red"
+              <Button type="submit" color="red"
                 onClick={() => {
                   openDeleteModal(row._id);
-                }} 
-                >
-                   Reject
-                </Button>
+                }}
+              >
+                Reject
+              </Button>
+
+              {/* edit button */}
+              <Button type="submit" color="green"
+                onClick={() => {
+                  editForm.setValues({
+                    _id: row._id,
+                    stock_id: row.stock_id,
+                    Battery_description: row.batteryDescription,
+                    batry_brand: row.batteryBrand,
+                    actualPrice: row.actualPrice,
+                    sellingPrice: row.sellingPrice,
+                    quantity: row.quantity,
+                    added_date: new Date(row.added_date),
+                    warnty_priod: row.warranty,
+                  });
+                  setEditOpened(true);
+                }}
+              >
+                Edit
+              </Button>
             </Group>
           </>
         }
       </td>
-   
-    </tr>
-  )):null;
 
-    // if data is fetching this overalay will be shows to the user
-    if (isLoading) {
-      return <LoadingOverlay visible={isLoading} overlayBlur={2} />
-    }
-  
-    if (isError) {
-      showNotification({
-        title: "Cannot fetching Stock Data",
-        message: "check internet connection",
-        color: "red",
-        icon: <IconX />,
-        autoClose: 1500,
-      });
-    }
+    </tr>
+  )) : null;
+
+  // if data is fetching this overalay will be shows to the user
+  if (isLoading) {
+    return <LoadingOverlay visible={isLoading} overlayBlur={2} />
+  }
+
+  if (isError) {
+    showNotification({
+      title: "Cannot fetching Stock Data",
+      message: "check internet connection",
+      color: "red",
+      icon: <IconX />,
+      autoClose: 1500,
+    });
+  }
 
 
   // table
   return (
+
     <div>
-      
+      {/* items edit model */}
+      <Modal
+        opened={editOpened}
+        onClose={() => {
+          editForm.reset();
+          setEditOpened(false);
+        }}
+        title="Update Item Record"
+      >
+        <form onSubmit={editForm.onSubmit((values) => updateRequestedStocks(values))}>
+          <TextInput
+            withAsterisk
+            label="Stock ID"
+            required
+            disabled
+            {...editForm.getInputProps("stock_id")}
+          />
+          <TextInput
+            label="Battery brand"
+            placeholder="Enter Brand name"
+            {...editForm.getInputProps("batry_brand")}
+            required
+          />
+          <TextInput
+            label="Battery description"
+            placeholder="Enter Battery Description"
+            {...editForm.getInputProps("Battery_description")}
+            required
+          />
+          <TextInput
+            label="Quantity"
+            placeholder="Enter Battery quantity"
+            {...editForm.getInputProps("quantity")}
+            required
+          />
+          <TextInput
+            label="Actual Price"
+            placeholder="Enter actual Price of a Battery"
+            {...editForm.getInputProps("actualPrice")}
+            required
+          />
+          <TextInput
+            label="Selling Price"
+            placeholder="Enter selling Price of a battery"
+            {...editForm.getInputProps("sellingPrice")}
+            required
+          />
+          <DateInput
+            placeholder="Added date"
+            label="Added date"
+            valueFormat="YYYY MMM DD"
+            withAsterisk
+            {...editForm.getInputProps("added_date")}
+          />
+          <TextInput
+            label="warnty priod"
+            placeholder="Enter warnty priod"
+            {...editForm.getInputProps("warnty_priod")}
+            required
+          />
+          <Button
+            color="blue"
+            sx={{ marginTop: "10px", width: "100%" }}
+            type="submit"
+          >
+            Save
+          </Button>
+        </form>
+      </Modal>
       {/* search bar */}
       <TextInput
         placeholder="Search by any field"
-         mt={50}
-        // mb={50}
+        mt={50}
+        mb={50}
         icon={<IconSearch size="0.9rem" stroke={1.5} />}
         // value={search}
         // onChange={handleSearchChange}
         w={800}
-        // style={{ position: "relative", left: "50%", translate: "-50%" }}
+      // style={{ position: "relative", left: "50%", translate: "-50%" }}
       />
 
       <ScrollArea
@@ -292,14 +452,15 @@ const StockTable = () => {
           sx={{ tableLayout: "fixed" }}
         >
           <thead
-           className={cx(classes.header, classes.tableHeader, { [classes.scrolled]: scrolled })}
+            className={cx(classes.header, classes.tableHeader, { [classes.scrolled]: scrolled })}
           >
             <tr>
-              <th>Stock_id</th>
+              <th>Stock_Id</th>
               <th>Brand</th>
               <th>Description</th>
               <th>Quantity</th>
-              <th>Price</th>
+              <th>Actual Price</th>
+              <th>Selling Price</th>
               <th>Added_Date</th>
               <th>Warranty</th>
               <th>Actions</th>
@@ -316,11 +477,11 @@ const StockTable = () => {
                   </Text>
                 </td>
               </tr>
-            ):null}
+            ) : null}
           </tbody>
         </Table>
       </ScrollArea>
-      
+
     </div>
   );
 };

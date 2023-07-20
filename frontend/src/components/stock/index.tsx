@@ -281,7 +281,7 @@ const StockTable = () => {
 
       <ScrollArea
         w={"100mw"}
-        h={800}
+        h={600}
         onScrollPositionChange={({ y }) => setScrolled(y !== 0)}
       >
         <Table

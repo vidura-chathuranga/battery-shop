@@ -10,9 +10,6 @@ export const mailConfigs = () =>{
     });
 }
 
-module.exports ={
-    mailConfigs
-};
 
 
 

@@ -12,6 +12,7 @@ import {
   getRequestedStocks,
   acceptStocks,
   getDeletedBatteries,
+  updateRequestedItems,
 } from "../controllers/battery.controller.js";
 
 const router = express.Router();
@@ -24,5 +25,7 @@ router.delete("/reject/:id", validateAdmin, rejectStock);
 router.get("/stocks/requested", validateAdmin, getRequestedStocks);
 router.put("/stock/accept", validateAdmin, acceptStocks);
 router.get('/stocks/deleted',validateAdmin,getDeletedBatteries);
+// router.put("/requested/update/:id",validateAdmin,updateRequestedItems);
+router.put("/requested/update/:id",validateAdmin,updateRequestedItems)
 
 export default router;

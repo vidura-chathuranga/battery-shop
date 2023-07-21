@@ -1,5 +1,7 @@
 import Battery from "../models/battery.model.js";
 import Invoice from "../models/invoice.model.js";
+import {sendInvoiceMail} from "../Mails/customer.mails.js";
+
 //generate Invoice Id
 const generateInvoiceId = async () => {
   //get last stock object, if there is a battery, then return that battery object, otherwise return empty array
@@ -27,7 +29,7 @@ export const addInvoice = async (req, res) => {
   // generate the custom Invoice Id
   const customInvoiceID = await generateInvoiceId();
 
-  console.log(req.body);
+  //console.log(req.body);
   try {
     // create the Invoice Object
     const invoice = new Invoice({
@@ -48,9 +50,12 @@ export const addInvoice = async (req, res) => {
 
 
     // after saving the invoice, send the invoice via email to the customer, if email mentioned
-    if(req.bodu.cusEmail.length > 0){
+    if(req.body.cusEmail.length > 0){
 
+      console.log(invoice.cusEmail)
       // mentioned here your sending email function
+      sendInvoiceMail(invoice)
+
     }
 
     // reduce the quantities 

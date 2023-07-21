@@ -150,8 +150,8 @@ const AdminDashboardHeader = ({link_id} : any) => {
   ));
   return (
     <div  style={{ display: "grid", gridTemplateColumns: "250px 1fr" }}>
-      <div>
-      <Navbar  height={"100vh"} width={{ sm: 250 }} p="md" style={{ backgroundColor: "lightblue" }}>
+      <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <Navbar width={{ sm: 250 }} p="md" style={{ backgroundColor: 'lightblue', flex: 1 }}>
           <Navbar.Section grow>
             <Group className={classes.header} position="apart">
               <Image width={200} height={50} src={logo} mt={5} />

@@ -696,7 +696,6 @@ const ManageStocks = () => {
                     </Group>
                   </Popover.Dropdown>
                 </Popover>
-
                 {/* edit button */}
                 <Tooltip label="Edit stock">
                   <ActionIcon
@@ -1348,7 +1347,7 @@ const ManageStocks = () => {
         </form>
       </Modal>
 
-      {/* items update model */}
+      {/* items edit model */}
       <Modal
         opened={editOpened}
         onClose={() => {

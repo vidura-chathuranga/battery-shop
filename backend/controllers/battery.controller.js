@@ -193,5 +193,38 @@ export const getDeletedBatteries = async(req,res) =>{
   }catch(error){
     res.status(500).json({error: error,meesage:"Error while getting deleted stocks details"})
   }
-}
+};
+
+export const updateRequestedItems = async (req, res) => {
+  const stock_id = req.params.id;
+
+  
+  const updateFields = {
+    quantity: req.body.quantity,
+    added_date: req.body.added_date,
+    warranty: req.body.warnty_priod,
+    sellingPrice: req.body.sellingPrice,
+    actualPrice: req.body.actualPrice,
+    batteryBrand: req.body.batry_brand,
+    batteryDescription: req.body.Battery_description,
+  };
+  console.log(updateFields);
+
+  try {
+    const updatedBattery = await Battery.findByIdAndUpdate(
+      stock_id,
+      updateFields,
+      { new: true }
+    );
+
+    if (!updatedBattery) {
+      // If the battery is not found, send a 404 status code with a message
+      return res.status(404).json({ message: "Battery not found" });
+    }
+
+    res.status(200).json(updatedBattery); // Send the updated battery as the response
+  } catch (error) {
+    res.status(500).json({ message: "Failed to update battery", error });
+  }
+};
 

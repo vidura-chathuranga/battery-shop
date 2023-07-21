@@ -35,6 +35,7 @@ import {
   IconDiscount2,
   IconDiscount2Off,
   IconAt,
+  IconArrowBarToUp,
 } from "@tabler/icons-react";
 import { useRef, useState } from "react";
 import { useForm } from "@mantine/form";
@@ -204,6 +205,10 @@ const ManageStocks = () => {
   const[emailLoader,setEmailloader] = useState(false);
   const[email,setEmail] = useState('');
   const[emailData,setEmailData] = useState<string[]>([])
+
+
+  // manage add quantity manage popover
+  const [openedPopOver,setOpenedPopOver] = useState(false);
 
 
   //declare add form
@@ -386,6 +391,13 @@ const ManageStocks = () => {
         // after successing the invoice saving set to overlay disappear
         setInvoiceOverlay(false);
 
+        // refetch new Data
+        refetch();
+
+        // clear previous cus email details
+        setEmail('');
+        setEmailData([]);
+        setEmailloader(false);
 
         // also show the notification
         showNotification({
@@ -598,7 +610,7 @@ const ManageStocks = () => {
         <td>
           {
             <>
-              <Group spacing={"sm"}>
+              <Group spacing={"xs"}>
                 {/* add to cart */}
                 <Popover
                   trapFocus
@@ -608,10 +620,10 @@ const ManageStocks = () => {
                   onClose={() => {
                     setQValue(0);
                   }}
-                  disabled={row.quantity === 0 ? true : false}
+                  disabled={row.quantity === 0 || cartOpened === true || openedInvoiceModal === true ? true : false}
                 >
                   <Popover.Target>
-                    <ActionIcon color={row.quantity === 0 ? "gray" : "blue"}>
+                    <ActionIcon color={row.quantity === 0 ? "gray" : "blue"} >
                       <IconShoppingCartPlus />
                     </ActionIcon>
                   </Popover.Target>
@@ -656,16 +668,30 @@ const ManageStocks = () => {
                       color={"red"}
                       mt={10}
                     >{`*Note that, you can select maximum ${row.quantity} items only.`}</Text>
-                    <Group position="center" grow>
+                    <Group position="center" spacing={"sm"} grow>
                       <Button
                         size="xs"
                         mt={10}
+                        disabled = {qvalue === 0 ? true : false}
                         leftIcon={<IconShoppingCartPlus size={15} />}
                         onClick={() => {
                           updateCartData(row);
                         }}
                       >
                         Add to cart
+                      </Button>
+                      <Button
+                        size="xs"
+                        mt={10}
+                        disabled = {qvalue === 0 ? true : false}
+                        leftIcon={<IconArrowBarToUp size={15} />}
+                        color="orange"
+                        onClick={() => {
+                          updateCartData(row);
+                          setCartOpened(true);
+                        }}
+                      >
+                        Open in cart
                       </Button>
                     </Group>
                   </Popover.Dropdown>
@@ -761,10 +787,10 @@ const ManageStocks = () => {
                   onClose={() => {
                     setQValue(0);
                   }}
-                  disabled={row.quantity === 0 ? true : false}
+                  disabled={row.quantity === 0 || cartOpened === true || openedInvoiceModal === true ? true : false}
                 >
                   <Popover.Target>
-                    <ActionIcon color={row.quantity === 0 ? "gray" : "blue"}>
+                    <ActionIcon color={row.quantity === 0 ? "gray" : "blue"} >
                       <IconShoppingCartPlus />
                     </ActionIcon>
                   </Popover.Target>
@@ -809,16 +835,30 @@ const ManageStocks = () => {
                       color={"red"}
                       mt={10}
                     >{`*Note that, you can select maximum ${row.quantity} items only.`}</Text>
-                    <Group position="center" grow>
+                    <Group position="center" spacing={"sm"} grow>
                       <Button
                         size="xs"
                         mt={10}
+                        disabled = {qvalue === 0 ? true : false}
                         leftIcon={<IconShoppingCartPlus size={15} />}
                         onClick={() => {
                           updateCartData(row);
                         }}
                       >
                         Add to cart
+                      </Button>
+                      <Button
+                        size="xs"
+                        mt={10}
+                        disabled = {qvalue === 0 ? true : false}
+                        leftIcon={<IconArrowBarToUp size={15} />}
+                        color="orange"
+                        onClick={() => {
+                          updateCartData(row);
+                          setCartOpened(true);
+                        }}
+                      >
+                        Open in cart
                       </Button>
                     </Group>
                   </Popover.Dropdown>
@@ -1307,7 +1347,7 @@ const ManageStocks = () => {
         </form>
       </Modal>
 
-      {/* items update model */}
+      {/* items edit model */}
       <Modal
         opened={editOpened}
         onClose={() => {

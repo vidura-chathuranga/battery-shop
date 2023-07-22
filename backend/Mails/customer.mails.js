@@ -12,19 +12,21 @@ export const sendInvoiceMail = async (invoice) => {
   //import mail configs
   let mailTransporter = mailConfigs();
 
+
   let MailGenerator = new mailgen({
     theme: "cerberus",
     product: {
       name: "Battery shop name",
       link: "http://localhost:3000/",
-      logo: 'https://drive.google.com/file/d/14rDrjOsL3Co8bWG2Zu6qNlubbD7OuZSW/view?usp=sharing',
+      logo: `data:image/png;base64,${logo}`,
+      logoHeight :'80px'
     },
   });
 
   //generating table data
   const tableData = invoice.items.map((item) => {
     return {
-      Brand: item.brand,
+      Item: item.brand,
       Warranty: item.warranty,
       "Unit price": rupee.format(item.price).toString(),
       Quantity: item.quantity.toString(),
@@ -41,33 +43,40 @@ export const sendInvoiceMail = async (invoice) => {
         data: [
           ...tableData,
           {
-            Brand: "",
+            Item: "",
             Warranty: "",
             "Unit price": "Discount",
             Quantity: "",
             "Total price": `<b>- ${rupee
               .format(invoice.discount)
-              .toString()}</b>`,
+              .toString()}</b><br/><hr>`,
           },
           {
-            Brand: "",
+            Item: "",
             Warranty: "",
             "Unit price": "Total price",
             Quantity: "",
             "Total price": `<b>${rupee
               .format(invoice.totalSoldPrice)
-              .toString()}</b>`,
+              .toString()}</b><br/><hr>`,
           },
         ],
-        columns:{
-          customAlignment:{
-            "Unit price" : 'right',
-            'Quantity' : 'center',
-             "Total price" : 'right'
-          }
-          
-        }
+        columns: {
+          customWidth: {
+            Item: "25%",
+            Warranty: "12.5%",
+            "Unit Price": "25%",
+            Quantity: "12.5%",
+            "Total Price": "25%",
+          },
+          customAlignment: {
+            "Unit price": "right",
+            Quantity: "center",
+            "Total price": "right",
+          },
+        },
       },
+      layout: 'full-width',
       outro:
         "Thank you once again for choosing Sensus Hub.We look forward to serving you again in the near future. Have a wonderful day!",
     },

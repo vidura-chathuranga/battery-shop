@@ -1,6 +1,7 @@
 import StatsProfitCard from "../../components/ProfitCard";
 import AdminDashboardHeader from "../../components/adminDashboardHeader";
 import { Grid } from "@mantine/core";
+import Chart from "../../components/profitChart/chart";
 
 const ProfitPage = () => {
   return (
@@ -15,8 +16,14 @@ const ProfitPage = () => {
             <h1>PROFIT OF THE DAY</h1>
           </center>
             <StatsProfitCard />
+            {/* <Chart/> */}
         </Grid.Col>
+
+
+        
       </Grid>
+
+      
     </div>
   );
 };

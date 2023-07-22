@@ -18,7 +18,7 @@ export const sendInvoiceMail = async (invoice) => {
     product: {
       name: "Battery shop name",
       link: "http://localhost:3000/",
-      logo: `data:image/png;base64,${logo}`,
+      logo: `https://drive.google.com/file/d/14rDrjOsL3Co8bWG2Zu6qNlubbD7OuZSW/view?usp=sharing`,
       logoHeight :'80px'
     },
   });

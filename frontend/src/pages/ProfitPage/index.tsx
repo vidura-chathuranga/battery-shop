@@ -14,7 +14,7 @@ const ProfitPage = () => {
           <center>
             <h1>PROFIT OF THE DAY</h1>
           </center>
-            <StatsProfitCard />
+          <StatsProfitCard />
         </Grid.Col>
       </Grid>
     </div>

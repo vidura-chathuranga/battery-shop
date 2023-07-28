@@ -252,7 +252,7 @@ const StockTable = () => {
     title: 'Please confirm your action',
     children: (
       <Text size="sm">
-        Are you sure you want to accept this stock? This stcok will be added to the stock.
+        Are you sure you want to accept this stock? This stock will be added to the stock.
       </Text>
     ),
     labels: { confirm: 'Accept', cancel: 'Cancel' },

@@ -152,12 +152,12 @@ const ManageWorker = () => {
     validate: {
       name: (value) =>
         value.length < 2 ? "Name must have at least 2 letters" : null,
-      email: (value) =>
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
-          value
-        )
-          ? null
-          : "Invalid email",
+      // email: (value) =>
+      //   /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+      //     value
+      //   )
+      //     ? null
+      //     : "Invalid email",
 
       phone: (value) =>
         /^\d{10}$/.test(value)
@@ -172,7 +172,7 @@ const ManageWorker = () => {
           !/^\S+@\S+$/.test(value) &&
           !/^([0-9]{9}[v|V]|[0-9]{12})$/.test(value)
         ) {
-          return "Invalid email or NIC";
+          return "Invalid NIC";
         }
         return null;
       },
@@ -198,12 +198,12 @@ const ManageWorker = () => {
     validate: {
       name: (value) =>
         value.length < 2 ? "Name must have at least 2 letters" : null,
-      email: (value) =>
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
-          value
-        )
-          ? null
-          : "Invalid email",
+      // email: (value) =>
+      //   /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+      //     value
+      //   )
+      //     ? null
+      //     : "Invalid email",
 
       phone: (value) =>
         /^\d{10}$/.test(value)
@@ -218,7 +218,7 @@ const ManageWorker = () => {
           !/^\S+@\S+$/.test(value) &&
           !/^([0-9]{9}[v|V]|[0-9]{12})$/.test(value)
         ) {
-          return "Invalid email or NIC";
+          return "Invalid NIC";
         }
         return null;
       },
@@ -622,7 +622,7 @@ const ManageWorker = () => {
             label="Email"
             placeholder="you@mantine.dev"
             name="email"
-            required
+            
             {...registerForm.getInputProps("email")}
           />
           <PasswordInput

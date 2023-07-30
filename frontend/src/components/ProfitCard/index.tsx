@@ -2,15 +2,13 @@ import {
   createStyles,
   Text,
   Card,
-  RingProgress,
   Group,
   rem,
   Image,
-  Badge,
-  Button,
   LoadingOverlay,
   Modal,
-  Center,
+  ActionIcon,
+  Tooltip,
 } from "@mantine/core";
 import AdminDashboardHeader from "../adminDashboardHeader";
 import InvoiceAPI from "../../API/InvoiceAPI/Invoice.api";
@@ -19,7 +17,7 @@ import { useState, useEffect } from "react";
 import { DateInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { showNotification } from "@mantine/notifications";
-import { IconX } from "@tabler/icons-react";
+import { IconArrowsMaximize, IconX } from "@tabler/icons-react";
 import profitImage from "../../assets/profit.png";
 import BarryImage from "../../assets/BattaryImage.png";
 import Chart from "../profitChart/chart";
@@ -153,6 +151,12 @@ export function StatsProfitCard() {
       },
     ],
   });
+
+  // expand monthly chart modal
+  const [openedMonthlyProfitChart, setOpenedMonthlyProfitChart] =
+    useState(false);
+  // expand weekly chart modal
+  const [openedWeeklyProfitChart, setOpenedWeeklyProfitChart] = useState(false);
 
   // use react query and fetch data
   const { data, isLoading, isError } = useQuery(["invoiceData"], () => {
@@ -419,6 +423,28 @@ export function StatsProfitCard() {
 
   return (
     <>
+      {/* weekly profit expandable modal */}
+      <Modal
+        opened={openedWeeklyProfitChart}
+        onClose={() => setOpenedWeeklyProfitChart(false)}
+        size={"80%"}
+        zIndex={2500}
+      >
+        <center>
+          <WeekProfitChart profitData={weekProfitData} />
+        </center>
+      </Modal>
+      {/* monthly profit expandable modal */}
+      <Modal
+        opened={openedMonthlyProfitChart}
+        onClose={() => setOpenedMonthlyProfitChart(false)}
+        size={"80%"}
+        zIndex={2500}
+      >
+        <center>
+          <MonthlyProfitChart profitData={monthlyProfitData} />
+        </center>
+      </Modal>
       <div className={classes.dateInputContainer}>
         <DateInput
           className={classes.dateInput}
@@ -531,7 +557,17 @@ export function StatsProfitCard() {
             withBorder
             style={{ height: "430px" }}
           >
-            <Text weight={500} size={30} mb={40}>
+            <Group position="right">
+              <Tooltip label="expand chart">
+                <ActionIcon
+                  size={"lg"}
+                  onClick={() => setOpenedWeeklyProfitChart(true)}
+                >
+                  <IconArrowsMaximize />
+                </ActionIcon>
+              </Tooltip>
+            </Group>
+            <Text weight={500} size={30} mb={40} mt={-35}>
               <center>WEEKLY PROFIT</center>
             </Text>
             <WeekProfitChart profitData={weekProfitData} />
@@ -545,9 +581,9 @@ export function StatsProfitCard() {
             withBorder
             style={{ height: "430px" }}
           >
-              <Text weight={500} size={30}>
-                <center>MONTHLY PROFIT & ITEM COUNT</center>
-              </Text>
+            <Text weight={500} size={30}>
+              <center>MONTHLY PROFIT & ITEM COUNT</center>
+            </Text>
             <div className={classes.dateInputContainer}>
               <MonthPickerInput
                 className={classes.dateInput}
@@ -581,9 +617,20 @@ export function StatsProfitCard() {
             withBorder
             style={{ height: "430px" }}
           >
-            <Text weight={500} size={30} mb={40}>
+            <Group position="right">
+              <Tooltip label="expand chart">
+                <ActionIcon
+                  size={"lg"}
+                  onClick={() => setOpenedMonthlyProfitChart(true)}
+                >
+                  <IconArrowsMaximize />
+                </ActionIcon>
+              </Tooltip>
+            </Group>
+            <Text weight={500} size={30} mb={40} mt={-35}>
               <center>MONTHLY PROFIT</center>
             </Text>
+
             <MonthlyProfitChart profitData={monthlyProfitData} />
           </Card>
         </Group>

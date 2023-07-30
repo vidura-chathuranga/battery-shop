@@ -25,6 +25,7 @@ import BarryImage from "../../assets/BattaryImage.png";
 import Chart from "../profitChart/chart";
 import { MonthPickerInput } from "@mantine/dates";
 import WeekProfitChart from "../Charts/weekProfitChart";
+import MonthlyProfitChart from "../Charts/monthlyProfitChart";
 
 const useStyles = createStyles((theme) => ({
   label: {
@@ -133,7 +134,7 @@ export function StatsProfitCard() {
     labels: [""],
     datasets: [
       {
-        label: "Weekly Profit(Rs)",
+        label: "Weekly Profit(LKR)",
         data: [0],
         borderColor: getRandomRGBColor(),
         backgroundColor: getRandomRGBColor(),
@@ -141,10 +142,16 @@ export function StatsProfitCard() {
     ],
   });
 
-  // format number to SL rupee
-  let rupee = new Intl.NumberFormat("ta-LK", {
-    style: "currency",
-    currency: "LKR",
+  const [monthlyProfitData, setMonthlyProfitData] = useState({
+    labels: [""],
+    datasets: [
+      {
+        label: "Monthly Profit(LKR)",
+        data: [0],
+        borderColor: getRandomRGBColor(),
+        backgroundColor: getRandomRGBColor(),
+      },
+    ],
   });
 
   // use react query and fetch data
@@ -167,7 +174,7 @@ export function StatsProfitCard() {
     });
   }
 
-  const generateChartData = (selectedDate: any) => {
+  const generateWeekProfitChartData = (selectedDate: any) => {
     //generating the labels
     const currrentDate = new Date(selectedDate); //convert selected date into date object
     let lastDay = new Date();
@@ -240,6 +247,108 @@ export function StatsProfitCard() {
     setWeekProfitData(newChartData);
   };
 
+  // finds leap year
+  const isLeapYear = (year: number) => {
+    if (year % 4 !== 0) {
+      return false;
+    } else if (year % 100 !== 0) {
+      return true;
+    } else if (year % 400 !== 0) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
+  // calculate date loops of the monthly profit
+  const calculateMonthLoop = (selectedMonth: number, selectedYear: number) => {
+    if (
+      selectedMonth === 1 ||
+      selectedMonth === 3 ||
+      selectedMonth === 5 ||
+      selectedMonth === 7 ||
+      selectedMonth === 8 ||
+      selectedMonth === 10 ||
+      selectedMonth === 12
+    ) {
+      return 31;
+    } else if (
+      selectedMonth === 4 ||
+      selectedMonth === 6 ||
+      selectedMonth === 9 ||
+      selectedMonth === 11
+    ) {
+      return 30;
+    } else if (selectedMonth === 2) {
+      if (isLeapYear(selectedYear)) {
+        return 29;
+      } else {
+        return 28;
+      }
+    } else {
+      return 0;
+    }
+  };
+  // generate monthly profit
+  const generateMonthlyProfitChartData = (selectedMonth: Date) => {
+    const month = new Date(selectedMonth).getMonth() + 1;
+    const year = new Date(selectedMonth).getFullYear();
+
+    console.log(month);
+    console.log(year);
+    console.log(selectedMonth);
+
+    let chartData: any = [];
+
+    const loopCount = calculateMonthLoop(month, year);
+
+    for (let i = 1; i <= loopCount; i++) {
+      chartData.push({ day: `day-${i}`, profit: 0 });
+    }
+
+    data?.map((invoice: any) => {
+      const invoiceMonth = new Date(invoice.issuedDate).getMonth() + 1;
+      const invoiceYear = new Date(invoice.issuedDate).getFullYear();
+      const invoiceDate = new Date(invoice.issuedDate).getDate();
+
+      if (month === invoiceMonth && year === invoiceYear) {
+        const updateChartData = chartData.map(
+          (day: { day: string; profit: number }) => {
+            const date = day.day.split("-")[1];
+
+            if (parseInt(date) === invoiceDate) {
+              return {
+                ...day,
+                profit:
+                  day.profit +
+                  (parseFloat(invoice.totalSoldPrice) -
+                    parseFloat(invoice.totalActualPrice)),
+              };
+            } else {
+              return day;
+            }
+          }
+        );
+        chartData = updateChartData;
+      }
+    });
+
+    const newChartData = {
+      ...monthlyProfitData,
+      labels: chartData.map((day: any) => day.day),
+      datasets: [
+        {
+          ...monthlyProfitData.datasets[0],
+          data: chartData.map((day: any) => day.profit),
+          borderColor: getRandomRGBColor(),
+          backgroundColor: getRandomRGBColor(),
+        },
+      ],
+    };
+
+    setMonthlyProfitData(newChartData);
+  };
+
   // Calculate last 7 days profit and item count
   const calculateLast7DaysProfitAndItemCount = (selectedDate: any) => {
     setWeekProfit(0);
@@ -260,7 +369,7 @@ export function StatsProfitCard() {
     });
 
     // generateChartData
-    generateChartData(selectedDate);
+    generateWeekProfitChartData(selectedDate);
   };
 
   // Calculate Monthly Profit
@@ -281,6 +390,8 @@ export function StatsProfitCard() {
         });
       }
     });
+
+    generateMonthlyProfitChartData(date);
   };
 
   //calculate profit function
@@ -434,6 +545,9 @@ export function StatsProfitCard() {
             withBorder
             style={{ height: "430px" }}
           >
+              <Text weight={500} size={30}>
+                <center>MONTHLY PROFIT & ITEM COUNT</center>
+              </Text>
             <div className={classes.dateInputContainer}>
               <MonthPickerInput
                 className={classes.dateInput}
@@ -448,10 +562,6 @@ export function StatsProfitCard() {
                 }}
               />
             </div>
-
-            <Text weight={500} size={30}>
-              <center>MONTHLY PROFIT & ITEM COUNT</center>
-            </Text>
 
             {monthItemCount === 0 && monthProfit === 0 ? (
               <Text weight={600} size={20} color="red">
@@ -472,9 +582,9 @@ export function StatsProfitCard() {
             style={{ height: "430px" }}
           >
             <Text weight={500} size={30} mb={40}>
-              <center>WEEKLY PROFIT</center>
+              <center>MONTHLY PROFIT</center>
             </Text>
-            <WeekProfitChart profitData={weekProfitData} />
+            <MonthlyProfitChart profitData={monthlyProfitData} />
           </Card>
         </Group>
       </div>

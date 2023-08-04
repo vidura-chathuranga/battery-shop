@@ -6,6 +6,8 @@ import {
   Code,
   getStylesRef,
   rem,
+  Image,
+  Avatar,
 } from "@mantine/core";
 import {
   IconBellRinging,
@@ -19,13 +21,20 @@ import {
   IconLogout,
   IconNotification,
   IconAdjustmentsHeart,
+  IconTrash,
 } from "@tabler/icons-react";
-import { MantineLogo } from "@mantine/ds";
-import AdminDBoard from "../../components/AdminDashboard/index";
-import logo from "../../assets/shopLogo.png";
+// import { MantineLogo } from "@mantine/ds";
+import profitBoard from "../ProfitDashboard/index";
+// import logo from "../../assets/shopLogo.png";
+import logo from "../../assets/shopLogonew.png";
 import StockTable from "../stock";
+import { Menu } from "@mantine/core";
+
+
 
 const adminDashboard = createStyles((theme) => ({
+
+
   header: {
     paddingBottom: theme.spacing.md,
     marginBottom: `calc(${theme.spacing.md} * 1.5)`,
@@ -52,6 +61,7 @@ const adminDashboard = createStyles((theme) => ({
     ...theme.fn.focusStyles(),
     display: "flex",
     alignItems: "center",
+    marginBottom : 20,
     textDecoration: "none",
     fontSize: theme.fontSizes.sm,
     color:
@@ -100,63 +110,70 @@ const adminDashboard = createStyles((theme) => ({
   },
 }));
 
-const data = [
+const links = [
 
-  { link: "", label: "Manage Worker", icon: IconAdjustmentsHeart },
-  { link: "", label: "Profit", icon: IconReceipt2 },
-  { link: "/admin/stock", label: "Stocks", icon: IconDatabaseImport },
-  { link: "", label: "Notifications", icon: IconNotification },
+  { link: "/admin/manageworker", label: "Manage Worker", icon: IconAdjustmentsHeart },
+  { link: "/admin/profitpage", label: "Profit", icon: IconReceipt2 },
+  { link: "/admin/stockpage", label: "Pending Stock", icon: IconDatabaseImport },
+  { link: "/admin/deletedtable", label: "Delete Stock", icon: IconTrash },
+  // { link: "", label: "Notifications", icon: IconNotification },
+  
 
 ];
 
 const AdminDashboardHeader = ({link_id} : any) => {
-    
-  const { classes, cx } = adminDashboard();
-  const [active, setActive] = useState("Billing");
 
-  const links = data.map((item) => (
+  const user = JSON.parse(localStorage.getItem('user-worker-session')!!);
+
+ 
+    
+  const [active, setActive] = useState(links[link_id].link);
+  const { classes, cx } = adminDashboard();
+  //const [active, setActive] = useState("Billing");
+
+  const items = links.map((link,index) => (
     <a
       className={cx(classes.link, {
-        [classes.linkActive]: item.label === active,
+        [classes.linkActive]: active=== link.link,
       })}
-      href={item.link}
-      key={item.label}
+      href={link.link}
+      key={link.label}
       onClick={(event) => {
         event.preventDefault();
-        window.location.href = item.link;
-        setActive(item.label);
+        window.location.href = link.link;
+        setActive(link.label);
       }}
     >
-      <item.icon className={classes.linkIcon} stroke={1.5} />
-      <span>{item.label}</span>
+      <link.icon className={classes.linkIcon} stroke={1.5} />
+      <span>{link.label}</span>
     </a>
   ));
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "300px 1fr" }}>
-      <div>
-      <Navbar height={950} width={{ sm: 300 }} p="md" style={{ backgroundColor: "lightblue" }}>
+    <div  style={{ display: "grid", gridTemplateColumns: "250px 1fr" }}>
+      <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <Navbar width={{ sm: 250 }} p="md" style={{ backgroundColor: 'lightblue', flex: 1 }}>
           <Navbar.Section grow>
             <Group className={classes.header} position="apart">
-              <MantineLogo size={28} />
-              {/* <Image width={200} height={50} src={logo} mt={5} /> */}
+              <Image width={200} height={50} src={logo} mt={5} />
             </Group>
-            {links}
+            {items}
           </Navbar.Section>
 
-          <Navbar.Section className={classes.footer}>
+          <Navbar.Section className={classes.footer} >
             <a
-              href="#"
+            
+              href="/admin/logout"
               className={classes.link}
-              onClick={(event) => event.preventDefault()}
+              // onClick={(event) => event.preventDefault()}
             >
               <IconLogout className={classes.linkIcon} stroke={1.5} />
-              <span>Logout</span>
+              <span >Logout</span>
             </a>
           </Navbar.Section>
         </Navbar>
       </div>
       <div>
-        <StockTable />
+        {/* <StockTable /> */}
       </div>
     </div>
   );

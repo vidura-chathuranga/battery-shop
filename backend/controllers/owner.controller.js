@@ -3,6 +3,7 @@ import "dotenv/config";
 import User from "../models/users.model.js";
 import jwt from "jsonwebtoken";
 
+
 export const adminLogin = async (req, res) => {
   // get details from the request body
   const NIC = req.body.emailOrNic;
@@ -18,33 +19,33 @@ export const adminLogin = async (req, res) => {
         //   compare database password and user entered password and role
         if (
           bcrypt.compareSync(password, data.password) &&
-          (data.role === "ADMIN")
+          data.role === "ADMIN"
         ) {
-
-            // create access Token
+          // create access Token
           const accessToken = jwt.sign(
             { _id: data._id, role: data.role },
             process.env.SECRET_KEY,
             { expiresIn: 24 * 60 * 60 }
           ); //access Token will expires in 1 day
 
+          //   set access Token as a http only cookie
+          res.cookie("accessToken", accessToken, {
+            httpOnly: true,
+            maxAge: 24 * 60 * 60 * 1000,
+            secure: false,
+          }); //this cookie expires in 1 day
 
-
-        //   set access Token as a http only cookie
-          res.cookie("accessToken",accessToken,{httpOnly:true,maxAge:24*60*60*1000,secure : false});//this cookie expires in 1 day
-        
-        //   create user details
+          //   create user details
           const userDetails = {
-            _id : data._id,
-            name : data.name,
-            email : data.email,
-            role : data.role,
-            phone : data.phone
+            _id: data._id,
+            name: data.name,
+            email: data.email,
+            role: data.role,
+            phone: data.phone,
           };
 
-        //   sends the user details
-        res.status(200).json(userDetails);
-
+          //   sends the user details
+          res.status(200).json(userDetails);
         } else {
           throw new Error("Password is wrong");
         }
@@ -53,11 +54,14 @@ export const adminLogin = async (req, res) => {
       }
     })
     .catch((error) => {
-      res.status(404).json({error: error.message});
+      res.status(404).json({ error: error.message });
     });
 };
 
-export const logout = (req,res) =>{
-  res.cookie('accessToken','',{maxAge : 1});
+export const logout = (req, res) => {
+  res.cookie("accessToken", "", { maxAge: 1 });
   res.status(200).json({});
-}
+};
+
+
+

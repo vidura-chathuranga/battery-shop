@@ -95,8 +95,8 @@ const useStyles = createStyles((theme) => ({
 
 const links = [
   { label: "Manage Stock", link: "/worker/manageStock" },
-  { label: "Notification", link: "/worker/notifications" },
-  { label: "Generate Invoice", link: "/worker/invoice" },
+  { label: "Pending Stocks", link: "/worker/notifications" },
+  { label: "Invoices", link: "/worker/invoice" },
 ];
 
 const WorkerDashboardHeader = ({link_id} : any) => {
@@ -158,13 +158,11 @@ const WorkerDashboardHeader = ({link_id} : any) => {
               <Menu.Label>{user.role === 'ADMIN'? 'Administrator' : "Worker"}</Menu.Label>
               
               <Menu.Item icon={<IconLogout size={14} stroke={1.5} />} >
-                <a
-                  href="/worker/logout"
-                  style={{
-                    color: "inherit",
-                    textDecoration: "inherit",
-                  }}
-                >
+              <a
+              href="/worker/logout"
+              className={classes.link}
+              onClick={(event) => {event.preventDefault(); window.location.href = '/worker/logout'}}
+            >
                   Logout
                 </a>
               </Menu.Item>

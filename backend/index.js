@@ -5,7 +5,8 @@ import AdminRoutes from './routes/admin.routes.js';
 import dbConnect from './configs/dbConfig.js';
 import cookieParser from "cookie-parser";
 import WorkerRoutes from './routes/worker.routes.js';
-
+import itemRoutes from './routes/item.routes.js';
+import invoiceRoutes from './routes/invoice.routes.js'
 //initialized express
 const app = express();
 
@@ -40,6 +41,12 @@ app.use('/admin',AdminRoutes);
 
 // redirects to worker routes
 app.use('/worker',WorkerRoutes);
+
+// redirects to Item rotues
+app.use('/batteries',itemRoutes);
+
+// redirect to Invoice Routes
+app.use('/invoice',invoiceRoutes)
 
 app.listen(PORT,()=>{
     console.log(`🚀 Server is started on port ${PORT}!`);

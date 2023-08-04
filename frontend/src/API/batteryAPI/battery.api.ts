@@ -3,54 +3,110 @@ import axios from "axios";
 const BASE_URL = "http://localhost:3001";
 
 class BatteryAPI {
+  //get all items
+  static getAllItems = () => {
+    return axios.get(`${BASE_URL}/batteries`, { withCredentials: true });
+  };
 
-    //get all items
-    static getAllItems = () => {
-        return axios.post(`${BASE_URL}/batteries`, /*requestConfig*/);
+  //add battery
+  static addBattery = (values: {
+    quantity: string;
+    added_date: string;
+    warnty_priod: String;
+    sellingPrice: string;
+    actualPrice: string;
+    batry_brand: string;
+    Battery_description: string;
+  }) => {
+    return axios.post(`${BASE_URL}/batteries/add`, values, {
+      withCredentials: true,
+    });
+  };
 
-    };
+  //delete battery
+  static deleteBattery = (values: {
+    _id: string;
+    reason: string;
+    stock_id: string;
+  }) => {
+    return axios.delete(
+      `${BASE_URL}/batteries/delete/${values._id}/${values.reason}`,
+      { withCredentials: true }
+    );
+  };
 
-    //add battery
-    static addBattery = (values: {
+  //update battery details
+  static updateBattery = (values: {
+    _id: string;
+    stock_id: string;
+    quantity: string;
+    added_date: Date;
+    warnty_priod: String;
+    sellingPrice: string;
+    actualPrice: string;
+    batry_brand: string;
+    Battery_description: string;
+  }) => {
+    return axios.put(`${BASE_URL}/batteries/update/${values._id}`, values, {
+      withCredentials: true,
+    });
+  };
 
-        stock_id: string;
-        quantity: string;
-        added_data: string;
-        warnty_priod: String;
-        sellingPrice: string;
-        actualPrice: string;
-        batry_brand: string;
-        Battery_description: string;
+  // get battery details from database
+  static getBatteryDetails = () => {
+    return axios
+      .get(`${BASE_URL}/batteries`, { withCredentials: true })
+      .then((response) => {
+        return response.data;
+      })
+      .catch((error) => {
+        console.error("Error fetching battery details:", error);
+        throw error;
+      });
+  };
 
-    }) => {
-        console.log("API addBattery");
-        return axios.post(`${BASE_URL}/batteries`, values, {withCredentials:true});
+  //Reject Battery Stock
+  static rejectBattery = (stockId:string) => {
+    console.log(stockId);
+    return axios.delete(`${BASE_URL}/batteries/reject/${stockId}`, {
+      withCredentials: true,
+    });
+  };
 
-    };
+  static getRequestedStocks = () =>{
+    return axios.get(`${BASE_URL}/batteries/stocks/requested`,{withCredentials:true});
+  }
 
-    //delete battery
-    static declareBattery = (stock_id: string) => {
-        return axios.delete(`${BASE_URL}/batteries/delete/${stock_id}`,{withCredentials:true});
-    };
+  static acceptStock = (stockId : string) =>{
 
-    //update battery details
-    static updateBattery = (values: {
-        _id: string,
-        stock_id: string;
-        quantity: string;
-        added_date: Date;
-        warranty: string;
-        sellingPrice: Number;
-        actualPrice: Number;
-        batteryBrand: string;
-        batteryDescription: string;
-    }) => {
+    const updateValues  ={
+        stockId : stockId
+    }
+    return axios.put(`${BASE_URL}/batteries/stock/accept`,updateValues,{withCredentials:true});
+  }
 
-        return axios.put(`${BASE_URL}/batteries/update/${values._id}`,
-            values,
-            {withCredentials:true}
-        );
-    };
+  static getDeletedStocks = () =>{
+    return axios.get(`${BASE_URL}/batteries/stocks/deleted`,{withCredentials:true});
+  }
+
+  //update battery details
+  static updateRequestedStocks = (values: {
+    _id: string;
+    stock_id: string;
+    quantity: string;
+    added_date: Date;
+    warnty_priod: String;
+    sellingPrice: string;
+    actualPrice: string;
+    batry_brand: string;
+    Battery_description: string;
+  }) => {
+
+    console.log(values);
+    return axios.put(`${BASE_URL}/batteries/requested/update/${values._id}`, values, {
+      withCredentials: true,
+    });
+  };
 }
 
 export default BatteryAPI;

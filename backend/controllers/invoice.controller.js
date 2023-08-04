@@ -26,6 +26,7 @@ const generateInvoiceId = async () => {
 };
 
 export const addInvoice = async (req, res) => {
+
   // generate the custom Invoice Id
   const customInvoiceID = await generateInvoiceId();
 
@@ -52,7 +53,7 @@ export const addInvoice = async (req, res) => {
     // after saving the invoice, send the invoice via email to the customer, if email mentioned
     if(req.body.cusEmail.length > 0){
 
-      console.log(invoice.cusEmail)
+      console.log(`Sending mail to ${invoice.cusEmail}....`)
       // mentioned here your sending email function
       sendInvoiceMail(invoice)
 

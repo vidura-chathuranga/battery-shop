@@ -221,7 +221,7 @@ const Invoices = () => {
         <Text size={15}>{row.cusPhone}</Text>
       </td>
       <td>
-        {/* {row.cusEmail.length === 0 ? (<Text size={15} color={"red"}>N/A</Text>):<Text size={15}>{row.cusEmail}</Text>} */}
+        {row.cusEmail.length === 0 ? (<Text size={15} color={"red"}>N/A</Text>):<Text size={15}>{row.cusEmail}</Text>}
       </td>
       <td>
         <Text size={15}>
@@ -415,7 +415,7 @@ const Invoices = () => {
               rows
             ) : (
               <tr>
-                <td>
+                <td colSpan={9}>
                   <Text weight={500} align="center">
                     Nothing found
                   </Text>

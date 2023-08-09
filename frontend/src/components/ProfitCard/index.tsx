@@ -429,6 +429,7 @@ export function StatsProfitCard() {
         onClose={() => setOpenedWeeklyProfitChart(false)}
         size={"80%"}
         zIndex={2500}
+        transitionProps={{duration:400,transition:"slide-left",timingFunction:"ease"}}
       >
         <center>
           <WeekProfitChart profitData={weekProfitData} />
@@ -440,6 +441,7 @@ export function StatsProfitCard() {
         onClose={() => setOpenedMonthlyProfitChart(false)}
         size={"80%"}
         zIndex={2500}
+        transitionProps={{duration:400,transition:"slide-left",timingFunction:"ease"}}
       >
         <center>
           <MonthlyProfitChart profitData={monthlyProfitData} />
@@ -560,7 +562,7 @@ export function StatsProfitCard() {
             <Group position="right">
               <Tooltip label="expand chart">
                 <ActionIcon
-                  size={"lg"}
+                  size={"md"}
                   onClick={() => setOpenedWeeklyProfitChart(true)}
                 >
                   <IconArrowsMaximize />

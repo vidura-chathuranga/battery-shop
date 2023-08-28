@@ -18,10 +18,7 @@ const AdminLogin = () => {
         </Group>
       </Card.Section>
 
-      {/* <Card withBorder radius="md" p="md" >
-      <Card.Section>
-        <Image src={Admin} alt="Admin photo" height={180} />
-      </Card.Section> */}
+     
 
       <Card.Section inheritPadding>
         <Text weight={400} p={20} style={{ textAlign: "justify" }}>

@@ -606,7 +606,7 @@ const ManageWorker = () => {
           registerForm.reset();
           setOpened(false);
         }}
-        title="Add Items Record"
+        title="Add Worker"
       >
         <form
           onSubmit={registerForm.onSubmit((values) => registerWorker(values))}
